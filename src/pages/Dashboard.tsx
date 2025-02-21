@@ -3,12 +3,13 @@ import { Home, Table, CreditCard, Bell, User, LogIn, LogOut, Menu, User2, User2I
 import { logout } from "../services/auth";
 import { Link, Route, Router, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import UserList from "../components/users/UserList";
 
 
 const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
 
-  const { isLoggedIn, logout } = useAuth();
-    const navigate = useNavigate();
+   const { isLoggedIn, logout } = useAuth();
+   const navigate = useNavigate();
 
     useEffect(() => {
         if (!isLoggedIn) navigate("/login");
@@ -84,7 +85,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p>Welcome to your dashboard!</p>
     
-     
+        <UserList/>
       </div>
     </div>
   );

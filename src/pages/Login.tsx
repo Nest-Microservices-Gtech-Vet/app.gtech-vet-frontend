@@ -1,23 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginSuperAdmin } from "../services/auth";
+// import { loginSuperAdmin } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Hook para redirección
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const userData = await loginSuperAdmin({ email, password });
-      console.log("Usuario autenticado:", userData);
-      navigate("/dashboard"); // 🔥 Redirige al Dashboard
-    } catch (error) {
-      console.error("Error en el login:", error);
-      alert("Credenciales incorrectas");
-    }
-  };
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await login(email, password);
+    if (success) navigate("/dashboard");
+    else alert("Credenciales incorrectas");
+  }
 
   return (
     <section className="min-h-screen flex items-center justify-center font-sans bg-gradient-to-r from-white via-white to-indigo-500">

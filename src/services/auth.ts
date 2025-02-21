@@ -1,39 +1,26 @@
-import api from './api';
+import { apiFetch } from "./api";
 
-interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-  };
-}
+export const login = async (email: string, password: string) => {
+    try {
+        const data = await apiFetch("auth/login-superadmin", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+            credentials: "include",
+        });
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
+        console.log("Respuesta del login:", data);
 
-// 🔹 Función para hacer login
-export const loginSuperAdmin = async (credentials: LoginCredentials): Promise<LoginResponse> => {
-  const { data } = await api.post<LoginResponse>('/auth/login-superadmin', credentials);
-  localStorage.setItem('accessToken', data.token);
-  return data;
+        localStorage.setItem("accessToken", data.accessToken);
+        return true;
+    } catch (error) {
+        console.error("Error en login:", error);
+        return false;
+    }
 };
 
-// 🔹 Función para cerrar sesión
-export const logout = (): void => {
-  localStorage.removeItem('accessToken');
+export const logout = () => {
+    localStorage.removeItem("accessToken");
+    window.location.href = "/login";
 };
 
-
-export const getUsers = async () => {
-  const token = localStorage.getItem("accessToken");
-  const { data } = await api.get("/users", {
-    headers: {
-      Authorization: `Bearer ${token}`, // Se envía el token para autenticación
-    },
-  });
-  console.log({data})
-  return data;
-};
+export const isAuthenticated = () => !!localStorage.getItem("accessToken");

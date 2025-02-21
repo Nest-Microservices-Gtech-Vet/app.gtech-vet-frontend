@@ -1,61 +1,30 @@
-import axios from "axios";
+const API_URL = "http://localhost:3000/api";
 
-const token = localStorage.getItem("accessToken");
+export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
+  const token = localStorage.getItem("accessToken");
 
-// 🔹 Crear una instancia de Axios con la base URL de tu API
-const api = axios.create({
-  baseURL: "http://localhost:3000/api",
-  headers: {
+  const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }), // Agregar el token si existe
-  },
-});
+    ...(token ? { Authorization: `Bearer ${token}` } : {}), // Solo agrega el header si hay token
+  };
 
-// 🔹 Interceptor para agregar el Token a cada petición
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
+  const response = await fetch(`${API_URL}/${endpoint}`, { ...options, headers });
+  const rawText = await response.text(); // 👀 Ver qué devuelve realmente el servidor
 
-    if (token) {
-      config.headers = {
-        ...config.headers, // Mantener otros headers existentes
-        Authorization: `Bearer ${token}`,
-      };
+  if (!response.ok) {
+    console.error("Error en API Fetch:", rawText);
+    if (response.status === 401) {
+      console.warn("Token expirado o inválido. Redirigiendo a login...");
+      localStorage.removeItem("accessToken");
+      window.location.href = "/login";
     }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+    throw new Error(`Error ${response.status}: ${rawText}`);
   }
-);
 
-// export const setAuthToken = (newToken: string | null) => {
-//   if (newToken) {
-//     localStorage.setItem("accessToken", newToken);
-//     api.defaults.headers.Authorization = `Bearer ${newToken}`;
-//   } else {
-//     localStorage.removeItem("accessToken");
-//     delete api.defaults.headers.Authorization;
-//   }
-// };
 
-// Obtener usuarios (requiere autenticación)
-export const getUsers = async () => {
   try {
-    const response = await api.get("/users"); // 🔹 Aquí usamos api.get() en lugar de axios.get()
-    
-    // Asegurar que la respuesta sea un array
-    if (Array.isArray(response.data)) {
-      return response.data;
-    } else {
-      console.error("La API no devolvió un array:", response.data);
-      return [];
-    }
+    return JSON.parse(rawText);
   } catch (error) {
-    console.error("Error obteniendo usuarios:", error);
-    return [];
+    throw new Error("El servidor devolvió un formato inesperado.");
   }
 };
-
-export default api;

@@ -2,10 +2,18 @@ import { useEffect, useState } from "react";
 import { Home, Table, CreditCard, Bell, User, LogIn, LogOut, Menu, User2, User2Icon, Users2Icon, Building2 } from "lucide-react";
 import { logout } from "../services/auth";
 import { Link, Route, Router, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
-  const navigate = useNavigate();
+
+  const { isLoggedIn, logout } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isLoggedIn) navigate("/login");
+    }, [isLoggedIn, navigate]);
+  
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");

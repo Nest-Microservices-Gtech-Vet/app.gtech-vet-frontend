@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { JSX } from "react";
+import UserList from "./components/users/UserList";
 
 // Componente para proteger rutas privadas
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -23,6 +24,7 @@ const AppRoutes = () => (
                         </PrivateRoute>
                     }
                 />
+                <Route path="/users" element={<UserList/>}/>
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         </BrowserRouter>

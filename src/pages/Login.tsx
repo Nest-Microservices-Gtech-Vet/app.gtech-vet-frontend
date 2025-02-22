@@ -66,12 +66,6 @@ const Login = () => {
         </div>
       </div>
     </section>
-
-    // <div>
-    //   <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-    //   <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-    //   <button onClick={handleLogin}>Iniciar sesión</button>
-    // </div>
   );
 };
 

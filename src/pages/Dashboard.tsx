@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Home, Table, CreditCard, Bell, User, LogIn, LogOut, Menu, User2, User2Icon, Users2Icon, Building2 } from "lucide-react";
 import { logout } from "../services/auth";
-import { Link, Route, Router, useNavigate } from "react-router-dom";
+import { Link, Outlet, Route, Router, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import UserList from "../components/users/UserList";
+import { patch } from "axios";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
 
 const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
@@ -24,6 +26,9 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
   }, [navigate]);
 
   return (
+
+    
+
     <div className={`fixed top-0 left-0 h-full bg-gray-900 text-white transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
@@ -38,8 +43,8 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         {isOpen && <span>Tables</span>}
           </div>
           {[
-            { icon: <Home />, text: "Dashboard" },
-            { icon: <Users2Icon />, text: "Usuarios" },
+            { icon: <Home />, text: "Dashboard", path:"/dashboard" },
+            { icon: <Users2Icon />, text: "Usuarios", path:"/users"},
             { icon: <Building2 />, text: "Empresas" },
             { icon: <Bell />, text: "Notifications" },
             { icon: <User />, text: "Profile" },
@@ -52,10 +57,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
           <Link to="/users" className="flex items-center space-x-3 p-2 hover:bg-gray-700 rounded-lg cursor-pointer"></Link>
         </nav>
         <div className="space-y-4">
-          <div className="flex items-center space-x-3 p-2 hover:bg-gray-700 rounded-lg cursor-pointer">
-            <LogIn />
-            {isOpen && <span>Sign In</span>}
-          </div>
+          
           <div
             className="flex items-center space-x-3 p-2 hover:bg-gray-700 rounded-lg cursor-pointer"
             onClick={() => {
@@ -67,6 +69,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
             {isOpen && <span>Salir del sistema</span>}
           </div>
         </div>
+        
       </div>
     </div>
   );
@@ -83,9 +86,10 @@ const Dashboard = () => {
           }`}
       >
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p>Welcome to your dashboard!</p>
-    
-        <UserList/>
+        <p>Bienvenidos  al Dashboard!</p>
+        <Outlet />
+        <DashboardLayout />
+      
       </div>
     </div>
   );

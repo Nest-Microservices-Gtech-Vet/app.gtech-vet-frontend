@@ -3,11 +3,13 @@ import Sidebar from "./Sidebar";
 import UserList from "../users/UserList";
 
 const DashboardLayout = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
+   
 
     return (
         <div className="div">
-            <UserList/>
+           
+           <h1>Hola desdee el dashboard layaut</h1>
+
         </div>
     );
 };

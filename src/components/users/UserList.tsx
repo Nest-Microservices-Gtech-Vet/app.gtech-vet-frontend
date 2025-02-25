@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getUsers } from "../../services/users/users";
+import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -28,25 +30,11 @@ const UserList = () => {
         fetchUsers();
     }, []);
 
+    const updatedUser = (userId: string) => {
+        navigate(`/user-edit/${userId}`);
+    }
+
     return (
-        // <div>
-        //     <h2>Lista de Usuarios</h2>
-
-        //     {loading ? (
-        //         <p>Cargando usuarios...</p>
-        //     ) : users.length > 0 ? (
-        //         <ul>
-        //             {users.map((user) => (
-        //                 <li key={user.usua_id}>
-        //                     <strong>{user.usua_nombre}</strong> - {user.usua_ruc}
-        //                 </li>
-        //             ))}
-        //         </ul>
-        //     ) : (
-        //         <p>No hay usuarios disponibles.</p>
-        //     )}
-        // </div>
-
         <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-5">
 
 
@@ -91,8 +79,11 @@ const UserList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
-                                <td className="p-2 whitespace-nowrap text-green-400">{user.usua_total}</td>
-                                <td className="p-2 whitespace-nowrap">{user.usua_category}</td>
+                                <td className="p-2 whitespace-nowrap">
+                                    <button onClick={() => updatedUser(user.usua_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
+                                        Update
+                                    </button>
+                                </td>
                                 {/* Botones de Update y Delete */}
                                 {/* <td className="p-2 whitespace-nowrap">
               <button className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">

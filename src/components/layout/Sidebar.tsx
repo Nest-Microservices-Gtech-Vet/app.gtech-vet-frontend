@@ -12,7 +12,7 @@ const SIDEBAR_ITEMS = [
       color: "#10B981",
       href: "#", // No necesita un href si tiene submenú
       submenu: [
-        { name: "Crear Usuarios", href: "/user" },
+        { name: "Crear Usuarios", href: "/user-create" },
         { name: "Administrar Usuarios", href: "/users" },
       ],
     },

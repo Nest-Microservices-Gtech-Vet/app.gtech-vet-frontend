@@ -5,6 +5,7 @@ const pageTitles: Record<string, string> = {
   "/users": "Usuarios",
   "/user": "Usuario",
   "/empresas": "Empresas",
+  "/user-create":"Agregar Usuarios "
 };
 
 const Header = () => {

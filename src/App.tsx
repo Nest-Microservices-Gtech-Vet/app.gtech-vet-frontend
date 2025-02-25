@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import Usuarios from "./components/users/Usuarios";
 import Empresas from "./components/empresas/Empresas";
 import DashboardLayout from "./components/layout/DashboardLayout";
+import CreateUserForm from "./components/users/CreateUserForm";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuth();
@@ -52,6 +53,16 @@ const App = () => {
               <PrivateRoute>
                 <MainLayout>
                   <UserList />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user-create"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <CreateUserForm />
                 </MainLayout>
               </PrivateRoute>
             }

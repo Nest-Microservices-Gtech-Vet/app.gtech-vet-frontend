@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { deleteUser, getUsers, updateUser } from "../../services/users/users";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UserList = () => {
     const [users, setUsers] = useState<any[]>([]);
@@ -35,15 +36,27 @@ const UserList = () => {
     }
 
     const handleDelete = async (userId: string) => {
-        const result = await deleteUser(userId);
-        if (result) {
-          alert("Usuario desactivado exitosamente");
-          // Remove the deleted user from the list
-          setUsers((prevUsers) => prevUsers.filter((user) => user.usua_id !== userId));
-        } else {
-          alert("Error al desactivar el usuario");
+        const result = await Swal.fire({
+            title: "¿Estás seguro de eliminar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, Eliminar",
+            cancelButtonText: "Cancelar",
+        });
+    
+        if (result.isConfirmed) {
+            const deleteResult = await deleteUser(userId);
+            if (deleteResult) {
+                Swal.fire("Registro Eliminado!", "El usuario ha sido Eliminado.", "success");
+                setUsers((prevUsers) => prevUsers.filter((user) => user.usua_id !== userId));
+            } else {
+                Swal.fire("Error", "No se pudo desactivar el usuario.", "error");
+            }
         }
-      };
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-5">

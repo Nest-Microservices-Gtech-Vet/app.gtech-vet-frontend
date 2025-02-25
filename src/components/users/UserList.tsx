@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUsers } from "../../services/users/users";
+import { deleteUser, getUsers, updateUser } from "../../services/users/users";
 import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
@@ -33,6 +33,17 @@ const UserList = () => {
     const updatedUser = (userId: string) => {
         navigate(`/user-edit/${userId}`);
     }
+
+    const handleDelete = async (userId: string) => {
+        const result = await deleteUser(userId);
+        if (result) {
+          alert("Usuario desactivado exitosamente");
+          // Remove the deleted user from the list
+          setUsers((prevUsers) => prevUsers.filter((user) => user.usua_id !== userId));
+        } else {
+          alert("Error al desactivar el usuario");
+        }
+      };
 
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-5">
@@ -84,6 +95,15 @@ const UserList = () => {
                                         Update
                                     </button>
                                 </td>
+                                <td className="p-2 whitespace-nowrap">
+              <button
+                onClick={() => handleDelete(user.usua_id)}
+                className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </td>
+
                                 {/* Botones de Update y Delete */}
                                 {/* <td className="p-2 whitespace-nowrap">
               <button className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">

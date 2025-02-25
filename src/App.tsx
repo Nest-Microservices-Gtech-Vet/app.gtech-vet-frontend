@@ -7,10 +7,12 @@ import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Usuarios from "./components/users/Usuarios";
-import Empresas from "./components/empresas/Empresas";
+import Empresas from "./components/empresas/EmpresasList";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import CreateUserForm from "./components/users/CreateUserForm";
 import EditUserForm from "./components/users/EditUserForm";
+import EmpresasList from "./components/empresas/EmpresasList";
+import { motion } from "framer-motion";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuth();
@@ -22,11 +24,24 @@ const MainLayout = ({ children }: { children: JSX.Element }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100 ">
+    <div className="flex h-screen bg-gray-900 text-gray-100 flex-initial overflow-auto relative z-10 ">
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="flex flex-col flex-grow">
         <Header title="Mi Aplicación" />
-        <main className="flex-grow min-w-0 p-4 overflow-auto">{children}</main>
+        <main className="flex-grow min-w-0 p-4 overflow-auto  mx-auto ">
+          <motion.div
+            className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-1 mb-8'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 15, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            {/* aqui irian los componentes que van en el dashboard */}
+            
+              {children}
+            
+          </motion.div>
+
+        </main>
       </div>
     </div>
   );
@@ -95,7 +110,7 @@ const App = () => {
             element={
               <PrivateRoute>
                 <MainLayout>
-                  <Empresas />
+                  <EmpresasList />
                 </MainLayout>
               </PrivateRoute>
             }

@@ -16,8 +16,12 @@ const SIDEBAR_ITEMS = [
         { name: "Administrar Usuarios", href: "/users" },
       ],
     },
-    { name: "Otros usuarios", icon: Building2, color: "#3B82F6", href: "/user" },
-    { name: "Empresas", icon: LayoutDashboard, color: "#8B5CF6", href: "/empresas" },
+    { name: "Empresas", icon: Building2, color: "#3B82F6", href: "#",submenu: [
+      { name: "Crear Empresas", href: "/empresas-create" },
+      { name: "Administrar Empresas", href: "/empresas" },
+    ],
+   },
+    { name: "Configuraciones", icon: LayoutDashboard, color: "#8B5CF6", href: "/user" },
   ];
 
   const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {

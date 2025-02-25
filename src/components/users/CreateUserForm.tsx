@@ -35,7 +35,8 @@ const CreateUserForm = () => {
         }
     };
     return (
-        <form onSubmit={sendUser}>
+        <form onSubmit={sendUser} className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
+            <h1 className="text-2xl font-bold mb-4">Agreager Usuarios</h1>
 
             <div className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">

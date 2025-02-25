@@ -64,9 +64,10 @@ const EditUserForm = () => {
         }
     };
     return (
-        <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-5">
-            <h1 className="text-2xl font-bold mb-4">Editar Usuario</h1>
+        
+            
             <form onSubmit={updatedUser} className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
+                <h1 className="text-2xl font-bold mb-4">Editar Usuario</h1>
                 {/* Campos del formulario similares a CreateUserForm */}
 
                 {/* Repite los campos del formulario de creación aquí */}
@@ -232,7 +233,7 @@ const EditUserForm = () => {
 
 
             </form>
-        </div>
+
 
     )
 }

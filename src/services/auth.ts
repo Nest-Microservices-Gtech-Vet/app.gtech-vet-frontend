@@ -2,15 +2,15 @@ import { apiFetch } from "./api";
 
 export const login = async (email: string, password: string) => {
     try {
-        const data = await apiFetch("auth/login-superadmin", {
+        const data = await apiFetch("auth/login", {
             method: "POST",
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ usua_email:email, usua_contrasenia:password }),
             credentials: "include",
         });
 
         console.log("Respuesta del login:", data);
 
-        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("accessToken", data.token);
         return true;
     } catch (error) {
         console.error("Error en login:", error);

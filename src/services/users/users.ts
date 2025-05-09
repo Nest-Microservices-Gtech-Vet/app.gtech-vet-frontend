@@ -1,6 +1,7 @@
 import { User } from "../../types/users/user";
 import { apiFetch } from "../api";
 
+//Empieza obtener Usuarios //
 export const getUsers = async (page: number = 1, limit: number = 50) : Promise<{ data: User[] }> => {
     try {
         const data = await apiFetch(`users?page=${page}&limit=${limit}`);
@@ -11,6 +12,8 @@ export const getUsers = async (page: number = 1, limit: number = 50) : Promise<{
         return { data: [] }; 
     }
 };
+//Termina obtener Usuarios //
+
 //Empieza Crear Usuarios //
 export const createUser = async(userData:{
     usua_ruc: string;

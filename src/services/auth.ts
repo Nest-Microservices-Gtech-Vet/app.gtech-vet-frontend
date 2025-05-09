@@ -1,34 +1,22 @@
 import { apiFetch } from "./api";
 
-// services/auth.ts
-export const login = async (username: string, password: string) => {
-    const response = await apiFetch('auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            usua_email: username,
-            usua_contrasenia: password,
-        }),
-    });
+export const login = async (email: string, password: string) => {
+    try {
+        const data = await apiFetch("auth/login", {
+            method: "POST",
+            body: JSON.stringify({ usua_email:email, usua_contrasenia:password }),
+            credentials: "include",
+        });
 
-    if (!response.ok) {
-        return false; // o lanza error si prefieres
-    }
+        console.log("Respuesta del login:", data);
 
-    const data = await response.json();
-
-    // Guarda el token si viene
-    if (data.token) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("accessToken", data.token);
         return true;
+    } catch (error) {
+        console.error("Error en login:", error);
+        return false;
     }
-
-    return false;
 };
-
-
 
 export const logout = () => {
     localStorage.removeItem("accessToken");

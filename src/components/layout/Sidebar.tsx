@@ -17,7 +17,7 @@ const SIDEBAR_ITEMS = [
       ],
     },
     { name: "Empresas", icon: Building2, color: "#3B82F6", href: "#",submenu: [
-      { name: "Crear Empresas", href: "/empresas-create" },
+      { name: "Crear Empresas", href: "/empresa-create" },
       { name: "Administrar Empresas", href: "/empresas" },
     ],
    },

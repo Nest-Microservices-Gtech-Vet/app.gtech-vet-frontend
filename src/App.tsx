@@ -13,6 +13,7 @@ import CreateUserForm from "./components/users/CreateUserForm";
 import EditUserForm from "./components/users/EditUserForm";
 import EmpresasList from "./components/empresas/EmpresasList";
 import { motion } from "framer-motion";
+import CreateEmpresaForm from "./components/empresas/CreateEmpresaForm";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuth();
@@ -111,6 +112,16 @@ const App = () => {
               <PrivateRoute>
                 <MainLayout>
                   <EmpresasList />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/empresa-create"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <CreateEmpresaForm />
                 </MainLayout>
               </PrivateRoute>
             }

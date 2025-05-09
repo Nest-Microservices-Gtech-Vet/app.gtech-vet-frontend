@@ -83,7 +83,7 @@ const EmpresasList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {empresas.map((empresa) => (
+                        {empresas.map((empresa, index) => (
                             <tr key={empresa.emp_id} className="border-b border-gray-700">
                                  <td className="p-2 whitespace-nowrap">{empresa.emp_ruc}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_nombre}</td>

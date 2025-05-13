@@ -21,6 +21,9 @@ export const createEmpresa = async(empresaData:{
     emp_telefono: string;
     emp_ruc: string;
     usua_admin_id:number;
+    provincia_id: number
+    canton_id: number
+    tipo_empresa_id: number;
     activo:boolean;
     
 }) => {

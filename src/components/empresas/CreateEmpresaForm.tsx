@@ -1,5 +1,7 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { createEmpresa } from "../../services/empresas/empresas";
+import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
+import { Canton } from "../../types/empresa/canton";
 
 const CreateEmpresaForm = () => {
     const [formData, setFormData] = useState({
@@ -9,8 +11,49 @@ const CreateEmpresaForm = () => {
         emp_telefono: "",
         emp_ruc: "",
         usua_admin_id: "",
+        provincia_id: 0,
+        canton_id: 0,
+        tipo_empresa_id: 0,
         activo: true,
     });
+
+    const [provincias, setProvincias] = useState([]);
+    const [cantonesTodos, setCantonesTodos] = useState<Canton[]>([]);
+    const [cantones, setCantones] = useState<Canton[]>([]);
+    const [tiposEmpresa, setTiposEmpresa] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const provs = await getProvincias();
+            const provsMapped = provs.map((p: any) => ({
+                id: p.prov_id,
+                nombre: p.prov_nombre
+            }));
+            setProvincias(provsMapped);
+
+
+            const cants = await getCantones();
+            const cantsMapped = cants.map((c: any) => ({
+                id: c.can_id,
+                nombre: c.can_nombre,
+                provincia_id: c.provincia_id
+            }));
+            setCantonesTodos(cantsMapped);
+
+            const tipos = await getTiposEmpresa();
+            setTiposEmpresa(tipos);
+        };
+
+        fetchData();
+    }, []);
+
+    const handleProvinciaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const provinciaId = Number(e.target.value); // 👈 conviertes a número
+        setFormData({ ...formData, provincia_id: provinciaId, canton_id: 0 });
+
+        const cantonesFiltrados = cantonesTodos.filter(c => c.provincia_id === provinciaId);
+        setCantones(cantonesFiltrados);
+    };
 
     const sendEmpresa = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,7 +66,10 @@ const CreateEmpresaForm = () => {
 
         const formDataFixed = {
             ...formData,
-            usua_admin_id: idNumber,
+            usua_admin_id: Number(formData.usua_admin_id),
+            provincia_id: Number(formData.provincia_id),
+            canton_id: Number(formData.canton_id),
+            tipo_empresa_id: Number(formData.tipo_empresa_id),
         };
 
         console.log("Enviando empresa:", formDataFixed);
@@ -38,6 +84,9 @@ const CreateEmpresaForm = () => {
                 emp_telefono: "",
                 emp_ruc: "",
                 usua_admin_id: "",
+                provincia_id: 0,
+                canton_id: 0,
+                tipo_empresa_id: 0,
                 activo: true,
             })
         } else {
@@ -100,7 +149,34 @@ const CreateEmpresaForm = () => {
                                 className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar direccion</label>
                         </div>
                     </div>
+                    {/* campos tipo select aquí */}
+                    <select value={formData.provincia_id} onChange={handleProvinciaChange} className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600">
+                        <option value={0} >Seleccione una provincia</option>
+                        {provincias.map((provincia: any) => (
+                            <option key={provincia.id} value={provincia.id}>{provincia.nombre}</option>
+                        ))}
+                    </select>
 
+                    <select value={formData.canton_id} onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}>
+                        <option value="">Seleccione un cantón</option>
+                        {cantones.map((canton: any) => (
+                            <option key={canton.id} value={canton.id}>{canton.nombre}</option>
+                        ))}
+                    </select>
+
+
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <select value={formData.tipo_empresa_id} onChange={(e) => setFormData({ ...formData, tipo_empresa_id: Number(e.target.value) })}
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600">
+                                <option value="" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Seleccione un tipo de empresa</option>
+                                {tiposEmpresa.map((tipo: any) => (
+                                    <option className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 " key={tipo.te_id} value={tipo.te_id}>{tipo.te_nombre}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    {/* fin campos tipo select aquí */}
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input

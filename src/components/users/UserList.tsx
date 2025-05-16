@@ -105,7 +105,7 @@ const UserList = () => {
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => updatedUser(user.usua_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        Update
+                                        📝 Modificar
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
@@ -113,7 +113,7 @@ const UserList = () => {
                 onClick={() => handleDelete(user.usua_id)}
                 className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
               >
-                Delete
+                🚫 Desactivar
               </button>
             </td>
 

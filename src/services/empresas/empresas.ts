@@ -63,3 +63,30 @@ export const getEmpresaById = async (empresaId: string): Promise<Empresa> => {
     }
 };
 //Finaliza obtener empresas por id//
+
+//Empieza Editar Usuario por id//
+export const updateEmpresa = async (empresaId: string, empresaData: {
+    emp_nombre: string;
+    emp_correo: string;
+    emp_direccion: string;
+    emp_telefono: string;
+    emp_ruc: string;
+    usua_admin_id: number;
+    provincia_id: number
+    canton_id: number
+    tipo_empresa_id: number;
+    activo: boolean;
+}) => {
+    try {
+        const data = await apiFetch(`empresas/${empresaId}`, {
+            method: "PATCH",
+            body: JSON.stringify(empresaData),
+        });
+        console.log("empresa actualizado:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al actualizar empresa:", error);
+        return null;
+    }
+}
+//Finaliza Editar Usuario por id//

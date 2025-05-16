@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getEmpresas } from "../../services/empresas/empresas";
+import { Canton } from "../../types/empresa/canton";
+import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
 
 const EmpresasList = () => {
     const [empresas, setempresas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+
+
+
     useEffect(() => {
         const fetchEmpresas = async () => {
             setLoading(true);
+
             try {
                 const response = await getEmpresas(1, 50); // Página 1, 2 usuarios por página
 
@@ -31,8 +37,10 @@ const EmpresasList = () => {
         fetchEmpresas();
     }, []);
 
-    const updatedEmpresa = (userId: string) => {
-        navigate(`/user-edit/${userId}`);
+    
+
+    const updatedEmpresa = (empresaId: string) => {
+        navigate(`/empresa-edit/${empresaId}`);
     }
 
     const handleVerEmpresa = (empresaId: string) => {
@@ -108,13 +116,13 @@ const EmpresasList = () => {
 
                                 <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => handleVerEmpresa(empresa.emp_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        Ver
+                                        🔎 Ver
                                     </button>
                                 </td>
 
                                 <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => updatedEmpresa(empresa.emp_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        Update
+                                        📝 Modificar
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">

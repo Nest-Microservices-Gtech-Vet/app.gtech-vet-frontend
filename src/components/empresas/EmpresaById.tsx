@@ -1,55 +1,91 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Empresa } from "../../types/empresa/empresa";
 import { getEmpresaById } from "../../services/empresas/empresas";
 
-
 interface Props {
-    empresaId: string;
+  empresaId: string;
 }
 
 const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
-    const [empresa, setEmpresa] = useState<Empresa | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [empresa, setEmpresa] = useState<Empresa | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchEmpresa = async () => {
-            try {
-                setLoading(true);
-                const data = await getEmpresaById(empresaId);
-                setEmpresa(data);
-            } catch (err) {
-                setError("No se pudo cargar la empresa.");
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchEmpresa = async () => {
+      try {
+        setLoading(true);
+        const data = await getEmpresaById(empresaId);
+        setEmpresa(data);
+      } catch (err) {
+        setError("No se pudo cargar la empresa.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        if (empresaId) {
-            fetchEmpresa();
-        }
-    }, [empresaId]);
+    if (empresaId) {
+      fetchEmpresa();
+    }
+  }, [empresaId]);
 
-    if (loading) return <p className="text-gray-500">Cargando empresa...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
-    if (!empresa) return <p>No se encontró la empresa.</p>;
+  if (loading) return <p className="text-gray-500">Cargando empresa...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!empresa) return <p>No se encontró la empresa.</p>;
 
-    return (
-        <div className="bg-gray-600 shadow-md p-6 rounded-lg w-full max-w-xl">
-            <h2 className="text-xl font-bold text-white-800 mb-4">{empresa.emp_nombre}</h2>
-            <p><strong>RUC:</strong> {empresa.emp_ruc}</p>
-            <p><strong>Correo:</strong> {empresa.emp_correo}</p>
-            <p><strong>Dirección:</strong> {empresa.emp_direccion}</p>
-            <p><strong>Teléfono:</strong> {empresa.emp_telefono}</p>
-            <p><strong>Provincia:</strong> {empresa.provincia_id}</p>
-            <p><strong>Cantón:</strong> {empresa.canton_id}</p>
-            <p><strong>Tipo de empresa:</strong> {empresa.tipo_empresa_id}</p>
-            <p><strong>Activo:</strong> {empresa.activo ? "Sí" : "No"}</p>
-            {empresa.created_at && <p><strong>Creado el:</strong> {new Date(empresa.created_at).toLocaleDateString()}</p>}
-        </div>
-    );
+  return (
+    <div className="bg-gray-700 shadow-lg rounded-2xl p-6 max-w-7xl mx-auto text-gray-100 overflow-auto">
+      <h2 className="text-2xl font-semibold text-white mb-6 border-b border-gray-500 pb-2">
+        Detalles de la Empresa
+      </h2>
+
+      {/* 📐 Responsive Grid: 1 col (mobile) → 2 cols (md) → 3 cols (lg) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <Detail label="Nombre" value={empresa.emp_nombre} />
+        <Detail label="RUC" value={empresa.emp_ruc} />
+        <Detail label="Correo" value={empresa.emp_correo} />
+        <Detail label="Teléfono" value={empresa.emp_telefono} />
+        <Detail label="Dirección" value={empresa.emp_direccion} />
+        <Detail label="Provincia" value={empresa.provincia_id?.toString()} />
+        <Detail label="Cantón" value={empresa.canton_id?.toString()} />
+        <Detail label="Tipo de empresa" value={empresa.tipo_empresa_id?.toString()} />
+        <Detail label="Activo" value={empresa.activo ? "Sí" : "No"} />
+        {empresa.created_at && (
+          <Detail
+            label="Creado el"
+            value={new Date(empresa.created_at).toLocaleDateString()}
+          />
+        )}
+      </div>
+
+      {/* 🎯 Botones */}
+      <div className="flex flex-col sm:flex-row justify-end gap-3">
+        <button
+          onClick={() => navigate(`/empresas/editar/${empresaId}`)}
+          className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded-lg transition-all"
+        >
+          📝 Actualizar
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg transition-all"
+        >
+          🔙 Regresar
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default EmpresaDetail;
+
+const Detail: React.FC<{ label: string; value?: string }> = ({ label, value }) => (
+  <div className="bg-gray-800 p-4 rounded-xl shadow-sm break-words">
+    <p className="text-sm text-gray-400">{label}</p>
+    <p className="text-lg font-medium text-white">{value || "—"}</p>
+  </div>
+);

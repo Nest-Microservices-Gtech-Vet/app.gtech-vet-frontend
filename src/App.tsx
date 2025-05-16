@@ -14,15 +14,39 @@ import EditUserForm from "./components/users/EditUserForm";
 import EmpresasList from "./components/empresas/EmpresasList";
 import { motion } from "framer-motion";
 import CreateEmpresaForm from "./components/empresas/CreateEmpresaForm";
+import MisEmpresas from "./components/empresas/MisEmpresas";
+
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuth();
   return isLoggedIn ? children : <Navigate to="/login" />;
 };
 
-// Layout Principal con Sidebar y Header
+
+// Layout sin sidebar ni header para ADMIN
+const AdminOnlyLayout = ({ children }: { children: JSX.Element }) => {
+  return (
+    <div className="h-screen p-4 bg-gray-900 text-white overflow-auto">
+      {children}
+    </div>
+  );
+};
+
+const RoleBasedDashboard = () => {
+  const { user } = useAuth();
+  if (!user) return null;
+
+  if (user.usua_rol === "ADMIN") {
+    return <Navigate to="/mis-empresas" />;
+  }
+
+  return <DashboardLayout />;
+};
+
 const MainLayout = ({ children }: { children: JSX.Element }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+
 
   return (
     <div className="flex h-screen bg-gray-900 text-gray-100 flex-initial overflow-auto relative z-10 ">
@@ -37,9 +61,9 @@ const MainLayout = ({ children }: { children: JSX.Element }) => {
             transition={{ duration: 1 }}
           >
             {/* aqui irian los componentes que van en el dashboard */}
-            
-              {children}
-            
+
+            {children}
+
           </motion.div>
 
         </main>
@@ -47,6 +71,7 @@ const MainLayout = ({ children }: { children: JSX.Element }) => {
     </div>
   );
 };
+
 
 const App = () => {
   return (
@@ -126,6 +151,31 @@ const App = () => {
               </PrivateRoute>
             }
           />
+
+          {/* <Route
+            path="/mis-empresas"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <MisEmpresas />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          /> */}
+
+          {/* ADMIN layout sin sidebar */}
+          <Route
+            path="/mis-empresas"
+            element={
+              <PrivateRoute>
+                <AdminOnlyLayout>
+                  <MisEmpresas />
+                </AdminOnlyLayout>
+              </PrivateRoute>
+            }
+          />
+
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

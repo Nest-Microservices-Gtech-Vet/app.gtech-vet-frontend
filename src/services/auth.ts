@@ -9,12 +9,19 @@ export const login = async (email: string, password: string) => {
         });
 
         console.log("Respuesta del login:", data);
+        const usuario = {
+            id: data.user.usua_id,
+            nombre: `${data.user.usua_nombre} ${data.user.usua_apellido}`,
+            rol: data.user.usua_rol,
+            email: data.user.usua_email
+        };
 
         localStorage.setItem("accessToken", data.token);
-        return true;
+        localStorage.setItem("user", JSON.stringify(data.user));
+        return { success: true, usuario };
     } catch (error) {
         console.error("Error en login:", error);
-        return false;
+        return { success: false };
     }
 };
 

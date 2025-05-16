@@ -12,9 +12,22 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+
     const success = await login(email, password);
-    if (success) navigate("/dashboard");
-    else alert("Credenciales incorrectas");
+    if (success) {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (user.usua_rol === "SUPERADMIN") {
+        navigate("/dashboard"); // Cambia esto a la ruta del superadmin
+      } else if (user.usua_rol === "ADMIN") {
+        navigate("/mis-empresas"); // Ruta para admins
+      } else {
+        navigate("/"); // Otra ruta por defecto
+      }
+    } else {
+      alert("Credenciales incorrectas");
+    }
   }
 
   return (

@@ -36,7 +36,6 @@ const SIDEBAR_ITEMS = [
     color: "#3B82F6",
     href: "#",
     submenu: [
-      { name: "Mis Empresas", href: "/mis-empresas" },
       { name: "Crear Empresas", href: "/empresa-create" },
       { name: "Administrar Empresas", href: "/empresas" },
     ],

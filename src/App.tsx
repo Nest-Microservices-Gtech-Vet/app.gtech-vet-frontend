@@ -16,6 +16,8 @@ import { motion } from "framer-motion";
 import CreateEmpresaForm from "./components/empresas/CreateEmpresaForm";
 import MisEmpresas from "./components/empresas/MisEmpresas";
 import UserListInactives from "./components/users/UserListInactives";
+import EmpresaDetail from "./components/empresas/EmpresaById";
+import EmpresaDetailPage from "./components/empresas/EmpresaDetailPage";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -182,6 +184,17 @@ const App = () => {
                 <AdminOnlyLayout>
                   <MisEmpresas />
                 </AdminOnlyLayout>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/empresas/:id"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <EmpresaDetailPage />
+                </MainLayout>
               </PrivateRoute>
             }
           />

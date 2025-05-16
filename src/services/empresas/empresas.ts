@@ -48,3 +48,18 @@ export const getEmpresasPorUsuario = async (id: number) => {
     return await apiFetch(`empresas/mis-empresas/${id}`);
 };
 //
+
+//Empieza obtener empresas por id//
+export const getEmpresaById = async (empresaId: string): Promise<Empresa> => {
+    try {
+        const data = await apiFetch(`empresas/${empresaId}`, {
+            method: "GET",
+        });
+        console.log("Usuario obtenido:", data); // Verifica la estructura de la respuesta
+        return data;
+    } catch (error) {
+        console.error("Error al obtener el usuario:", error);
+        throw error; // Propaga el error para manejarlo en el componente
+    }
+};
+//Finaliza obtener empresas por id//

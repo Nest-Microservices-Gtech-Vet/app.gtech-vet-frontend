@@ -16,7 +16,7 @@ const EditUserForm = () => {
         usua_direccion: "",
         usua_contrasenia: "",
         usua_rol: "ADMIN",
-        activo: true,
+        activo:true,
     });
 
     useEffect(() => {

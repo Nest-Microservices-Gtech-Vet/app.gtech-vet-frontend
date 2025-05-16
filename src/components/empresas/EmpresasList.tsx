@@ -35,6 +35,11 @@ const EmpresasList = () => {
         navigate(`/user-edit/${userId}`);
     }
 
+    const handleVerEmpresa = (empresaId: string) => {
+        navigate(`/empresas/${empresaId}`);
+    };
+
+
     const handleDelete = async (userId: string) => {
         const result = await Swal.fire({
             title: "¿Estás seguro de eliminar este registro?",
@@ -71,13 +76,14 @@ const EmpresasList = () => {
                 <table className="w-full bg-gray-800 rounded-lg overflow-hidden">
                     <thead className="bg-gray-700">
                         <tr className="text-left">
-                        <th className="p-2">Ruc</th>
+                            <th className="p-2">Ruc</th>
                             <th className="p-2">Nombre</th>
                             <th className="p-2">Correo</th>
                             <th className="p-2">Direccion</th>
                             <th className="p-2">Telefono</th>
                             <th className="p-2">Acargo de</th>
                             <th className="p-2">Estado</th>
+                            <th className="p-2">Acciones</th>
                             <th className="p-2">Update</th>
                             <th className="p-2">Delete</th>
                         </tr>
@@ -85,7 +91,7 @@ const EmpresasList = () => {
                     <tbody>
                         {empresas.map((empresa, index) => (
                             <tr key={empresa.emp_id} className="border-b border-gray-700">
-                                 <td className="p-2 whitespace-nowrap">{empresa.emp_ruc}</td>
+                                <td className="p-2 whitespace-nowrap">{empresa.emp_ruc}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_nombre}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_correo}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_direccion}</td>
@@ -99,8 +105,15 @@ const EmpresasList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
+
                                 <td className="p-2 whitespace-nowrap">
-                                    <button onClick={() => updatedEmpresa(empresa.usua_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
+                                    <button onClick={() => handleVerEmpresa(empresa.emp_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
+                                        Ver
+                                    </button>
+                                </td>
+
+                                <td className="p-2 whitespace-nowrap">
+                                    <button onClick={() => updatedEmpresa(empresa.emp_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
                                         Update
                                     </button>
                                 </td>

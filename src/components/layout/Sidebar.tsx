@@ -25,7 +25,7 @@ const SIDEBAR_ITEMS = [
         href: "#",
         submenu: [
           { name: "Activos", href: "/users" },
-          { name: "Inactivos", href: "/users-inactivos" },
+          { name: "Inactivos", href: "/users/inactives" },
         ],
       },
     ],

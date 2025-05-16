@@ -14,6 +14,20 @@ export const getUsers = async (page: number = 1, limit: number = 50) : Promise<{
 };
 //Termina obtener Usuarios //
 
+//Empieza obtener Usuarios inactivos //
+export const getUsersInactives = async (page: number = 1, limit: number = 50) : Promise<{ data: User[] }> => {
+    try {
+        const data = await apiFetch(`users/inactivos?page=${page}&limit=${limit}`);
+        console.log("Usuarios obtenidos:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        return { data: [] }; 
+    }
+};
+//Termina obtener Usuarios  inactivos//
+
+
 //Empieza Crear Usuarios //
 export const createUser = async(userData:{
     usua_ruc: string;

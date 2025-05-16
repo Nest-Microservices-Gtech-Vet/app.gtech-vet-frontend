@@ -15,6 +15,7 @@ import EmpresasList from "./components/empresas/EmpresasList";
 import { motion } from "framer-motion";
 import CreateEmpresaForm from "./components/empresas/CreateEmpresaForm";
 import MisEmpresas from "./components/empresas/MisEmpresas";
+import UserListInactives from "./components/users/UserListInactives";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -95,6 +96,16 @@ const App = () => {
               <PrivateRoute>
                 <MainLayout>
                   <UserList />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users/inactives"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <UserListInactives />
                 </MainLayout>
               </PrivateRoute>
             }

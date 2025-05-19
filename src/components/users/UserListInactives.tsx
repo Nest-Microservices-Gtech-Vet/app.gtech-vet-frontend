@@ -81,7 +81,7 @@ const UserListInactives = () => {
                             <th className="p-2">Rol</th>
                             <th className="p-2">Estado</th>
                             <th className="p-2">Update</th>
-                            <th className="p-2">Delete</th>
+              
                         </tr>
                     </thead>
                     <tbody>
@@ -105,16 +105,11 @@ const UserListInactives = () => {
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => updatedUser(user.usua_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        Update
+                                        📝 Modificar
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
-              <button
-                onClick={() => handleDelete(user.usua_id)}
-                className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
-              >
-                Delete
-              </button>
+              
             </td>
 
                                 {/* Botones de Update y Delete */}

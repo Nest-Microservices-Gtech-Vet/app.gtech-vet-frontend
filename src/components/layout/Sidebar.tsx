@@ -37,7 +37,14 @@ const SIDEBAR_ITEMS = [
     href: "#",
     submenu: [
       { name: "Crear Empresas", href: "/empresa-create" },
-      { name: "Administrar Empresas", href: "/empresas" },
+      {
+        name: "Administrar Empresas",
+        href: "#",
+        submenu: [
+          { name: "Activas", href: "/empresas" },
+          { name: "Inactivas", href: "/empresas/inactivas" },
+        ],
+      },
     ],
   },
   {

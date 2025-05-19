@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { createUser } from "../../services/users/users";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CreateUserForm = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         usua_ruc: "",
         usua_nombre: "",
@@ -18,7 +21,16 @@ const CreateUserForm = () => {
         e.preventDefault();
         const result = await createUser(formData);
         if (result) {
-            alert("Usuario creado exitosamente");
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario creado!',
+                text: 'El usuario fue registrado correctamente.',
+                timer: 5000,
+                timerProgressBar: true,
+                didClose: () => {
+                    navigate('/users');
+                }
+            });
             setFormData({
                 usua_ruc: "",
                 usua_nombre: "",

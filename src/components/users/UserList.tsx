@@ -37,20 +37,20 @@ const UserList = () => {
 
     const handleDelete = async (userId: string) => {
         const result = await Swal.fire({
-            title: "¿Estás seguro de eliminar este registro?",
+            title: "¿Estás seguro de desactivar este registro?",
             text: "¡No podrás revertir esto!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, Eliminar",
+            confirmButtonText: "Sí, Desactivar",
             cancelButtonText: "Cancelar",
         });
-    
+
         if (result.isConfirmed) {
             const deleteResult = await deleteUser(userId);
             if (deleteResult) {
-                Swal.fire("Registro Eliminado!", "El usuario ha sido Eliminado.", "success");
+                Swal.fire("Registro Desactivado!", "El usuario ha sido Desactivado.", "success");
                 setUsers((prevUsers) => prevUsers.filter((user) => user.usua_id !== userId));
             } else {
                 Swal.fire("Error", "No se pudo desactivar el usuario.", "error");
@@ -109,13 +109,13 @@ const UserList = () => {
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
-              <button
-                onClick={() => handleDelete(user.usua_id)}
-                className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
-              >
-                🚫 Desactivar
-              </button>
-            </td>
+                                    <button
+                                        onClick={() => handleDelete(user.usua_id)}
+                                        className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
+                                    >
+                                        🚫 Desactivar
+                                    </button>
+                                </td>
 
                                 {/* Botones de Update y Delete */}
                                 {/* <td className="p-2 whitespace-nowrap">

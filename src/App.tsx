@@ -19,6 +19,7 @@ import UserListInactives from "./components/users/UserListInactives";
 import EmpresaDetail from "./components/empresas/EmpresaById";
 import EmpresaDetailPage from "./components/empresas/EmpresaDetailPage";
 import EditEmpresaForm from "./components/empresas/EditEmpresaForm";
+import EmpresasListInactive from "./components/empresas/EmpresasListInactive";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -151,6 +152,16 @@ const App = () => {
               <PrivateRoute>
                 <MainLayout>
                   <EmpresasList />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/empresas/inactivas"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <EmpresasListInactive />
                 </MainLayout>
               </PrivateRoute>
             }

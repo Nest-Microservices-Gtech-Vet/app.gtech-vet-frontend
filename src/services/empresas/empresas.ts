@@ -13,6 +13,19 @@ export const getEmpresas = async (page: number = 1, limit: number = 50): Promise
     }
 };
 //Termina obtener empresas //
+
+//Empieza obtener empresas //
+export const getEmpresasInactivas = async (page: number = 1, limit: number = 50): Promise<{ data: Empresa[] }> => {
+    try {
+        const data = await apiFetch(`empresas/inactivas`);
+        console.log("empresas obtenidos:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener empresas:", error);
+        return { data: [] };
+    }
+};
+//Termina obtener empresas //
 //Empieza Crear empresas //
 export const createEmpresa = async (empresaData: {
     emp_nombre: string;
@@ -42,12 +55,12 @@ export const createEmpresa = async (empresaData: {
 };
 //Fin Crear empresas//
 //************************************************************************ */
-//inicio empresa de ususario
+//inicio empresa de ususario admihn
 
 export const getEmpresasPorUsuario = async (id: number) => {
     return await apiFetch(`empresas/mis-empresas/${id}`);
 };
-//
+// fin  empresa de ususario admihn
 
 //Empieza obtener empresas por id//
 export const getEmpresaById = async (empresaId: string): Promise<Empresa> => {
@@ -64,7 +77,7 @@ export const getEmpresaById = async (empresaId: string): Promise<Empresa> => {
 };
 //Finaliza obtener empresas por id//
 
-//Empieza Editar Usuario por id//
+//Empieza Editar empresa por id//
 export const updateEmpresa = async (empresaId: string, empresaData: {
     emp_nombre: string;
     emp_correo: string;
@@ -89,4 +102,19 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
         return null;
     }
 }
-//Finaliza Editar Usuario por id//
+//Finaliza Editar empresa por id//
+
+//Empieza borrrado logico por id//
+export const deleteEmpresa = async (empresaId:string) => {
+    try {
+        const data = await apiFetch(`empresas/${empresaId}`,{
+            method:"DELETE",
+        });
+        console.log("empresa desactivado:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al desactivar empresa:", error);
+        return null;
+    }
+}
+//Finaliza borrrado logico por id//

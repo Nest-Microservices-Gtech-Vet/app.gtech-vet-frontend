@@ -37,6 +37,11 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
   if (error) return <p className="text-red-500">{error}</p>;
   if (!empresa) return <p>No se encontró la empresa.</p>;
 
+
+  const updatedEmpresa = (empresaId: string) => {
+        navigate(`/empresa-edit/${empresaId}`);
+    }
+
   return (
     <div className="bg-gray-700 shadow-lg rounded-2xl p-6 max-w-7xl mx-auto text-gray-100 overflow-auto">
       <h2 className="text-2xl font-semibold text-white mb-6 border-b border-gray-500 pb-2">
@@ -56,7 +61,7 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
         <Detail label="Activo" value={empresa.activo ? "Sí" : "No"} />
         {empresa.created_at && (
           <Detail
-            label="Creado el"
+            label="Fecha de registro"
             value={new Date(empresa.created_at).toLocaleDateString()}
           />
         )}
@@ -65,7 +70,7 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
       {/* 🎯 Botones */}
       <div className="flex flex-col sm:flex-row justify-end gap-3">
         <button
-          onClick={() => navigate(`/empresas/editar/${empresaId}`)}
+          onClick={() => updatedEmpresa(empresa.emp_id)}
           className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded-lg transition-all"
         >
           📝 Actualizar

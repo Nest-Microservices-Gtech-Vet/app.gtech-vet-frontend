@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react"
 import { createEmpresa } from "../../services/empresas/empresas";
 import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
 import { Canton } from "../../types/empresa/canton";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CreateEmpresaForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         emp_nombre: "",
         emp_correo: "",
@@ -76,7 +80,14 @@ const CreateEmpresaForm = () => {
 
         const resultado = await createEmpresa(formDataFixed);
         if (resultado) {
-            alert("empresa creado exitosamente");
+            Swal.fire({
+                icon: 'success',
+                title: '¡Empresa creada!',
+                text: 'La empresa fue registrada correctamente.',
+                confirmButtonColor: '#10B981' // verde
+            }).then(() => {
+        navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
+    });;
             setFormData({
                 emp_nombre: "",
                 emp_correo: "",
@@ -90,7 +101,12 @@ const CreateEmpresaForm = () => {
                 activo: true,
             })
         } else {
-            alert("error al crear usuario")
+            Swal.fire({
+                icon: 'error',
+                title: '¡Error!',
+                text: 'No se pudo crear la empresa.',
+                confirmButtonColor: '#EF4444' // rojo
+            });
         }
     }
     return (
@@ -150,30 +166,68 @@ const CreateEmpresaForm = () => {
                         </div>
                     </div>
                     {/* campos tipo select aquí */}
-                    <select value={formData.provincia_id} onChange={handleProvinciaChange} className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600">
-                        <option value={0} >Seleccione una provincia</option>
-                        {provincias.map((provincia: any) => (
-                            <option key={provincia.id} value={provincia.id}>{provincia.nombre}</option>
-                        ))}
-                    </select>
-
-                    <select value={formData.canton_id} onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}>
-                        <option value="">Seleccione un cantón</option>
-                        {cantones.map((canton: any) => (
-                            <option key={canton.id} value={canton.id}>{canton.nombre}</option>
-                        ))}
-                    </select>
-
-
+                    {/* Select de provincia */}
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
-                            <select value={formData.tipo_empresa_id} onChange={(e) => setFormData({ ...formData, tipo_empresa_id: Number(e.target.value) })}
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600">
-                                <option value="" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Seleccione un tipo de empresa</option>
-                                {tiposEmpresa.map((tipo: any) => (
-                                    <option className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 " key={tipo.te_id} value={tipo.te_id}>{tipo.te_nombre}</option>
+                            <select
+                                value={formData.provincia_id}
+                                onChange={handleProvinciaChange}
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            >
+                                <option value={0}>Seleccione una provincia</option>
+                                {provincias.map((provincia: any) => (
+                                    <option key={provincia.id} value={provincia.id}>
+                                        {provincia.nombre}
+                                    </option>
                                 ))}
                             </select>
+                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Provincia
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Select de cantón */}
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <select
+                                value={formData.canton_id}
+                                onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            >
+                                <option value="">Seleccione un cantón</option>
+                                {cantones.map((canton: any) => (
+                                    <option key={canton.id} value={canton.id}>
+                                        {canton.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Cantón
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    {/* Select de tipo de empresa */}
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <select
+                                value={formData.tipo_empresa_id}
+                                onChange={(e) => setFormData({ ...formData, tipo_empresa_id: Number(e.target.value) })}
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            >
+                                <option value="">Seleccione un tipo de empresa</option>
+                                {tiposEmpresa.map((tipo: any) => (
+                                    <option key={tipo.te_id} value={tipo.te_id}>
+                                        {tipo.te_nombre}
+                                    </option>
+                                ))}
+                            </select>
+                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Tipo de Empresa
+                            </label>
                         </div>
                     </div>
                     {/* fin campos tipo select aquí */}
@@ -256,7 +310,7 @@ const CreateEmpresaForm = () => {
 
                 </div>
                 <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Usuario</button>
+                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Empresa</button>
                 </div>
             </div>
         </form>

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { deleteEmpresa, getEmpresas } from "../../services/empresas/empresas";
+import { deleteEmpresa, getEmpresas, getEmpresasInactivas } from "../../services/empresas/empresas";
 import { Canton } from "../../types/empresa/canton";
 import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
 
-const EmpresasList = () => {
+const EmpresasListInactive = () => {
     const [empresas, setempresas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ const EmpresasList = () => {
             setLoading(true);
 
             try {
-                const response = await getEmpresas(1, 50); // Página 1, 2 usuarios por página
+                const response = await getEmpresasInactivas(1, 50); // Página 1, 2 usuarios por página
 
                 console.log("Empresas obtenidos:", response); // Ver la estructura
 
@@ -76,7 +76,7 @@ const EmpresasList = () => {
 
 
             <div className="div">
-                <h1 className="text-2xl font-bold mb-4">EMPRESAS DEL SISTEMA</h1>
+                <h1 className="text-2xl font-bold mb-4">EMPRESAS INACTIVAS DEL SISTEMA</h1>
             </div>
 
             {/* Contenedor para hacer la tabla responsive */}
@@ -93,7 +93,7 @@ const EmpresasList = () => {
                             <th className="p-2">Estado</th>
                             <th className="p-2">Acciones</th>
                             <th className="p-2">Update</th>
-                            <th className="p-2">Delete</th>
+                     
                         </tr>
                     </thead>
                     <tbody>
@@ -125,29 +125,16 @@ const EmpresasList = () => {
                                         📝 Modificar
                                     </button>
                                 </td>
-                                <td className="p-2 whitespace-nowrap">
+                                {/* <td className="p-2 whitespace-nowrap">
                                     <button
                                         onClick={() => handleDelete(empresa.emp_id)}
                                         className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
                                     >
                                         🚫 Desactivar
                                     </button>
-                                </td>
+                                </td> */}
 
-                                {/* Botones de Update y Delete */}
-                                {/* <td className="p-2 whitespace-nowrap">
-                <button className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                  Update
-                </button>
-              </td>
-              <td className="p-2 whitespace-nowrap">
-                <button
-                  onClick={() => handleDelete(user.id)}
-                  className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </td> */}
+             
                             </tr>
                         ))}
                     </tbody>
@@ -157,4 +144,4 @@ const EmpresasList = () => {
     );
 };
 
-export default EmpresasList;
+export default EmpresasListInactive;

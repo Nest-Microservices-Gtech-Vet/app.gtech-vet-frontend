@@ -28,53 +28,50 @@ const EditEmpresaForm = () => {
 
     useEffect(() => {
         const fetchEmpresa = async () => {
-
-
-            const provs = await getProvincias();
-            const provsMapped = provs.map((p: any) => ({
-                id: p.prov_id,
-                nombre: p.prov_nombre
-            }));
-            setProvincias(provsMapped);
-
-
-            const cants = await getCantones();
-            const cantsMapped = cants.map((c: any) => ({
-                id: c.can_id,
-                nombre: c.can_nombre,
-                provincia_id: c.provincia_id
-            }));
-            setCantonesTodos(cantsMapped);
-
-
-            const tipos = await getTiposEmpresa();
-            setTiposEmpresa(tipos);
-
-
-
-
-
-
-
             try {
-                const empresa = await getEmpresaById(empresaId!); // Obtén el usuario por ID
-                console.log("empresa obtenida:", empresa); // Verifica que el usuario no sea undefined
+                // 1. Obtener provincias
+                const provs = await getProvincias();
+                const provsMapped = provs.map((p: any) => ({
+                    id: p.prov_id,
+                    nombre: p.prov_nombre
+                }));
+                setProvincias(provsMapped);
 
+                // 2. Obtener cantones
+                const cants = await getCantones();
+                const cantsMapped = cants.map((c: any) => ({
+                    id: c.can_id,
+                    nombre: c.can_nombre,
+                    provincia_id: c.provincia_id
+                }));
+                setCantonesTodos(cantsMapped); // los guardas globalmente
+
+                // 3. Obtener tipos de empresa
+                const tipos = await getTiposEmpresa();
+                setTiposEmpresa(tipos);
+
+                // 4. Obtener datos de la empresa
+                const empresa = await getEmpresaById(empresaId!);
                 if (empresa) {
-                    // Elimina propiedades no permitidas antes de actualizar el estado
                     const { emp_id, createdBy, updatedBy, created_at, updated_at, ...empresaData } = empresa;
-                    setFormData(empresaData); // Llena el formulario con los datos permitidos
+                    setFormData(empresaData);
 
-
+                    // 5. Filtrar cantones según provincia_id de la empresa
+                    const cantonesFiltrados = cantsMapped.filter(
+                        (c: { provincia_id: number; }) => c.provincia_id === empresaData.provincia_id
+                    );
+                    setCantones(cantonesFiltrados);
                 } else {
-                    console.error("empresa no encontrado");
+                    console.error("Empresa no encontrada");
                 }
             } catch (error) {
-                console.error("Error al obtener el empresa:", error);
+                console.error("Error al obtener datos:", error);
             }
         };
+
         fetchEmpresa();
     }, [empresaId]);
+
 
     const handleProvinciaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const provinciaId = Number(e.target.value); // 👈 conviertes a número
@@ -125,7 +122,7 @@ const EditEmpresaForm = () => {
             {/* Campos del formulario similares a CreateUserForm */}
 
             {/* Repite los campos del formulario de creación aquí */}
-            <div className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
+            <div >
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
@@ -241,7 +238,7 @@ const EditEmpresaForm = () => {
                                 onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
                                 className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
                             >
-                                <option value="">Seleccione un cantón</option>
+                                <option value={0}>Seleccione un cantón</option>
                                 {cantones.map((canton: any) => (
                                     <option key={canton.id} value={canton.id}>
                                         {canton.nombre}

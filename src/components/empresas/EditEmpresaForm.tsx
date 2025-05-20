@@ -4,6 +4,7 @@ import { getEmpresaById, updateEmpresa } from "../../services/empresas/empresas"
 import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
 import { Canton } from "../../types/empresa/canton";
 import Swal from "sweetalert2";
+import { getUserById } from "../../services/users/users";
 
 const EditEmpresaForm = () => {
     const { empresaId } = useParams();
@@ -25,10 +26,16 @@ const EditEmpresaForm = () => {
     const [cantonesTodos, setCantonesTodos] = useState<Canton[]>([]);
     const [cantones, setCantones] = useState<Canton[]>([]);
     const [tiposEmpresa, setTiposEmpresa] = useState([]);
+    const [nombreAdmin, setNombreAdmin] = useState("");
+
 
     useEffect(() => {
         const fetchEmpresa = async () => {
             try {
+
+
+
+
                 // 1. Obtener provincias
                 const provs = await getProvincias();
                 const provsMapped = provs.map((p: any) => ({
@@ -61,6 +68,9 @@ const EditEmpresaForm = () => {
                         (c: { provincia_id: number; }) => c.provincia_id === empresaData.provincia_id
                     );
                     setCantones(cantonesFiltrados);
+
+                    const admin = await getUserById(empresaData.usua_admin_id.toString());
+                    setNombreAdmin(admin.usua_nombre);
                 } else {
                     console.error("Empresa no encontrada");
                 }
@@ -274,27 +284,7 @@ const EditEmpresaForm = () => {
                     </div>
                     {/* fin campos tipo select aquí */}
 
-                    {/* USUA ADMIN ID */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.usua_admin_id ?? ''}
-                                onChange={(e) => setFormData({ ...formData, usua_admin_id: Number(e.target.value) })}
-                                type="text"
-                                id="usua_admin_id"
-                                name="usua_admin_id"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                                placeholder=" "
-                            />
-                            <label
-                                htmlFor="usua_admin_id"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                ID Administrador
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* USUA ADMIN ID fin */}
+                   
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input
@@ -335,6 +325,54 @@ const EditEmpresaForm = () => {
                             </label>
                         </div>
                     </div>
+
+
+
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                type="text"
+                                id="admin_nombre"
+                                name="admin_nombre"
+                                value={nombreAdmin}
+                                disabled
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-400 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                placeholder=" "
+                                autoComplete="off"
+                            />
+                            <label
+                                htmlFor="admin_nombre"
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                            >
+                                Administrador asignado
+                            </label>
+                        </div>
+                    </div>
+
+                     {/* USUA ADMIN ID */}
+                    {/* <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.usua_admin_id ?? ''}
+                                onChange={(e) => setFormData({ ...formData, usua_admin_id: Number(e.target.value) })}
+                                type="text"
+                                id="usua_admin_id"
+                                name="usua_admin_id"
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                placeholder=" "
+                            />
+                            <label
+                                htmlFor="usua_admin_id"
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                ID Administrador
+                            </label>
+                        </div>
+                    </div> */}
+
+                    {/* USUA ADMIN ID fin */}
+
+
+
 
                 </div>
                 <div className="flex justify-center mt-4">

@@ -14,17 +14,17 @@ const CreateEmpresaForm = () => {
         emp_direccion: "",
         emp_telefono: "",
         emp_ruc: "",
+        emp_tipo_empresa: "",
         usua_admin_id: "",
         provincia_id: 0,
         canton_id: 0,
-        tipo_empresa_id: 0,
         activo: true,
     });
 
     const [provincias, setProvincias] = useState([]);
     const [cantonesTodos, setCantonesTodos] = useState<Canton[]>([]);
     const [cantones, setCantones] = useState<Canton[]>([]);
-    const [tiposEmpresa, setTiposEmpresa] = useState([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,8 +44,7 @@ const CreateEmpresaForm = () => {
             }));
             setCantonesTodos(cantsMapped);
 
-            const tipos = await getTiposEmpresa();
-            setTiposEmpresa(tipos);
+
         };
 
         fetchData();
@@ -73,7 +72,7 @@ const CreateEmpresaForm = () => {
             usua_admin_id: Number(formData.usua_admin_id),
             provincia_id: Number(formData.provincia_id),
             canton_id: Number(formData.canton_id),
-            tipo_empresa_id: Number(formData.tipo_empresa_id),
+
         };
 
         console.log("Enviando empresa:", formDataFixed);
@@ -86,18 +85,18 @@ const CreateEmpresaForm = () => {
                 text: 'La empresa fue registrada correctamente.',
                 confirmButtonColor: '#10B981' // verde
             }).then(() => {
-        navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
-    });;
+                navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
+            });;
             setFormData({
                 emp_nombre: "",
                 emp_correo: "",
                 emp_direccion: "",
                 emp_telefono: "",
                 emp_ruc: "",
+                emp_tipo_empresa: "",
                 usua_admin_id: "",
                 provincia_id: 0,
                 canton_id: 0,
-                tipo_empresa_id: 0,
                 activo: true,
             })
         } else {
@@ -208,28 +207,6 @@ const CreateEmpresaForm = () => {
                         </div>
                     </div>
 
-
-
-                    {/* Select de tipo de empresa */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.tipo_empresa_id}
-                                onChange={(e) => setFormData({ ...formData, tipo_empresa_id: Number(e.target.value) })}
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="">Seleccione un tipo de empresa</option>
-                                {tiposEmpresa.map((tipo: any) => (
-                                    <option key={tipo.te_id} value={tipo.te_id}>
-                                        {tipo.te_nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Tipo de Empresa
-                            </label>
-                        </div>
-                    </div>
                     {/* fin campos tipo select aquí */}
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
@@ -307,6 +284,30 @@ const CreateEmpresaForm = () => {
                             </label>
                         </div>
                     </div>
+
+                    <div className="bg-gray-800 p-4 rounded-lg col-span-2">
+                        <div className="relative bg-inherit">
+                            <textarea
+                                value={formData.emp_tipo_empresa}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, emp_tipo_empresa: e.target.value })
+                                }
+                                id="emp_tipo_empresa"
+                                name="emp_tipo_empresa"
+                                
+                                className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
+                                placeholder=" "
+                                autoComplete="off"
+                            ></textarea>
+                            <label
+                                htmlFor="emp_tipo_empresa"
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                            >
+                                Ingresar Tipo Empresa
+                            </label>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div className="flex justify-center mt-4">

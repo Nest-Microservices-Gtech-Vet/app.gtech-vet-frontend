@@ -33,10 +33,10 @@ export const createEmpresa = async (empresaData: {
     emp_direccion: string;
     emp_telefono: string;
     emp_ruc: string;
+    emp_tipo_empresa:string;
     usua_admin_id: number;
-    provincia_id: number
-    canton_id: number
-    tipo_empresa_id: number;
+    provincia_id: number;
+    canton_id: number;
     activo: boolean;
 
 }) => {
@@ -84,10 +84,10 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
     emp_direccion: string;
     emp_telefono: string;
     emp_ruc: string;
+    emp_tipo_empresa:string;
     usua_admin_id: number;
-    provincia_id: number
-    canton_id: number
-    tipo_empresa_id: number;
+    provincia_id: number;
+    canton_id: number;
     activo: boolean;
 }) => {
     try {

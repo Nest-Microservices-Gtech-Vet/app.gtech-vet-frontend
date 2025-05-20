@@ -86,6 +86,7 @@ const EmpresasList = () => {
                         <tr className="text-left">
                             <th className="p-2">Ruc</th>
                             <th className="p-2">Nombre</th>
+                            <th className="p-2">Tipo</th>
                             <th className="p-2">Correo</th>
                             <th className="p-2">Direccion</th>
                             <th className="p-2">Telefono</th>
@@ -101,6 +102,7 @@ const EmpresasList = () => {
                             <tr key={empresa.emp_id} className="border-b border-gray-700">
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_ruc}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_nombre}</td>
+                                <td className="p-2 whitespace-nowrap">{empresa.emp_tipo_empresa}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_correo}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_direccion}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_telefono}</td>

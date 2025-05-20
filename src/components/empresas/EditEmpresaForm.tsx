@@ -15,17 +15,16 @@ const EditEmpresaForm = () => {
         emp_direccion: "",
         emp_telefono: "",
         emp_ruc: "",
+        emp_tipo_empresa: "",
         usua_admin_id: 0,
         provincia_id: 0,
         canton_id: 0,
-        tipo_empresa_id: 0,
         activo: true,
     });
 
     const [provincias, setProvincias] = useState([]);
     const [cantonesTodos, setCantonesTodos] = useState<Canton[]>([]);
     const [cantones, setCantones] = useState<Canton[]>([]);
-    const [tiposEmpresa, setTiposEmpresa] = useState([]);
     const [nombreAdmin, setNombreAdmin] = useState("");
 
 
@@ -53,9 +52,6 @@ const EditEmpresaForm = () => {
                 }));
                 setCantonesTodos(cantsMapped); // los guardas globalmente
 
-                // 3. Obtener tipos de empresa
-                const tipos = await getTiposEmpresa();
-                setTiposEmpresa(tipos);
 
                 // 4. Obtener datos de la empresa
                 const empresa = await getEmpresaById(empresaId!);
@@ -102,7 +98,7 @@ const EditEmpresaForm = () => {
             usua_admin_id: formData.usua_admin_id,
             provincia_id: formData.provincia_id,
             canton_id: formData.canton_id,
-            tipo_empresa_id: formData.tipo_empresa_id,
+            emp_tipo_empresa: formData.emp_tipo_empresa,
             activo: formData.activo,
         };
         try {
@@ -167,23 +163,6 @@ const EditEmpresaForm = () => {
                                 className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar Nombre</label>
                         </div>
                     </div>
-
-                    {/* <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_direccion}
-                                onChange={(e) => setFormData({ ...formData, emp_direccion: e.target.value })}
-                                type="text"
-                                id="emp_telefono"
-                                name="emp_telefono"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_telefono"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar Telefono</label>
-                        </div>
-                    </div> */}
 
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
@@ -261,30 +240,9 @@ const EditEmpresaForm = () => {
                         </div>
                     </div>
 
-
-                    {/* Select de tipo de empresa */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.tipo_empresa_id}
-                                onChange={(e) => setFormData({ ...formData, tipo_empresa_id: Number(e.target.value) })}
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="">Seleccione un tipo de empresa</option>
-                                {tiposEmpresa.map((tipo: any) => (
-                                    <option key={tipo.te_id} value={tipo.te_id}>
-                                        {tipo.te_nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Tipo de Empresa
-                            </label>
-                        </div>
-                    </div>
                     {/* fin campos tipo select aquí */}
 
-                   
+
                     <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input
@@ -349,7 +307,31 @@ const EditEmpresaForm = () => {
                         </div>
                     </div>
 
-                     {/* USUA ADMIN ID */}
+                    <div className="bg-gray-800 p-4 rounded-lg col-span-2">
+                        <div className="relative bg-inherit">
+                            <textarea
+                                value={formData.emp_tipo_empresa}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, emp_tipo_empresa: e.target.value })
+                                }
+                                id="emp_tipo_empresa"
+                                name="emp_tipo_empresa"
+
+                                className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
+                                placeholder=" "
+                                autoComplete="off"
+                            ></textarea>
+                            <label
+                                htmlFor="emp_tipo_empresa"
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                            >
+                                Ingresar Tipo Empresa
+                            </label>
+                        </div>
+                    </div>
+
+
+                    {/* USUA ADMIN ID */}
                     {/* <div className="bg-gray-800 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input

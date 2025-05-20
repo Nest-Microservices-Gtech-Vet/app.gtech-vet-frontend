@@ -3,10 +3,23 @@ import { useNavigate } from "react-router-dom";
 
 import { Empresa } from "../../types/empresa/empresa";
 import { getEmpresaById } from "../../services/empresas/empresas";
+import { getCantones, getProvincias } from "../../services/empresas/catalogosEmpresa";
+import { getUserById } from "../../services/users/users";
 
 interface Props {
   empresaId: string;
 }
+
+interface Provincia {
+  prov_id: number;
+  prov_nombre: string;
+}
+
+interface Canton {
+  can_id: number;
+  can_nombre: string;
+}
+
 
 const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
   const [empresa, setEmpresa] = useState<Empresa | null>(null);
@@ -14,12 +27,30 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const [provinciaNombre, setProvinciaNombre] = useState<string | null>(null);
+  const [cantonNombre, setCantonNombre] = useState<string | null>(null);
+     const [nombreAdmin, setNombreAdmin] = useState("");
+
   useEffect(() => {
     const fetchEmpresa = async () => {
       try {
         setLoading(true);
         const data = await getEmpresaById(empresaId);
         setEmpresa(data);
+
+        // 🔍 Buscar nombres de provincia y cantón por ID
+        const provincias: Provincia[] = await getProvincias();
+        const cantones: Canton[] = await getCantones();
+
+
+        const nombreProvincia = provincias.find(p => p.prov_id === data.provincia_id)?.prov_nombre || null;
+        const nombreCanton = cantones.find(c => c.can_id === data.canton_id)?.can_nombre || null;
+
+        const admin = await getUserById(data.usua_admin_id.toString());
+        setNombreAdmin(admin.usua_nombre);
+
+        setProvinciaNombre(nombreProvincia);
+        setCantonNombre(nombreCanton);
       } catch (err) {
         setError("No se pudo cargar la empresa.");
         console.error(err);
@@ -39,8 +70,8 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
 
 
   const updatedEmpresa = (empresaId: string) => {
-        navigate(`/empresa-edit/${empresaId}`);
-    }
+    navigate(`/empresa-edit/${empresaId}`);
+  }
 
   return (
     <div className="bg-gray-700 shadow-lg rounded-2xl p-6 max-w-7xl mx-auto text-gray-100 overflow-auto">
@@ -55,9 +86,9 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
         <Detail label="Correo" value={empresa.emp_correo} />
         <Detail label="Teléfono" value={empresa.emp_telefono} />
         <Detail label="Dirección" value={empresa.emp_direccion} />
-        <Detail label="Provincia" value={empresa.provincia_id?.toString()} />
-        <Detail label="Cantón" value={empresa.canton_id?.toString()} />
-        <Detail label="Tipo de empresa" value={empresa.tipo_empresa_id?.toString()} />
+        <Detail label="Provincia" value={provinciaNombre || "—"} />
+        <Detail label="Cantón" value={cantonNombre || "—"} />
+        <Detail label="Tipo de empresa" value={empresa.emp_tipo_empresa} />
         <Detail label="Activo" value={empresa.activo ? "Sí" : "No"} />
         {empresa.created_at && (
           <Detail
@@ -65,6 +96,8 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
             value={new Date(empresa.created_at).toLocaleDateString()}
           />
         )}
+
+        <Detail label="Administrador" value={nombreAdmin || "—"} />
       </div>
 
       {/* 🎯 Botones */}

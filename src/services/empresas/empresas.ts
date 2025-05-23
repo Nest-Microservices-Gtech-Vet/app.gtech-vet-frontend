@@ -33,7 +33,7 @@ export const createEmpresa = async (empresaData: {
     emp_direccion: string;
     emp_telefono: string;
     emp_ruc: string;
-    emp_tipo_empresa:string;
+    emp_tipo_empresa: string;
     usua_admin_id: number;
     provincia_id: number;
     canton_id: number;
@@ -84,7 +84,7 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
     emp_direccion: string;
     emp_telefono: string;
     emp_ruc: string;
-    emp_tipo_empresa:string;
+    emp_tipo_empresa: string;
     usua_admin_id: number;
     provincia_id: number;
     canton_id: number;
@@ -105,10 +105,10 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
 //Finaliza Editar empresa por id//
 
 //Empieza borrrado logico por id//
-export const deleteEmpresa = async (empresaId:string) => {
+export const deleteEmpresa = async (empresaId: string) => {
     try {
-        const data = await apiFetch(`empresas/${empresaId}`,{
-            method:"DELETE",
+        const data = await apiFetch(`empresas/${empresaId}`, {
+            method: "DELETE",
         });
         console.log("empresa desactivado:", data);
         return data;
@@ -118,3 +118,29 @@ export const deleteEmpresa = async (empresaId:string) => {
     }
 }
 //Finaliza borrrado logico por id//
+//**************************************************************** */
+export const asignarUsuarios = async (empresaId: number, usuarioIds: number[]) => {
+    try {
+        const response = await apiFetch('empresas/asignar-usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                empresaId,
+                usuarioIds
+            })
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error en la asignación');
+        }
+
+        const data = await response.json();
+        console.log('✅ Asignación exitosa:', data);
+        return data;
+    } catch (error) {
+        console.error('❌ Error al asignar usuarios:', error);
+    }
+}
+//**************************************************************** */

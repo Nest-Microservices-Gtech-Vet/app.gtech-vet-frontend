@@ -29,7 +29,7 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
 
   const [provinciaNombre, setProvinciaNombre] = useState<string | null>(null);
   const [cantonNombre, setCantonNombre] = useState<string | null>(null);
-     const [nombreAdmin, setNombreAdmin] = useState("");
+  const [nombreAdmin, setNombreAdmin] = useState("");
 
   useEffect(() => {
     const fetchEmpresa = async () => {
@@ -75,33 +75,45 @@ const EmpresaDetail: React.FC<Props> = ({ empresaId }) => {
 
   return (
     <div className="bg-gray-700 shadow-lg rounded-2xl p-6 max-w-7xl mx-auto text-gray-100 overflow-auto">
-      <h2 className="text-2xl font-semibold text-white mb-6 border-b border-gray-500 pb-2">
-        Detalles de la Empresa
-      </h2>
+      <div>
+        <h2 className="text-2xl font-semibold text-white mb-6 border-b border-gray-500 pb-2">
+          Detalles de la Empresa | {empresa.emp_nombre} | RUC:  {empresa.emp_ruc}
+          
+          
+        </h2>
+        
+      </div>
 
       {/* 📐 Responsive Grid: 1 col (mobile) → 2 cols (md) → 3 cols (lg) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <Detail label="Nombre" value={empresa.emp_nombre} />
+        
+        {/* <Detail label="Nombre" value={empresa.emp_nombre} />
         <Detail label="RUC" value={empresa.emp_ruc} />
-        <Detail label="Correo" value={empresa.emp_correo} />
-        <Detail label="Teléfono" value={empresa.emp_telefono} />
+        <Detail label="Correo" value={empresa.emp_correo} /> */}
+        {/* <Detail label="Teléfono" value={empresa.emp_telefono} />
         <Detail label="Dirección" value={empresa.emp_direccion} />
         <Detail label="Provincia" value={provinciaNombre || "—"} />
         <Detail label="Cantón" value={cantonNombre || "—"} />
         <Detail label="Tipo de empresa" value={empresa.emp_tipo_empresa} />
-        <Detail label="Activo" value={empresa.activo ? "Sí" : "No"} />
-        {empresa.created_at && (
+        <Detail label="Activo" value={empresa.activo ? "Sí" : "No"} /> */}
+        {/* {empresa.created_at && (
           <Detail
             label="Fecha de registro"
             value={new Date(empresa.created_at).toLocaleDateString()}
           />
-        )}
+        )} */}
 
         <Detail label="Administrador" value={nombreAdmin || "—"} />
       </div>
 
       {/* 🎯 Botones */}
       <div className="flex flex-col sm:flex-row justify-end gap-3">
+         <button
+          onClick={() => updatedEmpresa(empresa.emp_id)}
+          className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded-lg transition-all"
+        >
+          🔎 Buscar Usuarios
+        </button>
         <button
           onClick={() => updatedEmpresa(empresa.emp_id)}
           className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded-lg transition-all"

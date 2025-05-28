@@ -34,10 +34,13 @@ export const createEmpresa = async (empresaData: {
     emp_telefono: string;
     emp_ruc: string;
     emp_tipo_empresa: string;
-    usua_admin_id: number;
+
     provincia_id: number;
     canton_id: number;
     activo: boolean;
+    fecha_inicio:string;
+    fecha_fin: string;
+    
 
 }) => {
     try {
@@ -85,7 +88,7 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
     emp_telefono: string;
     emp_ruc: string;
     emp_tipo_empresa: string;
-    usua_admin_id: number;
+
     provincia_id: number;
     canton_id: number;
     activo: boolean;
@@ -131,10 +134,10 @@ export const asignarUsuarios = async (empresaId: number, usuarioIds: number[]) =
                 usuarioIds
             })
         });
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error en la asignación');
-        }
+        // if (!response.ok) {
+        //     const error = await response.json();
+        //     throw new Error(error.message || 'Error en la asignación');
+        // }
 
         const data = await response.json();
         console.log('✅ Asignación exitosa:', data);

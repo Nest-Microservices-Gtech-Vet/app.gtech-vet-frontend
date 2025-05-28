@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { createEmpresa } from "../../services/empresas/empresas";
-import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
+import { getCantones, getProvincias } from "../../services/empresas/catalogosEmpresa";
 import { Canton } from "../../types/empresa/canton";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -15,10 +15,11 @@ const CreateEmpresaForm = () => {
         emp_telefono: "",
         emp_ruc: "",
         emp_tipo_empresa: "",
-        usua_admin_id: "",
         provincia_id: 0,
         canton_id: 0,
         activo: true,
+        fecha_inicio: "",
+        fecha_fin: "",
     });
 
     const [provincias, setProvincias] = useState([]);
@@ -58,20 +59,25 @@ const CreateEmpresaForm = () => {
         setCantones(cantonesFiltrados);
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
     const sendEmpresa = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const idNumber = Number(formData.usua_admin_id);
-        if (isNaN(idNumber)) {
-            alert("ID de administrador inválido");
-            return;
-        }
+
 
         const formDataFixed = {
             ...formData,
-            usua_admin_id: Number(formData.usua_admin_id),
             provincia_id: Number(formData.provincia_id),
             canton_id: Number(formData.canton_id),
+            fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
+            fecha_fin: new Date(formData.fecha_fin).toISOString(),
 
         };
 
@@ -94,10 +100,11 @@ const CreateEmpresaForm = () => {
                 emp_telefono: "",
                 emp_ruc: "",
                 emp_tipo_empresa: "",
-                usua_admin_id: "",
                 provincia_id: 0,
                 canton_id: 0,
                 activo: true,
+                fecha_inicio: "",
+                fecha_fin: "",
             })
         } else {
             Swal.fire({
@@ -242,27 +249,6 @@ const CreateEmpresaForm = () => {
                         </div>
                     </div>
 
-                    {/* USUA ADMIN ID */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.usua_admin_id}
-                                onChange={(e) => setFormData({ ...formData, usua_admin_id: e.target.value })}
-                                type="number"
-                                id="usua_admin_id"
-                                name="usua_admin_id"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                            />
-                            <label
-                                htmlFor="usua_admin_id"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 "
-                            >
-                                Ingresar ID Administrador
-                            </label>
-                        </div>
-                    </div>
-
 
 
 
@@ -294,7 +280,7 @@ const CreateEmpresaForm = () => {
                                 }
                                 id="emp_tipo_empresa"
                                 name="emp_tipo_empresa"
-                                
+
                                 className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
                                 placeholder=" "
                                 autoComplete="off"
@@ -304,6 +290,39 @@ const CreateEmpresaForm = () => {
                                 className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
                             >
                                 Ingresar Tipo Empresa
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Fecha Inicio */}
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.fecha_inicio}
+                                onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+                                type="date"
+                                id="fecha_inicio"
+                                name="fecha_inicio"
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            />
+                            <label htmlFor="fecha_inicio" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Fecha de Inicio
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.fecha_fin}
+                                onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
+                                type="date"
+                                id="fecha_fin"
+                                name="fecha_fin"
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            />
+                            <label htmlFor="fecha_fin" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Fecha de Fin
                             </label>
                         </div>
                     </div>

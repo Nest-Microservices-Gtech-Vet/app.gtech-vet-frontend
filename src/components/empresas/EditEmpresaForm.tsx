@@ -16,7 +16,7 @@ const EditEmpresaForm = () => {
         emp_telefono: "",
         emp_ruc: "",
         emp_tipo_empresa: "",
-        usua_admin_id: 0,
+  
         provincia_id: 0,
         canton_id: 0,
         activo: true,
@@ -65,8 +65,7 @@ const EditEmpresaForm = () => {
                     );
                     setCantones(cantonesFiltrados);
 
-                    const admin = await getUserById(empresaData.usua_admin_id.toString());
-                    setNombreAdmin(admin.usua_nombre);
+                    
                 } else {
                     console.error("Empresa no encontrada");
                 }
@@ -95,7 +94,7 @@ const EditEmpresaForm = () => {
             emp_direccion: formData.emp_direccion,
             emp_telefono: formData.emp_telefono,
             emp_ruc: formData.emp_ruc,
-            usua_admin_id: formData.usua_admin_id,
+       
             provincia_id: formData.provincia_id,
             canton_id: formData.canton_id,
             emp_tipo_empresa: formData.emp_tipo_empresa,

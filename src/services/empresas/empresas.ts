@@ -38,9 +38,9 @@ export const createEmpresa = async (empresaData: {
     provincia_id: number;
     canton_id: number;
     activo: boolean;
-    fecha_inicio:string;
+    fecha_inicio: string;
     fecha_fin: string;
-    
+
 
 }) => {
     try {
@@ -124,26 +124,25 @@ export const deleteEmpresa = async (empresaId: string) => {
 //**************************************************************** */
 export const asignarUsuarios = async (empresaId: number, usuarioIds: number[]) => {
     try {
-        const response = await apiFetch('empresas/asignar-usuarios', {
+        const data = await apiFetch(`empresas/${empresaId}/asignar-usuarios`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                empresaId,
-                usuarioIds
-            })
+            body: JSON.stringify({ usuarioIds }),
         });
         // if (!response.ok) {
         //     const error = await response.json();
         //     throw new Error(error.message || 'Error en la asignación');
         // }
 
-        const data = await response.json();
+      
         console.log('✅ Asignación exitosa:', data);
         return data;
     } catch (error) {
         console.error('❌ Error al asignar usuarios:', error);
     }
 }
+//**************************************************************** */
+
 //**************************************************************** */

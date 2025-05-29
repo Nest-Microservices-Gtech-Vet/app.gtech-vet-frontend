@@ -1,3 +1,5 @@
+import { User } from "../users/user";
+
 export interface Empresa {
     emp_id: string; // o number, dependiendo de tu backend
     emp_nombre: string;
@@ -13,7 +15,7 @@ export interface Empresa {
     
     fecha_inicio:string;
     fecha_fin: string;
-
+    admins?: User[];
     createdBy?: string; // Opcional, si existe
     updatedBy?: string; // Opcional, si existe
     created_at?: string; // Opcional, si existe

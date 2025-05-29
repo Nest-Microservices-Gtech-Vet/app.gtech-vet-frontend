@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getUsuariosAdmin } from "../../services/users/users";
 
 interface Usuario {
   usua_id: number;
@@ -17,11 +18,22 @@ const UsuariosSelectorModal: React.FC<Props> = ({ isOpen, onClose, onSave }) => 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const data = await getUsuariosAdmin();
+        if (Array.isArray(data)) {
+          setUsuarios(data);
+        } else if (Array.isArray(data.usuarios)) {
+          setUsuarios(data.usuarios);
+        } else {
+          console.error("Respuesta inesperada:", data);
+        }
+      } catch (err) {
+        console.error("Error al cargar usuarios:", err);
+      }
+    };
     if (isOpen) {
-      fetch("http://localhost:3010/api/usuarios?rol=ADMIN") // o usa apiFetch si ya lo usas
-        .then(res => res.json())
-        .then(setUsuarios)
-        .catch(console.error);
+      fetchUsuarios();
     }
   }, [isOpen]);
 
@@ -40,20 +52,22 @@ const UsuariosSelectorModal: React.FC<Props> = ({ isOpen, onClose, onSave }) => 
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-xl max-w-lg w-full">
+      <div className="bg-gray p-6 rounded-xl max-w-lg w-full">
         <h3 className="text-xl font-bold mb-4">Selecciona Usuarios ADMIN</h3>
         <div className="max-h-60 overflow-y-auto space-y-2">
-          {usuarios.map(usuario => (
-            <label key={usuario.usua_id} className="block">
-              <input
-                type="checkbox"
-                checked={selectedIds.includes(usuario.usua_id)}
-                onChange={() => toggleSelect(usuario.usua_id)}
-                className="mr-2"
-              />
-              {usuario.usua_nombre} ({usuario.usua_email})
-            </label>
+          {Array.isArray(usuarios) && usuarios.map(usuario => (
+            <div key={usuario.usua_id}>
+              <label>
+                <input
+                  type="checkbox"
+                  value={usuario.usua_id}
+                  onChange={(e) => toggleSelect(usuario.usua_id)}
+                />
+                {usuario.usua_nombre} 
+              </label>
+            </div>
           ))}
+
         </div>
         <div className="flex justify-end mt-4 gap-3">
           <button onClick={onClose} className="bg-gray-400 px-4 py-2 rounded-lg">Cancelar</button>

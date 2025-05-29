@@ -127,3 +127,9 @@ export const getAdmins = async (): Promise<any[]> => {
 
     return await response.json();
 };
+
+//iniciio obtener ususarios admin
+export const getUsuariosAdmin = async () => {
+  return await apiFetch("users/por-rol?rol=ADMIN"); // debe retornar directamente un array
+};
+//fin obtener ususarios admin

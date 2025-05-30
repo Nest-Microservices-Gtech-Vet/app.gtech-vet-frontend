@@ -285,27 +285,6 @@ const EditEmpresaForm = () => {
 
 
 
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                type="text"
-                                id="admin_nombre"
-                                name="admin_nombre"
-                                value={nombreAdmin}
-                                disabled
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-400 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                                placeholder=" "
-                                autoComplete="off"
-                            />
-                            <label
-                                htmlFor="admin_nombre"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
-                            >
-                                Administrador asignado
-                            </label>
-                        </div>
-                    </div>
-
                     <div className="bg-gray-800 p-4 rounded-lg col-span-2">
                         <div className="relative bg-inherit">
                             <textarea

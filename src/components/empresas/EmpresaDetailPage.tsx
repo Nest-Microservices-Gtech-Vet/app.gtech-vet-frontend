@@ -8,7 +8,7 @@ const EmpresaDetailPage = () => {
 
   if (!id) return <div>ID de empresa no proporcionado</div>;
 
-  return <EmpresaDetail empresaId={id} />;
+  return <EmpresaDetail empresaId={Number(id)} />;
 };
 
 export default EmpresaDetailPage;

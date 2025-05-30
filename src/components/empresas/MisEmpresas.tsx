@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { getEmpresasPorUsuario } from "../../services/empresas/empresas";
 import { useAuth } from "../../context/AuthContext";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 
 const MisEmpresas = () => {
   const { user, logout } = useAuth();
   const [empresas, setEmpresas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,8 +22,12 @@ const MisEmpresas = () => {
 
     const user = JSON.parse(storedUser);
 
-    if (user.usua_rol !== "ADMIN") {
-      console.warn("Solo los administradores pueden ver sus empresas.");
+    if (!["ADMIN", "USUARIO"].includes(user.usua_rol)) {
+      Swal.fire({
+        icon: "error",
+        title: "Acceso no autorizado",
+        confirmButtonColor: "#6366F1",
+      }).then(() => navigate("/"));
       return;
     }
 

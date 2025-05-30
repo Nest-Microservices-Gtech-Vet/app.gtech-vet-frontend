@@ -84,29 +84,24 @@ const EmpresasList = () => {
                 <table className="w-full bg-gray-800 rounded-lg overflow-hidden">
                     <thead className="bg-gray-700">
                         <tr className="text-left">
-                            <th className="p-2">Ruc</th>
                             <th className="p-2">Nombre</th>
                             <th className="p-2">Tipo</th>
                             <th className="p-2">Correo</th>
-                            <th className="p-2">Direccion</th>
                             <th className="p-2">Telefono</th>
-                            <th className="p-2">Acargo de</th>
                             <th className="p-2">Estado</th>
                             <th className="p-2">Acciones</th>
-                            <th className="p-2">Update</th>
-                            <th className="p-2">Delete</th>
+                            <th className="p-2">Detalle</th>
+                            <th className="p-2">Modificar</th>
+                            <th className="p-2">Desactivar</th>
                         </tr>
                     </thead>
                     <tbody>
                         {empresas.map((empresa, index) => (
                             <tr key={empresa.emp_id} className="border-b border-gray-700">
-                                <td className="p-2 whitespace-nowrap">{empresa.emp_ruc}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_nombre}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_tipo_empresa}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_correo}</td>
-                                <td className="p-2 whitespace-nowrap">{empresa.emp_direccion}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_telefono}</td>
-                                <td className="p-2 whitespace-nowrap">{empresa.usua_admin_id}</td>
                                 {/* Mostrar el estado como texto */}
                                 <td className="p-2 whitespace-nowrap">
                                     {empresa.activo ? (
@@ -114,6 +109,11 @@ const EmpresasList = () => {
                                     ) : (
                                         <span className="text-red-500">Inactivo</span>
                                     )}
+                                </td>
+                                 <td className="p-2 whitespace-nowrap">
+                                    <button  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
+                                        🔎 Asignar Usuarios
+                                    </button>
                                 </td>
 
                                 <td className="p-2 whitespace-nowrap">

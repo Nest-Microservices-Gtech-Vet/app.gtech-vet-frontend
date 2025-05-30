@@ -65,7 +65,7 @@ const CreateUserForm = () => {
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="usua_ruc"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar RUC</label>
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar RUC o Cedula</label>
                         </div>
                     </div>
 

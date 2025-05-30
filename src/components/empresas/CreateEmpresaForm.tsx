@@ -245,7 +245,30 @@ const CreateEmpresaForm = () => {
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="emp_ruc"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar RUC</label>
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar RUC</label>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-800 p-4 rounded-lg col-span-2">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.emp_tipo_empresa}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, emp_tipo_empresa: e.target.value })
+                                }
+                                id="emp_tipo_empresa"
+                                name="emp_tipo_empresa"
+
+                                className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
+                                placeholder=" "
+                                autoComplete="off"
+                            ></input>
+                            <label
+                                htmlFor="emp_tipo_empresa"
+                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                            >
+                                Ingresar Tipo Empresa
+                            </label>
                         </div>
                     </div>
 
@@ -271,28 +294,7 @@ const CreateEmpresaForm = () => {
                         </div>
                     </div>
 
-                    <div className="bg-gray-800 p-4 rounded-lg col-span-2">
-                        <div className="relative bg-inherit">
-                            <textarea
-                                value={formData.emp_tipo_empresa}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, emp_tipo_empresa: e.target.value })
-                                }
-                                id="emp_tipo_empresa"
-                                name="emp_tipo_empresa"
-
-                                className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
-                                placeholder=" "
-                                autoComplete="off"
-                            ></textarea>
-                            <label
-                                htmlFor="emp_tipo_empresa"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
-                            >
-                                Ingresar Tipo Empresa
-                            </label>
-                        </div>
-                    </div>
+                    
 
                     {/* Fecha Inicio */}
                     <div className="bg-gray-800 p-4 rounded-lg">

@@ -96,7 +96,7 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
                 <ul className="bg-gray-800 rounded-xl p-4 space-y-2 text-xl">
                   {usuarios.map((user) => (
                     <li key={user.usua_id} className="text-white">
-                      👤 {user.usua_nombre} {user.usua_apellido} — {user.usua_email}
+                      🟢 {user.usua_nombre} — {user.usua_rol}
                     </li>
                   ))}
                 </ul>

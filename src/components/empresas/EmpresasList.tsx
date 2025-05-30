@@ -111,7 +111,7 @@ const EmpresasList = () => {
                                     )}
                                 </td>
                                  <td className="p-2 whitespace-nowrap">
-                                    <button  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
+                                    <button onClick={() => handleVerEmpresa(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios
                                     </button>
                                 </td>

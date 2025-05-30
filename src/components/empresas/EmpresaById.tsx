@@ -59,8 +59,8 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
 
     try {
       await asignarUsuarios(Number(empresa.emp_id), usuarioIds);
-      alert('Usuarios asignados exitosamente');
-      setShowUsuariosModal(false);
+     
+    
 
       // 🔄 Recargar empresa para reflejar usuarios actualizados
       const data = await getEmpresaById(empresa.emp_id);

@@ -44,6 +44,10 @@ const EmpresasList = () => {
     }
 
     const handleVerEmpresa = (empresaId: string) => {
+        navigate(`/empresa/detalle/${empresaId}`);
+    };
+
+    const handleEmpresaUsuario = (empresaId: string) => {
         navigate(`/empresas/${empresaId}`);
     };
 
@@ -111,7 +115,7 @@ const EmpresasList = () => {
                                     )}
                                 </td>
                                  <td className="p-2 whitespace-nowrap">
-                                    <button onClick={() => handleVerEmpresa(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
+                                    <button onClick={() => handleEmpresaUsuario(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios
                                     </button>
                                 </td>

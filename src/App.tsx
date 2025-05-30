@@ -20,6 +20,8 @@ import EmpresaDetail from "./components/empresas/EmpresaById";
 import EmpresaDetailPage from "./components/empresas/EmpresaDetailPage";
 import EditEmpresaForm from "./components/empresas/EditEmpresaForm";
 import EmpresasListInactive from "./components/empresas/EmpresasListInactive";
+import EmpresaDetalle from "./components/empresas/EmpresaDetelle";
+import EmpresaDetallePage from "./components/empresas/EmpresaDetallePage";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -172,6 +174,16 @@ const App = () => {
               <PrivateRoute>
                 <MainLayout>
                   <CreateEmpresaForm />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/empresa/detalle/:id"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <EmpresaDetallePage />
                 </MainLayout>
               </PrivateRoute>
             }

@@ -106,10 +106,10 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
 
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <Detail label="Fecha Inicio" value={empresa.fecha_inicio || "—"} />
+            <Detail label="Fecha Inicio" value={empresa.fecha_inicio?.split('T')[0] || "—"} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <Detail label="Fecha Fin" value={empresa.fecha_fin || "—"} />
+            <Detail label="Fecha Fin" value={empresa.fecha_fin?.split('T')[0] || "—"} />
           </div>
 
 

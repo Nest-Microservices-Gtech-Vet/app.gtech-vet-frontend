@@ -16,10 +16,12 @@ const EditEmpresaForm = () => {
         emp_telefono: "",
         emp_ruc: "",
         emp_tipo_empresa: "",
-  
+
         provincia_id: 0,
         canton_id: 0,
         activo: true,
+        fecha_inicio: "",
+        fecha_fin: "",
     });
 
     const [provincias, setProvincias] = useState([]);
@@ -65,7 +67,7 @@ const EditEmpresaForm = () => {
                     );
                     setCantones(cantonesFiltrados);
 
-                    
+
                 } else {
                     console.error("Empresa no encontrada");
                 }
@@ -94,11 +96,13 @@ const EditEmpresaForm = () => {
             emp_direccion: formData.emp_direccion,
             emp_telefono: formData.emp_telefono,
             emp_ruc: formData.emp_ruc,
-       
+
             provincia_id: formData.provincia_id,
             canton_id: formData.canton_id,
             emp_tipo_empresa: formData.emp_tipo_empresa,
             activo: formData.activo,
+            fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
+            fecha_fin: new Date(formData.fecha_fin).toISOString(),
         };
         try {
             const result = await updateEmpresa(empresaId!, empresaDataToUpdate);
@@ -279,6 +283,40 @@ const EditEmpresaForm = () => {
                                 className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 "
                             >
                                 Estado
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.fecha_inicio?.split('T')[0] || ""}
+                                onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+                                type="date"
+                                id="fecha_inicio"
+                                name="fecha_inicio"
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            />
+                            <label htmlFor="fecha_inicio" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Fecha de Inicio
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-800 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                value={formData.fecha_fin?.split('T')[0] || ""}
+                                onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
+                                type="date"
+                                id="fecha_fin"
+                                name="fecha_fin"
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            />
+                            <label htmlFor="fecha_fin" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                                Fecha de Fin
                             </label>
                         </div>
                     </div>

@@ -8,12 +8,14 @@ interface Usuario {
 }
 
 interface Props {
-  isOpen: boolean;
+  selectedUserIds: number[];
+  onSave: (ids: number[]) => void;
   onClose: () => void;
-  onSave: (selectedUserIds: number[]) => void;
+  isOpen: boolean;
 }
 
-const UsuariosSelectorModal: React.FC<Props> = ({ isOpen, onClose, onSave }) => {
+
+const UsuariosSelectorModal: React.FC<Props> = ({ isOpen, onClose, onSave,selectedUserIds  }) => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -41,18 +43,19 @@ const UsuariosSelectorModal: React.FC<Props> = ({ isOpen, onClose, onSave }) => 
       }
     };
 
-    if (isOpen) {
-      fetchUsuarios();
-      setShowSuccessAlert(false);
-    }
-  }, [isOpen]);
+   if (isOpen) {
+     fetchUsuarios(); 
+    setSelectedIds(selectedUserIds);
+  }
+  }, [isOpen,selectedUserIds]); 
 
 
 
-  const toggleSelect = (id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
-    );
+  const toggleSelect = (id: number | string) => {
+    const numId = Number(id);
+  setSelectedIds((prev) =>
+    prev.includes(numId) ? prev.filter((uid) => uid !== numId) : [...prev, numId]
+  );
   };
 
   const handleSave = () => {

@@ -59,8 +59,8 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
 
     try {
       await asignarUsuarios(Number(empresa.emp_id), usuarioIds);
-     
-    
+
+
 
       // 🔄 Recargar empresa para reflejar usuarios actualizados
       const data = await getEmpresaById(empresa.emp_id);
@@ -83,7 +83,7 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
       {loading && <p>Cargando empresa...</p>}
       {!loading && empresa && (
         <>
-         
+
           <h2 className="text-2xl font-semibold text-white mb-6 border-b border-gray-500 pb-2">
             Empresa: {empresa.emp_nombre} | RUC: {empresa.emp_ruc}
           </h2>
@@ -137,11 +137,12 @@ const EmpresaDetail = ({ empresaId }: { empresaId: number }) => {
               🔙 Regresar
             </button>
           </div>
-
           <UsuariosSelectorModal
             isOpen={showUsuariosModal}
             onClose={() => setShowUsuariosModal(false)}
             onSave={handleAsignarUsuarios}
+            selectedUserIds={usuarios.map(u => Number(u.usua_id))}
+
           />
 
         </>

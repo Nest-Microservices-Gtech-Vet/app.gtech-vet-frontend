@@ -207,7 +207,7 @@ const EditEmpresaForm = () => {
                             <select
                                 value={formData.provincia_id}
                                 onChange={handleProvinciaChange}
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value={0}>Seleccione una provincia</option>
                                 {provincias.map((provincia: any) => (
@@ -228,7 +228,7 @@ const EditEmpresaForm = () => {
                             <select
                                 value={formData.canton_id}
                                 onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value={0}>Seleccione un cantón</option>
                                 {cantones.map((canton: any) => (

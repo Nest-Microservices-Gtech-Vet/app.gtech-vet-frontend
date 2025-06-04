@@ -139,21 +139,6 @@ const EmpresasList = () => {
                                         🚫 Desactivar
                                     </button>
                                 </td>
-
-                                {/* Botones de Update y Delete */}
-                                {/* <td className="p-2 whitespace-nowrap">
-                <button className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                  Update
-                </button>
-              </td>
-              <td className="p-2 whitespace-nowrap">
-                <button
-                  onClick={() => handleDelete(user.id)}
-                  className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </td> */}
                             </tr>
                         ))}
                     </tbody>

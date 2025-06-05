@@ -2,9 +2,9 @@ import { Empresa } from "../../types/empresa/empresa";
 import { apiFetch } from "../api";
 
 //Empieza obtener empresas //
-export const getEmpresas = async (page: number = 1, limit: number = 50): Promise<{ data: Empresa[] }> => {
+export const getEmpresas = async (page: number = 1, limit: number = 50, searchQuery: string): Promise<{ data: Empresa[] }> => {
     try {
-        const data = await apiFetch(`empresas`);
+        const data = await apiFetch(`empresas?search=${searchQuery}`);
         console.log("empresas obtenidos:", data);
         return data;
     } catch (error) {

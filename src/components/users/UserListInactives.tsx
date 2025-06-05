@@ -3,16 +3,31 @@ import { deleteUser, getUsers, getUsersInactives, updateUser } from "../../servi
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+const useDebounce = (value: string, delay: number = 500): string => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
+
 const UserListInactives = () => {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearch = useDebounce(searchQuery, 500);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const response = await getUsersInactives(1, 50); // Página 1, 2 usuarios por página
+                const response = await getUsersInactives(1, 50,debouncedSearch); // Página 1, 2 usuarios por página
 
                 console.log("Usuarios obtenidos:", response); // Ver la estructura
 
@@ -29,7 +44,7 @@ const UserListInactives = () => {
         };
 
         fetchUsers();
-    }, []);
+    }, [debouncedSearch]);
 
     const updatedUser = (userId: string) => {
         navigate(`/user-edit/${userId}`);
@@ -46,7 +61,7 @@ const UserListInactives = () => {
             confirmButtonText: "Sí, Eliminar",
             cancelButtonText: "Cancelar",
         });
-    
+
         if (result.isConfirmed) {
             const deleteResult = await deleteUser(userId);
             if (deleteResult) {
@@ -59,11 +74,18 @@ const UserListInactives = () => {
     };
 
     return (
-        <div className="max-w-full flex flex-col items-center bg-gray-900 text-white p-5">
+        <div className="max-w-full flex flex-col items-center bg-gray-900 text-white p-15">
 
 
-            <div className="div">
+            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                 <h1 className="text-2xl font-bold mb-4">USUARIOS INACTIVOS DEL SISTEMA</h1>
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por RUC o nombre"
+                    className="mb-1 p-2 border rounded w-80 text-white"
+                />
             </div>
 
             {/* Contenedor para hacer la tabla responsive */}
@@ -81,7 +103,7 @@ const UserListInactives = () => {
                             <th className="p-2">Rol</th>
                             <th className="p-2">Estado</th>
                             <th className="p-2">Update</th>
-              
+
                         </tr>
                     </thead>
                     <tbody>
@@ -109,8 +131,8 @@ const UserListInactives = () => {
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
-              
-            </td>
+
+                                </td>
 
                                 {/* Botones de Update y Delete */}
                                 {/* <td className="p-2 whitespace-nowrap">

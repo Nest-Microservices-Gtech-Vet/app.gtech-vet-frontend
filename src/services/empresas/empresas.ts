@@ -15,9 +15,9 @@ export const getEmpresas = async (page: number = 1, limit: number = 50, searchQu
 //Termina obtener empresas //
 
 //Empieza obtener empresas //
-export const getEmpresasInactivas = async (page: number = 1, limit: number = 50): Promise<{ data: Empresa[] }> => {
+export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,searchQuery: string): Promise<{ data: Empresa[] }> => {
     try {
-        const data = await apiFetch(`empresas/inactivas`);
+        const data = await apiFetch(`empresas/inactivas?search=${searchQuery}`);
         console.log("empresas obtenidos:", data);
         return data;
     } catch (error) {

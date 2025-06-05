@@ -5,9 +5,23 @@ import { deleteEmpresa, getEmpresas, getEmpresasInactivas } from "../../services
 import { Canton } from "../../types/empresa/canton";
 import { getCantones, getProvincias, getTiposEmpresa } from "../../services/empresas/catalogosEmpresa";
 
+const useDebounce = (value: string, delay: number = 500): string => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
 const EmpresasListInactive = () => {
     const [empresas, setempresas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearch = useDebounce(searchQuery, 500);
     const navigate = useNavigate();
 
 
@@ -18,7 +32,7 @@ const EmpresasListInactive = () => {
             setLoading(true);
 
             try {
-                const response = await getEmpresasInactivas(1, 50); // Página 1, 2 usuarios por página
+                const response = await getEmpresasInactivas(1, 50,debouncedSearch); // Página 1, 2 usuarios por página
 
                 console.log("Empresas obtenidos:", response); // Ver la estructura
 
@@ -35,9 +49,9 @@ const EmpresasListInactive = () => {
         };
 
         fetchEmpresas();
-    }, []);
+    }, [debouncedSearch]);
 
-    
+
 
     const updatedEmpresa = (empresaId: string) => {
         navigate(`/empresa-edit/${empresaId}`);
@@ -72,11 +86,18 @@ const EmpresasListInactive = () => {
     };
 
     return (
-        <div className="max-w-full flex flex-col items-center bg-gray-900 text-white p-5">
+        <div className="max-w-full flex flex-col items-center bg-gray-900 text-white p-15">
 
 
-            <div className="div">
+            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                 <h1 className="text-2xl font-bold mb-4">EMPRESAS INACTIVAS DEL SISTEMA</h1>
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por RUC o nombre"
+                    className="mb-1 p-2 border rounded w-80 text-white"
+                />
             </div>
 
             {/* Contenedor para hacer la tabla responsive */}
@@ -89,11 +110,10 @@ const EmpresasListInactive = () => {
                             <th className="p-2">Correo</th>
                             <th className="p-2">Direccion</th>
                             <th className="p-2">Telefono</th>
-                            <th className="p-2">Acargo de</th>
                             <th className="p-2">Estado</th>
                             <th className="p-2">Acciones</th>
                             <th className="p-2">Update</th>
-                     
+
                         </tr>
                     </thead>
                     <tbody>
@@ -104,7 +124,7 @@ const EmpresasListInactive = () => {
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_correo}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_direccion}</td>
                                 <td className="p-2 whitespace-nowrap">{empresa.emp_telefono}</td>
-                                <td className="p-2 whitespace-nowrap">{empresa.usua_admin_id}</td>
+                               
                                 {/* Mostrar el estado como texto */}
                                 <td className="p-2 whitespace-nowrap">
                                     {empresa.activo ? (
@@ -134,7 +154,7 @@ const EmpresasListInactive = () => {
                                     </button>
                                 </td> */}
 
-             
+
                             </tr>
                         ))}
                     </tbody>

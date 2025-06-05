@@ -2,9 +2,9 @@ import { User } from "../../types/users/user";
 import { apiFetch } from "../api";
 
 //Empieza obtener Usuarios //
-export const getUsers = async (page: number = 1, limit: number = 50): Promise<{ data: User[] }> => {
+export const getUsers = async (page: number = 1, limit: number = 50, searchQuery: string): Promise<{ data: User[] }> => {
     try {
-        const data = await apiFetch(`users?page=${page}&limit=${limit}`);
+        const data = await apiFetch(`users?page=${page}&limit=${limit}&search=${searchQuery}`);
         console.log("Usuarios obtenidos:", data);
         return data;
     } catch (error) {

@@ -1,13 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { JSX, useState } from "react";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import UserList from "./components/users/UserList";
 import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Usuarios from "./components/users/Usuarios";
-import Empresas from "./components/empresas/EmpresasList";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import CreateUserForm from "./components/users/CreateUserForm";
 import EditUserForm from "./components/users/EditUserForm";
@@ -16,12 +14,11 @@ import { motion } from "framer-motion";
 import CreateEmpresaForm from "./components/empresas/CreateEmpresaForm";
 import MisEmpresas from "./components/empresas/MisEmpresas";
 import UserListInactives from "./components/users/UserListInactives";
-import EmpresaDetail from "./components/empresas/EmpresaById";
 import EmpresaDetailPage from "./components/empresas/EmpresaDetailPage";
 import EditEmpresaForm from "./components/empresas/EditEmpresaForm";
 import EmpresasListInactive from "./components/empresas/EmpresasListInactive";
-import EmpresaDetalle from "./components/empresas/EmpresaDetelle";
 import EmpresaDetallePage from "./components/empresas/EmpresaDetallePage";
+import DashboardEmpresa from "./components/empresas/admin/DashboardEmpresas";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -33,7 +30,7 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 // Layout sin sidebar ni header para ADMIN
 const AdminOnlyLayout = ({ children }: { children: JSX.Element }) => {
   return (
-    <div className="h-screen p-4 bg-gray-900 text-white overflow-auto">
+    <div className="h-screen p-4 bg-white-900 text-white overflow-auto">
       {children}
     </div>
   );
@@ -96,6 +93,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          {/* rutas de usuario "rol=SUPERADMIN" */}
           <Route
             path="/users"
             element={
@@ -148,6 +146,8 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          {/* rutas de usuario "rol=SUPERADMIN" */}
+          {/* rutas de usuario "rol=SUPERADMIN */}
           <Route
             path="/empresas"
             element={
@@ -199,18 +199,19 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          {/* <Route
-            path="/mis-empresas"
+           <Route
+            path="/empresas/:id"
             element={
               <PrivateRoute>
                 <MainLayout>
-                  <MisEmpresas />
+                  <EmpresaDetailPage />
                 </MainLayout>
               </PrivateRoute>
             }
-          /> */}
+          />
+         {/* rutas de usuario "rol=SUPERADMIN */}
 
-          {/* ADMIN layout sin sidebar */}
+          {/* RUTAS ADMIN layout sin sidebar */}
           <Route
             path="/mis-empresas"
             element={
@@ -223,15 +224,19 @@ const App = () => {
           />
 
           <Route
-            path="/empresas/:id"
+            path="/mis-empresas/:id/dashboard"
             element={
               <PrivateRoute>
-                <MainLayout>
-                  <EmpresaDetailPage />
-                </MainLayout>
+                <AdminOnlyLayout>
+                  <DashboardEmpresa />
+                </AdminOnlyLayout>
               </PrivateRoute>
             }
           />
+
+          {/* ADMIN layout sin sidebar */}
+
+         
 
 
           <Route path="*" element={<Navigate to="/" />} />

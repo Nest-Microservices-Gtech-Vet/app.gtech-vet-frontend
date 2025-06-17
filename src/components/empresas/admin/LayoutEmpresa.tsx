@@ -18,7 +18,7 @@ const LayoutEmpresa = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen overflow-hidden">
       <SidebarEmpresa isOpen={isOpen} setIsOpen={setIsOpen} />
-      
+
 
       <div className="flex-1 flex flex-col">
         <HeaderEmpresa title="" />

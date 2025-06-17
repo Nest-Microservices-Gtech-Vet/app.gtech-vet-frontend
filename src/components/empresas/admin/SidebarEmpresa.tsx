@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronUpCircle, LayoutDashboard, LogOut, Menu, Monitor, MonitorCheck, PawPrint, Users2 } from "lucide-react";
+import { ChevronDown, ChevronUpCircle, LayoutDashboard, LogOut, Menu, Monitor, MonitorCheck, PawPrint, SquareUser, Users2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../../services/auth";
@@ -26,7 +26,7 @@ const SIDEBAR_ITEMS = [
             },
         ],
     },
-    { name: "Modulo-2", icon: ChevronUpCircle, color: "#EC4899", href: "/mis-empresas/2/dashboard" },
+    { name: "Clientes", icon: SquareUser, color: "#EC4899", href: "/mis-empresas/2/dashboard" },
     { name: "Pacientes", icon: PawPrint, color: "#32CD32", href: "/mis-empresas/2/dashboard" },
     { name: "Historial clinico", icon: MonitorCheck, color: "#8A2BE2", href: "/mis-empresas/2/dashboard" },
     { name: "Modulo-3", icon: MonitorCheck, color: "#20B2AA", href: "/mis-empresas/2/dashboard" },

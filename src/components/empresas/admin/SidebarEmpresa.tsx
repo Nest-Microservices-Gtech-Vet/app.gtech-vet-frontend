@@ -39,7 +39,7 @@ const getSidebarItems = (id: string | undefined) => [
     ],
   },
   { name: "Clientes", icon: SquareUser, color: "#EC4899", href: `/mis-empresas/${id}/clientes` },
-  { name: "Pacientes", icon: PawPrint, color: "#32CD32", href: `/mis-empresas/${id}/pacientes` },
+  { name: "Pacientes", icon: PawPrint, color: "#32CD32", href: `/mis-empresas/${id}/mascotas` },
   { name: "Historial clínico", icon: MonitorCheck, color: "#8A2BE2", href: `/mis-empresas/${id}/historial` },
   { name: "Módulo-3", icon: MonitorCheck, color: "#20B2AA", href: `/mis-empresas/${id}/modulo3` },
 ];

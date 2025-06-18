@@ -23,6 +23,7 @@ import ClientesList from "./components/empresas/gestion-empresas/clientes/Client
 import DashboardEmpresaLayout from "./components/empresas/admin/DashboardEmpresaLayout";
 import CreateClienteForm from "./components/empresas/gestion-empresas/clientes/CreateClienteForm";
 import EditClienteForm from "./components/empresas/gestion-empresas/clientes/EditClienteForm";
+import MascotasList from "./components/empresas/gestion-empresas/mascotas/MascotasList";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -262,8 +263,13 @@ const App = () => {
             <Route path="/mis-empresas/:id/clientes" element={<ClientesList />} />
             <Route path="/mis-empresas/:id/clientes/crear-cliente" element={<CreateClienteForm />} />
             <Route path="/mis-empresas/:id/clientes/editar-cliente/:clienteId" element={<EditClienteForm />} />
+            {/* ADMIN layout con sidebar - mascotas */}
+            <Route path="/mis-empresas/:id/mascotas" element={<MascotasList />} />
+            <Route path="/mis-empresas/:id/mascotas/crear-mascota" element={<CreateClienteForm />} />
+            <Route path="/mis-empresas/:id/mascotas/editar-mascota/:mascotaId" element={<EditClienteForm />} />
+            {/* ADMIN layout con sidebar - mascotas */}
 
-            
+
           </Route>
           {/* ADMIN layout con sidebar */}
 

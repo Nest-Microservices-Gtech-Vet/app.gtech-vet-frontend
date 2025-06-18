@@ -19,6 +19,8 @@ import EditEmpresaForm from "./components/empresas/EditEmpresaForm";
 import EmpresasListInactive from "./components/empresas/EmpresasListInactive";
 import EmpresaDetallePage from "./components/empresas/EmpresaDetallePage";
 import DashboardEmpresa from "./components/empresas/admin/DashboardEmpresas";
+import ClientesList from "./components/empresas/gestion-empresas/clientes/ClientesList";
+import DashboardEmpresaLayout from "./components/empresas/admin/DashboardEmpresaLayout";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -199,7 +201,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
-           <Route
+          <Route
             path="/empresas/:id"
             element={
               <PrivateRoute>
@@ -209,7 +211,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
-         {/* rutas de usuario "rol=SUPERADMIN */}
+          {/* rutas de usuario "rol=SUPERADMIN */}
 
           {/* RUTAS ADMIN layout sin sidebar */}
           <Route
@@ -222,8 +224,9 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
-          <Route
+          {/* ADMIN layout sin sidebar */}
+          {/* ADMIN layout con sidebar */}
+          {/* <Route
             path="/mis-empresas/:id/dashboard"
             element={
               <PrivateRoute>
@@ -234,9 +237,33 @@ const App = () => {
             }
           />
 
-          {/* ADMIN layout sin sidebar */}
+          <Route
+            path="/mis-empresas/clientes"
+            element={
+              <PrivateRoute>
+                <AdminOnlyLayout>
+                  <ClientesList />
+                </AdminOnlyLayout>
+              </PrivateRoute>
+            }
+          /> */}
 
-         
+          <Route
+            path="/mis-empresas/:id"
+            element={
+              <PrivateRoute>
+                <DashboardEmpresaLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route path="dashboard" element={<DashboardEmpresa />} />
+            <Route path="/mis-empresas/:id/clientes" element={<ClientesList />} />
+            
+          </Route>
+          {/* ADMIN layout con sidebar */}
+
+
+
 
 
           <Route path="*" element={<Navigate to="/" />} />

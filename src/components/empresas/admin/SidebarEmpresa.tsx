@@ -1,111 +1,119 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronUpCircle, LayoutDashboard, LogOut, Menu, Monitor, MonitorCheck, PawPrint, SquareUser, Users2 } from "lucide-react";
+import {
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  MonitorCheck,
+  PawPrint,
+  SquareUser,
+  Users2,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { logout } from "../../../services/auth";
 
 interface Props {
-    isOpen: boolean;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
-const SIDEBAR_ITEMS = [
-    { name: "Dashboard", icon: LayoutDashboard, color: "#EC4899", href: "/mis-empresas/2/dashboard" },
-    {
-        name: "Perfil",
-        icon: Users2,
-        color: "#1E90FF",
+
+// ✅ Creamos los ítems del sidebar usando el id dinámico
+const getSidebarItems = (id: string | undefined) => [
+  { name: "Dashboard", icon: LayoutDashboard, color: "#EC4899", href: `/mis-empresas/${id}/dashboard` },
+  {
+    name: "Perfil",
+    icon: Users2,
+    color: "#1E90FF",
+    href: "#",
+    submenu: [
+      { name: "Crear Usuarios", href: "#" },
+      {
+        name: "Administrar Usuarios",
         href: "#",
         submenu: [
-            { name: "Crear Usuarios", href: "#" },
-            {
-                name: "Administrar Usuarios",
-                href: "#",
-                submenu: [
-                    { name: "Activos", href: "#" },
-                    { name: "Inactivos", href: "#" },
-                ],
-            },
+          { name: "Activos", href: "#" },
+          { name: "Inactivos", href: "#" },
         ],
-    },
-    { name: "Clientes", icon: SquareUser, color: "#EC4899", href: "/mis-empresas/2/dashboard" },
-    { name: "Pacientes", icon: PawPrint, color: "#32CD32", href: "/mis-empresas/2/dashboard" },
-    { name: "Historial clinico", icon: MonitorCheck, color: "#8A2BE2", href: "/mis-empresas/2/dashboard" },
-    { name: "Modulo-3", icon: MonitorCheck, color: "#20B2AA", href: "/mis-empresas/2/dashboard" },
+      },
+    ],
+  },
+  { name: "Clientes", icon: SquareUser, color: "#EC4899", href: `/mis-empresas/${id}/clientes` },
+  { name: "Pacientes", icon: PawPrint, color: "#32CD32", href: `/mis-empresas/${id}/pacientes` },
+  { name: "Historial clínico", icon: MonitorCheck, color: "#8A2BE2", href: `/mis-empresas/${id}/historial` },
+  { name: "Módulo-3", icon: MonitorCheck, color: "#20B2AA", href: `/mis-empresas/${id}/modulo3` },
 ];
 
-const sidebarEmpresa = ({
-    isOpen,
-    setIsOpen,
-}: {
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-}) => {
-    const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const [openSubmenus, setOpenMenus] = useState<Record<string, boolean>>({});
-    const navigate = useNavigate();
+const SidebarEmpresa = ({ isOpen, setIsOpen }: Props) => {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [openSubmenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isOpen) {
-            setOpenMenus({});
-        }
-    }, [isOpen]);
-    const toggleMenu = (key: string) => {
-        setOpenMenus((prev) => ({
-            ...prev,
-            [key]: !prev[key],
-        }));
-    };
+  const SIDEBAR_ITEMS = getSidebarItems(id); // ✅ Generamos los ítems dinámicamente
 
-    const renderMenuItems = (items: any[], level = 0, parentKey = "") => {
-        return items.map((item, index) => {
-            const key = parentKey ? `${parentKey}-${index}` : `${index}`;
-            const hasSubmenu = item.submenu && item.submenu.length > 0;
-            const isExpanded = !!openSubmenus[key];
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenMenus({});
+    }
+  }, [isOpen]);
 
-            return (
-                <div key={key}>
-                    {/* Ítem principal */}
-                    <div
-                        onClick={() => {
-                            if (hasSubmenu) {
-                                toggleMenu(key);
-                            } else {
-                                navigate(item.href);
-                                setIsMobileOpen(false);
-                            }
-                        }}
-                        className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors mb-1 ${level > 0 ? `ml-${level * 4}` : ""}`}
-                    >
-                        <div className="flex items-center space-x-2">
-                            {item.icon && <item.icon size={18} style={{ color: item.color }} />}
-                            {isOpen && <span className="text-base font-medium">{item.name}</span>}
-                        </div>
-                        {hasSubmenu && isOpen && (
-                            <ChevronDown
-                                className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                                size={16}
-                            />
-                        )}
-                    </div>
+  const toggleMenu = (key: string) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
-                    {/* Submenú si está expandido */}
-                    <AnimatePresence>
-                        {hasSubmenu && isExpanded && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="ml-4"
-                            >
-                                {renderMenuItems(item.submenu, level + 1, key)}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            );
-        });
-    };
+  const renderMenuItems = (items: any[], level = 0, parentKey = "") => {
+    return items.map((item, index) => {
+      const key = parentKey ? `${parentKey}-${index}` : `${index}`;
+      const hasSubmenu = item.submenu && item.submenu.length > 0;
+      const isExpanded = !!openSubmenus[key];
 
-    return (
+      return (
+        <div key={key}>
+          <div
+            onClick={() => {
+              if (hasSubmenu) {
+                toggleMenu(key);
+              } else {
+                navigate(item.href);
+                setIsMobileOpen(false);
+              }
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors mb-1 ${level > 0 ? `ml-${level * 4}` : ""}`}
+          >
+            <div className="flex items-center space-x-2">
+              {item.icon && <item.icon size={18} style={{ color: item.color }} />}
+              {isOpen && <span className="text-base font-medium">{item.name}</span>}
+            </div>
+            {hasSubmenu && isOpen && (
+              <ChevronDown
+                className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                size={16}
+              />
+            )}
+          </div>
+
+          <AnimatePresence>
+            {hasSubmenu && isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="ml-4"
+              >
+                {renderMenuItems(item.submenu, level + 1, key)}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      );
+    });
+  };
+
+  return (
     <>
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -158,11 +166,4 @@ const sidebarEmpresa = ({
   );
 };
 
-
-export default sidebarEmpresa;
-
-
-
-
-
-
+export default SidebarEmpresa;

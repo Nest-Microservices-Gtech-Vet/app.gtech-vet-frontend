@@ -1,28 +1,28 @@
 import { useEffect, useState } from "react";
-import LayoutEmpresa from "./LayoutEmpresa";
-import { useNavigate, useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 const DashboardEmpresa = () => {
-    const [empresa, setEmpresa] = useState<any>(null);
-    const navigate = useNavigate();
-    useEffect(() => {
-        const storedEmpresa = localStorage.getItem("empresaSeleccionada");
-        if (storedEmpresa) {
-            setEmpresa(JSON.parse(storedEmpresa));
-        }
+  const [empresa, setEmpresa] = useState<any>(null);
+  const navigate = useNavigate();
 
-        // Asegurar tema claro
-        document.documentElement.classList.remove("dark");
-    }, []);
+  useEffect(() => {
+    const storedEmpresa = localStorage.getItem("empresaSeleccionada");
+    if (storedEmpresa) {
+      setEmpresa(JSON.parse(storedEmpresa));
+    }
 
-    if (!empresa) return <p>Cargando empresa...</p>;
-    return (
-        <LayoutEmpresa>
-            <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
-            <p>Aquí puedes mostrar widgets, estadísticas, etc.</p>
-        </LayoutEmpresa>
-    );
+    // Asegurar tema claro
+    document.documentElement.classList.remove("dark");
+  }, []);
+
+  if (!empresa) return <p>Cargando empresa...</p>;
+
+  return (
+    <>
+      <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
+      <p>Aquí puedes mostrar widgets, estadísticas, etc.</p>
+    </>
+  );
 };
 
 export default DashboardEmpresa;

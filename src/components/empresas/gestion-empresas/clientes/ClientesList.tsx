@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getClientes } from "../../../../services/gestion-empresa/clientes/clientes";
 import { div } from "framer-motion/client";
 
@@ -7,7 +7,8 @@ const ClientesList = () => {
     const [clientes, setClientes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    
+    const { id } = useParams();
+
     useEffect(() => {
         const fetchClientes = async () => {
             setLoading(true);
@@ -21,17 +22,25 @@ const ClientesList = () => {
                 }
             } catch (error) {
                 console.error("Error al obtener clietnes", error)
-            } finally{
+            } finally {
                 setLoading(false);
             }
         };
         fetchClientes();
-    },[]);
+    }, []);
+
+    const crearCliente = () => {
+        navigate(`/mis-empresas/${id}/clientes/crear-cliente`);
+    }
 
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                 <h2 className="text-black text-2xl font-bold mb-4">NUESTROS CLIENTES</h2>
+                <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
+                    onClick={crearCliente}>
+                    ➕ Crear Clientes
+                </button>
             </div>
 
             <div className="w-full overflow-x-auto">
@@ -63,7 +72,7 @@ const ClientesList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
-                                 {/* <td className="p-2 whitespace-nowrap">
+                                {/* <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => handleEmpresaUsuario(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios
                                     </button>

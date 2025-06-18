@@ -21,6 +21,7 @@ import EmpresaDetallePage from "./components/empresas/EmpresaDetallePage";
 import DashboardEmpresa from "./components/empresas/admin/DashboardEmpresas";
 import ClientesList from "./components/empresas/gestion-empresas/clientes/ClientesList";
 import DashboardEmpresaLayout from "./components/empresas/admin/DashboardEmpresaLayout";
+import CreateClienteForm from "./components/empresas/gestion-empresas/clientes/CreateClienteForm";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -258,6 +259,7 @@ const App = () => {
           >
             <Route path="dashboard" element={<DashboardEmpresa />} />
             <Route path="/mis-empresas/:id/clientes" element={<ClientesList />} />
+            <Route path="/mis-empresas/:id/clientes/crear-cliente" element={<CreateClienteForm />} />
             
           </Route>
           {/* ADMIN layout con sidebar */}

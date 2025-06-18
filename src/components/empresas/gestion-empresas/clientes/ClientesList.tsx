@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom";
-import { getClientes } from "../../../../services/gestion-empresa/clientes/clientes";
+import { getClientes, getClientesPorEmpresa, removeCliente } from "../../../../services/gestion-empresa/clientes/clientes";
 import { div } from "framer-motion/client";
+import Swal from "sweetalert2";
 
 const ClientesList = () => {
     const [clientes, setClientes] = useState<any[]>([]);
@@ -9,29 +10,58 @@ const ClientesList = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    // 
     useEffect(() => {
         const fetchClientes = async () => {
             setLoading(true);
             try {
-                const response = await getClientes();
-                console.log("[clienteslis] clientes obtenidos", response)
-                if (response && Array.isArray(response.data)) {
-                    setClientes(response.data);
+                const empresaId = Number(id);
+                const data = await getClientesPorEmpresa(empresaId);
+                if (Array.isArray(data)) {
+                    setClientes(data);
                 } else {
-                    console.error("La respuesta del backend no es un array:", response);
+                    console.error("La respuesta no es un array:", data);
                 }
             } catch (error) {
-                console.error("Error al obtener clietnes", error)
+                console.error("Error al obtener clientes:", error);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchClientes();
-    }, []);
+    }, [id]);
 
     const crearCliente = () => {
         navigate(`/mis-empresas/${id}/clientes/crear-cliente`);
     }
+
+    const updatedCliente = (clienteId: string,) => {
+        navigate(`/mis-empresas/${id}/clientes/editar-cliente/${clienteId}`);
+    }
+
+    const handleDelete = async (clienteId: string) => {
+        const result = await Swal.fire({
+            title: "¿Estás seguro de desactivar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, Desactivar",
+            cancelButtonText: "Cancelar",
+        });
+
+        if (result.isConfirmed) {
+            const deleteResult = await removeCliente(clienteId);
+            if (deleteResult) {
+                Swal.fire("Registro Desactivado!", "El Cliente ha sido desactivado.", "success");
+                setClientes((prevClientes) => prevClientes.filter((cliente) => cliente.cli_id !== clienteId));
+            } else {
+                Swal.fire("Error", "No se pudo desactivar el cliente.", "error");
+            }
+        }
+    };
 
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
@@ -52,7 +82,7 @@ const ClientesList = () => {
                             <th className="p-2">Telefono</th>
                             <th className="p-2">Estado</th>
                             <th className="p-2">Acciones</th>
-                            <th className="p-2">Detalle</th>
+                            {/* <th className="p-2">Detalle</th> */}
                             <th className="p-2">Modificar</th>
                             <th className="p-2">Desactivar</th>
                         </tr>
@@ -78,25 +108,29 @@ const ClientesList = () => {
                                     </button>
                                 </td> */}
 
-                                {/* <td className="p-2 whitespace-nowrap">
-                                    <button onClick={() => handleVerEmpresa(empresa.emp_id)} className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
+                                <td className="p-2 whitespace-nowrap">
+                                    <button
+                                        // onClick={() => handleVerEmpresa(empresa.emp_id)}
+                                        className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
                                         🔎 Ver
                                     </button>
-                                </td> */}
+                                </td>
 
-                                {/* <td className="p-2 whitespace-nowrap">
-                                    <button onClick={() => updatedEmpresa(empresa.emp_id)} className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600">
+                                <td className="p-2 whitespace-nowrap">
+                                    <button
+                                        onClick={() => updatedCliente(cliente.cli_id)}
+                                        className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600">
                                         📝 Modificar
                                     </button>
-                                </td> */}
-                                {/* <td className="p-2 whitespace-nowrap">
+                                </td>
+                                <td className="p-2 whitespace-nowrap">
                                     <button
-                                        onClick={() => handleDelete(empresa.emp_id)}
+                                        onClick={() => handleDelete(cliente.cli_id)}
                                         className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
                                     >
                                         🚫 Desactivar
                                     </button>
-                                </td> */}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

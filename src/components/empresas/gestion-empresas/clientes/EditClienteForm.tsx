@@ -1,12 +1,13 @@
-import { h2 } from "framer-motion/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { createCliente } from "../../../../services/gestion-empresa/clientes/clientes";
+import { getClienteById, updateCliente } from "../../../../services/gestion-empresa/clientes/clientes";
 import Swal from "sweetalert2";
 
-const CreateClienteForm = () => {
+const EditClienteForm = () => {
     const { id: empresaId } = useParams();
+    const { clienteId } = useParams();
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         cli_identificacion: "",
         cli_nombre: "",
@@ -19,45 +20,73 @@ const CreateClienteForm = () => {
         empresa_id: Number(empresaId),
     });
 
-    const sendCliente = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const resultado = await createCliente(formData);
-        if (resultado) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Cliente creado!',
-                text: 'El Cliente fue registrado correctamente.',
-                timer: 5000,
-                timerProgressBar: true,
-                didClose: () => {
-                    navigate(`/mis-empresas/${empresaId}/clientes`);
+    useEffect(() => {
+        const fetchCliente = async () => {
+            try {
+                const cliente = await getClienteById(clienteId!)
+                console.log("Usuario obtenido:", cliente);
+                if (cliente) {
+                    // Elimina propiedades no permitidas antes de actualizar el estado
+                    const { cli_id, createdBy, updatedBy, created_at, updated_at, ...clienteData } = cliente;
+                    setFormData(clienteData); // Llena el formulario con los datos permitidos
+                } else {
+                    console.error("cliente no encontrado");
                 }
-            });
-            setFormData({
-                cli_identificacion: "",
-                cli_nombre: "",
-                cli_apellido: "",
-                cli_email: "",
-                cli_celular: "",
-                cli_direccion: "",
-                cli_observaciones: "",
-                activo: true,
-                empresa_id: Number(empresaId),
-            });
-        } else {
-            alert("error al crear cliente")
+            } catch (error) {
+                console.error("Error al obtener el cliente:", error);
+            }
+        };
+        fetchCliente();
+    }, [clienteId]);
+
+    const updatedCliente = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const clienteDataToUpdate = {
+            cli_identificacion: formData.cli_identificacion,
+            cli_nombre: formData.cli_nombre,
+            cli_apellido: formData.cli_apellido,
+            cli_email: formData.cli_email,
+            cli_celular: formData.cli_celular,
+            cli_direccion: formData.cli_direccion,
+            cli_observaciones: formData.cli_observaciones,
+            activo: formData.activo,
+            empresa_id: formData.empresa_id,
+        };
+        try {
+            const result = await updateCliente(clienteId!, clienteDataToUpdate);
+            if (result) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Registro modificado!',
+                    text: 'Los cambios fueron guardados correctamente.',
+                    timer: 5000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    didClose: () => {
+                        navigate(`/mis-empresas/${empresaId}/clientes`); // Ruta a la lista de empresas
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al modificar',
+                    text: 'Ocurrió un error al guardar los cambios.',
+                });
+            }
+        } catch (error) {
+            console.error(Swal.fire({
+                icon: 'error',
+                title: 'Error al modificar',
+                text: 'Ocurrió un error al guardar los cambios.',
+            }), error);
         }
-
-    };
-
-
+    }
 
     return (
-    
-        <form onSubmit={sendCliente} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
-                
-                <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
+        <form onSubmit={updatedCliente} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
+
+            <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
@@ -198,10 +227,10 @@ const CreateClienteForm = () => {
 
                 </div>
                 <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Cliente</button>
+                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
                 </div>
             </div>
         </form>
-    )
+    );
 }
-export default CreateClienteForm;
+export default EditClienteForm;

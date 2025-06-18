@@ -40,11 +40,76 @@ export const createCliente = async (clienteData: {
 };
 //termina crear clientes
 //***************************************************************** */
-//empieza obtener clientes
-//termina obtener clientes
+// ✅ Obtener todos los clientes por empresa
+export const getClientesPorEmpresa = async (empresaId: number): Promise<Cliente[]> => {
+  try {
+    const data = await apiFetch(`clientes/por-empresa/${empresaId}`, {
+      method: "GET",
+    });
+    console.log("Clientes obtenidos:", data);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener clientes por empresa:", error);
+    return [];
+  }
+};
+//finObtener todos los clientes por empresa
+//************************************************************************************* */
+//empieza obtener clientes por id
+export const getClienteById = async (clienteId: string): Promise<Cliente> => {
+    try {
+        const data = await apiFetch(`clientes/${clienteId}`,{
+            method:"GET"
+        });
+        console.log("cliente obtenido", data)
+        return data;
+    } catch (error) {
+        console.error("error al obtener usuario", error);
+        throw error;
+    }
+}
+//termina obtener clientes por id
 //***************************************************************** */
-//empieza obtener clientes
-//termina obtener clientes
+//empieza editar clientes por id
+export const updateCliente = async (clienteId: string, clienteData: {
+    cli_identificacion: string;
+    cli_nombre: string;
+    cli_apellido: string;
+    cli_email: string;
+    cli_celular: string;
+    cli_direccion: string;
+    cli_observaciones: string;
+    activo: boolean;
+    empresa_id: number;
+}) => {
+    try {
+        const data = await apiFetch(`clientes/${clienteId}`, {
+            method: "PATCH",
+            body: JSON.stringify(clienteData),
+        });
+        console.log("cliente actualizado:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al actualizar cliente:", error);
+        return null;
+    }
+}
+//termina editar clientes por id
+//***************************************************************** */
+//empieza borrado logico clientes
+export const removeCliente = async(clienteId: string) =>{
+    try {
+        const data = await apiFetch(`clientes/${clienteId}`,{
+            method: "DELETE",
+        });
+            console.log("Cliente desactivado:", data);
+        return data;
+    } catch (error) {
+        console.error("Error al desactivar Cliente:", error);
+        return null;
+    }
+}
+//termina borrado logico clientes
 //***************************************************************** */
 //empieza obtener clientes
 //termina obtener clientes

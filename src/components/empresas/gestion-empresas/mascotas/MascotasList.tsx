@@ -27,12 +27,17 @@ const MascotasList = () => {
         };
         fetchMascotas();
     }, [id]);
+
+    const crearMascota = () => {
+        navigate(`/mis-empresas/${id}/mascotas/crear-mascota`);
+    }
+
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                 <h2 className="text-black text-2xl font-bold mb-4">NUESTRAS MASCOTAS</h2>
                 <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
-                    // onClick={crearmascota}
+                    onClick={crearMascota}
                     >
                     ➕ Crear mascotas
                 </button>

@@ -1,5 +1,5 @@
 export interface Cliente {
-    cli_id: string;
+    cli_id: number;
     cli_identificacion:string;
     cli_nombre:string;
     cli_apellido:string;

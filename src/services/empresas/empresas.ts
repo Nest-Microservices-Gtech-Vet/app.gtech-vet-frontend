@@ -14,7 +14,7 @@ export const getEmpresas = async (page: number = 1, limit: number = 50, searchQu
 };
 //Termina obtener empresas //
 
-//Empieza obtener empresas //
+//Empieza obtener empresasinactivas //
 export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,searchQuery: string): Promise<{ data: Empresa[] }> => {
     try {
         const data = await apiFetch(`empresas/inactivas?search=${searchQuery}`);
@@ -25,7 +25,7 @@ export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,
         return { data: [] };
     }
 };
-//Termina obtener empresas //
+//Termina obtener empresasinactivas //
 //Empieza Crear empresas //
 export const createEmpresa = async (empresaData: {
     emp_nombre: string;
@@ -104,7 +104,7 @@ export const updateEmpresa = async (empresaId: string, empresaData: {
         console.error("Error al actualizar empresa:", error);
         return null;
     }
-}
+};
 //Finaliza Editar empresa por id//
 
 //Empieza borrrado logico por id//

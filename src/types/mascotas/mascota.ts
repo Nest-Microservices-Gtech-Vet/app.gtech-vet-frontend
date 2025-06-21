@@ -14,5 +14,10 @@ export interface Mascota {
     empresa_id:number;
     activo: boolean;
 
+    createdBy?: string; // Opcional, si existe
+    updatedBy?: string; // Opcional, si existe
+    created_at?: string; // Opcional, si existe
+    updated_at?: string; // Opcional, si existe
+
 
 }

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { crearMascota, getMascotaById } from "../../../../services/gestion-empresa/mascotas/mascotas";
-import Swal from "sweetalert2";
+import { Cliente } from "../../../../types/clientes/cliente";
+import { Especie } from "../../../../types/mascotas/especie";
+import { Raza } from "../../../../types/mascotas/raza";
 import { getClientes } from "../../../../services/gestion-empresa/clientes/clientes";
 import { getEspecies, getRazas } from "../../../../services/gestion-empresa/mascotas/catalogosMascota";
-import { Cliente } from "../../../../types/clientes/cliente";
-import { Raza } from "../../../../types/mascotas/raza";
-import { Especie } from "../../../../types/mascotas/especie";
+import { getMascotaById, updateMascota } from "../../../../services/gestion-empresa/mascotas/mascotas";
+import Swal from "sweetalert2";
 
-const CreateMascotaForm = () => {
-    const { id: empresaId } = useParams();
-     const {mascotaId } = useParams();
+const EditMascotaForm = () => {
+    const { empresaId } = useParams();
+    const { mascotaId } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         mas_nombre: "",
@@ -27,96 +27,100 @@ const CreateMascotaForm = () => {
         empresa_id: Number(empresaId),
         activo: true,
     });
-
     const [clientes, setClientes] = useState<Cliente[]>([]);
     const [especies, setEspecies] = useState<Especie[]>([]);
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchMascota = async () => {
+            try {
+                const clientesRes = await getClientes();
+                setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
 
-            
-            const clientesRes = await getClientes();
-            setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
+                const especiesGet = await getEspecies();
+                const especiasMapped = especiesGet.map((es: any) => ({
+                    id: es.esp_id,
+                    nombre: es.esp_nombre,
+                }));
+                setEspecies(especiasMapped);
 
-            const especiesGet = await getEspecies();
-            const especiasMapped = especiesGet.map((es: any) => ({
-                id: es.esp_id,
-                nombre: es.esp_nombre,
-            }));
-            setEspecies(especiasMapped);
+                const razasGet = await getRazas();
+                const razasMapped = razasGet.map((r: any) => ({
+                    id: r.raz_id,
+                    nombre: r.raz_nombre,
+                    especie_id: r.especie_id,
+                }));
+                setRazas(razasMapped);
+                setRazasTodas(razasMapped);
 
-            const razasGet = await getRazas();
-            const razasMapped = razasGet.map((r: any) => ({
-                id: r.raz_id,
-                nombre: r.raz_nombre,
-                especie_id: r.especie_id,
-            }));
-            setRazas(razasMapped);
-            setRazasTodas(razasMapped);
-           
+                const mascota = await getMascotaById(mascotaId!);
+                if (mascota) {
+                    const { mas_id, createdBy, updatedBy, created_at, updated_at, ...mascotaData } = mascota;
+                    setFormData(mascotaData);
+
+                    const razasFiltradas = razasMapped.filter(
+                        (r: { especie_id: number; }) => r.especie_id === mascotaData.especie_id
+                    );
+                    setRazas(razasFiltradas);
+                } else {
+                    console.error("mascota no encontrada");
+                }
+            } catch (error) {
+                console.error("Error al obtener datos:", error);
+            }
 
         };
-        fetchData();
-    }, []);
+        fetchMascota();
+    }, [mascotaId]);
 
     const handleEspecieCHange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const especieId = Number(e.target.value);
-        setFormData({...formData, especie_id: especieId, raza_id:0});
+        setFormData({ ...formData, especie_id: especieId, raza_id: 0 });
 
-        const razasFiltradas = razastodas.filter(r =>  r.especie_id === especieId);
+        const razasFiltradas = razastodas.filter(r => r.especie_id === especieId);
         setRazas(razasFiltradas);
     }
 
-
-
-    const sendMascota = async (e: React.FormEvent) => {
+    const updatedMascotaq = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const formDataFixed = {
-            ...formData,
-            especie_id:Number(formData.especie_id),
-            raza_id: Number(formData.raza_id),
-        }
-
-
-
-
-
-        const resultado = await crearMascota(formDataFixed);
-        if (resultado) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Mascota creada!',
-                text: 'La mascota fue registrada correctamente.',
-                timer: 5000,
-                timerProgressBar: true,
-                didClose: () => {
-                    navigate(`/mis-empresas/${empresaId}/mascotas`);
-                }
-            });
-            setFormData({
-                mas_nombre: "",
-                mas_fechaNac: "",
-                mas_peso: 0,
-                mas_color: "",
-                mas_esterilizado: false,
-                mas_microchip: "",
-                mas_foto: "",
-                mas_notas: "",
-                especie_id: 0,
-                raza_id: 0,
-                cliente_id: 0,
-                empresa_id: Number(empresaId),
-                activo: true,
-            });
-        } else {
-            alert("error al crear mascota")
+        const mascotaDataToUpdate = {
+            mas_nombre: formData.mas_nombre,
+            mas_fechaNac: formData.mas_fechaNac,
+            mas_peso: formData.mas_peso,
+            mas_color: formData.mas_color,
+            mas_esterilizado: formData.mas_esterilizado,
+            mas_microchip: formData.mas_microchip,
+            mas_foto: formData.mas_foto,
+            mas_notas: formData.mas_notas,
+            especie_id: formData.especie_id,
+            raza_id: formData.raza_id,
+            cliente_id: formData.cliente_id,
+            empresa_id: formData.empresa_id,
+            activo: formData.activo,
+        };
+        try {
+            const result = await updateMascota(mascotaId!, mascotaDataToUpdate);
+            if (result) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Registro modificado!',
+                    text: 'Los cambios fueron guardados correctamente.',
+                    timer: 2300,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    didClose: () => {
+                        navigate(`/mis-empresas/${empresaId}/mascotas`); // Ruta a la lista de empresas
+                    }
+                });
+            } else { alert("Error al actualizar el registro"); }
+        } catch (error) {
+            console.error("Error al actualizar el registro:", error);
         }
     }
+
     return (
-        <form onSubmit={sendMascota} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
+       <form onSubmit={updatedMascotaq} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
 
             <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
@@ -326,11 +330,11 @@ const CreateMascotaForm = () => {
 
                 </div>
                 <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Mascota</button>
+                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
                 </div>
             </div>
         </form>
     );
 }
 
-export default CreateMascotaForm;
+export default EditMascotaForm;

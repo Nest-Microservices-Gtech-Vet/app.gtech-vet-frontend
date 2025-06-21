@@ -32,6 +32,10 @@ const MascotasList = () => {
         navigate(`/mis-empresas/${id}/mascotas/crear-mascota`);
     }
 
+    const updatedMascota = (mascotaId:string) => {
+        navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
+    }
+
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
@@ -52,8 +56,9 @@ const MascotasList = () => {
                             <th className="p-2">Color</th>
                             <th className="p-2">Esterilizado</th>
                             <th className="p-2">Estado</th>
+                            <th className="p-2">dueño</th>
                             <th className="p-2">Acciones</th>
-                            {/* <th className="p-2">Detalle</th> */}
+                            
                             <th className="p-2">Modificar</th>
                             <th className="p-2">Desactivar</th>
                         </tr>
@@ -80,6 +85,7 @@ const MascotasList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
+                                <td className="p-2 whitespace-nowrap">{mascota.cliente_id}</td>
                                 {/* <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => handleEmpresaUsuario(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios
@@ -96,7 +102,7 @@ const MascotasList = () => {
 
                                 <td className="p-2 whitespace-nowrap">
                                     <button
-                                        // onClick={() => updatedmascota(mascota.cli_id)}
+                                        onClick={() => updatedMascota(mascota.mas_id)}
                                         className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600">
                                         📝 Modificar
                                     </button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMascotas } from "../../../../services/gestion-empresa/mascotas/mascotas";
+import { getMascotas, removeMascota } from "../../../../services/gestion-empresa/mascotas/mascotas";
+import Swal from "sweetalert2";
 
 const MascotasList = () => {
     const [mascotas, setMascotas] = useState<any[]>([]);
@@ -36,6 +37,29 @@ const MascotasList = () => {
         navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
     }
 
+    const removedMascota = async(mascotaId:string) => {
+        const result = await Swal.fire({
+            title: "¿Estás seguro de desactivar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, Desactivar",
+            cancelButtonText: "Cancelar",
+        });
+
+        if(result.isConfirmed){
+            const desactMascota = await removeMascota(mascotaId);
+            if(desactMascota){
+                Swal.fire("Registro Desactivado!", "El Cliente ha sido desactivado.", "success");
+                setMascotas((prevMascotas) => prevMascotas.filter((mascotas)=>mascotas.mas_id !== mascotaId))
+            } else {
+                Swal.fire("Error", "No se pudo desactivar el cliente.", "error");
+            }
+        }
+    }
+
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
@@ -52,7 +76,7 @@ const MascotasList = () => {
                     <thead className="bg-gray-50">
                         <tr className="text-left">
                             <th className="p-2">Nombres</th>
-                            <th className="p-2">Fecha</th>
+                            <th className="p-2">Fecha Nacimiento</th>
                             <th className="p-2">Color</th>
                             <th className="p-2">Esterilizado</th>
                             <th className="p-2">Estado</th>
@@ -67,7 +91,7 @@ const MascotasList = () => {
                         {mascotas.map((mascota, index) => (
                             <tr key={mascota.mas_id} className="shadow-amber-50">
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_nombre}</td>
-                                <td className="p-2 whitespace-nowrap">{mascota.mas_fechaNac}</td>
+                                <td className="p-2 whitespace-nowrap">{mascota.mas_fechaNac?.split('T')[0] || ""}</td>
                                 {/* <td className="p-2 whitespace-nowrap">{mascota.mas_identificacion}</td> */}
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_color}</td>
                                 <td className="p-2 whitespace-nowrap">
@@ -109,7 +133,7 @@ const MascotasList = () => {
                                 </td>
                                 <td className="p-2 whitespace-nowrap">
                                     <button
-                                        // onClick={() => handleDelete(mascota.cli_id)}
+                                        onClick={() => removedMascota(mascota.mas_id)}
                                         className="bg-red-500 px-3 py-1 rounded-md hover:bg-red-600"
                                     >
                                         🚫 Desactivar

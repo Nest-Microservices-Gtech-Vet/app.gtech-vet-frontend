@@ -89,8 +89,20 @@ export const crearMascota = async (mascotaData: {
 };
 //termina crear mascotas
 //***************************************************************** */
-//empieza obtener  mascotas
-//termina obtener mascotas
+//empieza borrado logico de  mascotas
+export const removeMascota = async( mascotaId:string)=>{
+    try {
+        const data = await apiFetch(`mascotas/${mascotaId}`,{
+            method: "DELETE",
+        });
+        console.log("Mascota desacitivada",data);
+        return data;
+    } catch (error) {
+        console.error("Error al desactivar Mascota:", error);
+        return null;
+    }
+};
+//termina borrado logico de mascotas
 //***************************************************************** */
 //empieza obtener  mascotas
 //termina obtener mascotas

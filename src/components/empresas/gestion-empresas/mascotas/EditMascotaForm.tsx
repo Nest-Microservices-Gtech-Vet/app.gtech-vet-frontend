@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 const EditMascotaForm = () => {
     const { empresaId } = useParams();
     const { mascotaId } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         mas_nombre: "",
@@ -110,7 +111,7 @@ const EditMascotaForm = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                     didClose: () => {
-                        navigate(`/mis-empresas/${empresaId}/mascotas`); // Ruta a la lista de empresas
+                        navigate(`/mis-empresas/${id}/mascotas`); // Ruta a la lista de empresas
                     }
                 });
             } else { alert("Error al actualizar el registro"); }
@@ -145,7 +146,7 @@ const EditMascotaForm = () => {
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input
-                                value={formData.mas_fechaNac}
+                                value={formData.mas_fechaNac?.split('T')[0] || ""}
                                 onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
                                 type="text"
                                 id="mas_fechaNac"

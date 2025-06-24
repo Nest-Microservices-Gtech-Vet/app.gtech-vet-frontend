@@ -26,6 +26,7 @@ import EditClienteForm from "./components/empresas/gestion-empresas/clientes/Edi
 import MascotasList from "./components/empresas/gestion-empresas/mascotas/MascotasList";
 import CreateMascotaForm from "./components/empresas/gestion-empresas/mascotas/CreateMascotaForm";
 import EditMascotaForm from "./components/empresas/gestion-empresas/mascotas/EditMascotaForm";
+import CreateConsultaForm from "./components/empresas/gestion-empresas/consultas/CreateConsultaForm";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -270,6 +271,12 @@ const App = () => {
             <Route path="mascotas" element={<MascotasList />} />
             <Route path="mascotas/crear-mascota" element={<CreateMascotaForm />} />
             <Route path="mascotas/editar-mascota/:mascotaId" element={<EditMascotaForm />} />
+
+            <Route path="mascotas/editar-mascota/:mascotaId/crear-consulta" element={<CreateConsultaForm />} />
+
+
+            <Route path="consulta" element={<CreateConsultaForm />} />
+
           </Route>
           {/* ADMIN layout con sidebar */}
 

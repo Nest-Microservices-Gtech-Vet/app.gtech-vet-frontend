@@ -136,7 +136,7 @@ const EditMascotaForm = () => {
                     </button>
 
                     <button
-                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/crear-consulta`)}
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/crear-consulta`)}
                         className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md transition"
                     >
                         ➕ Nueva Consulta

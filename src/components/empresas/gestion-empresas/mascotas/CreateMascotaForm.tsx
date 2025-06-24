@@ -76,6 +76,7 @@ const CreateMascotaForm = () => {
 
         const formDataFixed = {
             ...formData,
+            empresa_id: Number(empresaId),
             especie_id:Number(formData.especie_id),
             raza_id: Number(formData.raza_id),
         }

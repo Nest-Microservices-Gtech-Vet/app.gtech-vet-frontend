@@ -1,11 +1,13 @@
 import { h2 } from "framer-motion/client";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { createCliente } from "../../../../services/gestion-empresa/clientes/clientes";
 import Swal from "sweetalert2";
 
 const CreateClienteForm = () => {
-    const { id: empresaId } = useParams();
+    const { id: empresaId, mascotaId } = useParams();
+    const [searchParams] = useSearchParams();
+    const returnTo = searchParams.get("returnTo");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         cli_identificacion: "",
@@ -30,7 +32,9 @@ const CreateClienteForm = () => {
                 timer: 5000,
                 timerProgressBar: true,
                 didClose: () => {
-                    navigate(`/mis-empresas/${empresaId}/clientes`);
+                    const redireccion = returnTo ? returnTo : `/mis-empresas/${empresaId}/clientes`;
+                    console.log("🔄 Redirigiendo a:", redireccion);
+                    navigate(redireccion);
                 }
             });
             setFormData({
@@ -59,7 +63,7 @@ const CreateClienteForm = () => {
             <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
-                    
+
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input

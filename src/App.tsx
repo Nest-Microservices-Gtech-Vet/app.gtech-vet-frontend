@@ -261,17 +261,15 @@ const App = () => {
               </PrivateRoute>
             }
           >
+            <Route index element={<DashboardEmpresa />} />
             <Route path="dashboard" element={<DashboardEmpresa />} />
-            <Route path="/mis-empresas/:id/clientes" element={<ClientesList />} />
-            <Route path="/mis-empresas/:id/clientes/crear-cliente" element={<CreateClienteForm />} />
-            <Route path="/mis-empresas/:id/clientes/editar-cliente/:clienteId" element={<EditClienteForm />} />
-            {/* ADMIN layout con sidebar - mascotas */}
-            <Route path="/mis-empresas/:id/mascotas" element={<MascotasList />} />
-            <Route path="/mis-empresas/:id/mascotas/crear-mascota" element={<CreateMascotaForm />} />
-            <Route path="/mis-empresas/:id/mascotas/editar-mascota/:mascotaId" element={<EditMascotaForm />} />
-            {/* ADMIN layout con sidebar - mascotas */}
+            <Route path="clientes" element={<ClientesList />} />
+            <Route path="clientes/crear-cliente" element={<CreateClienteForm />} />
+            <Route path="clientes/editar-cliente/:clienteId" element={<EditClienteForm />} />
 
-
+            <Route path="mascotas" element={<MascotasList />} />
+            <Route path="mascotas/crear-mascota" element={<CreateMascotaForm />} />
+            <Route path="mascotas/editar-mascota/:mascotaId" element={<EditMascotaForm />} />
           </Route>
           {/* ADMIN layout con sidebar */}
 

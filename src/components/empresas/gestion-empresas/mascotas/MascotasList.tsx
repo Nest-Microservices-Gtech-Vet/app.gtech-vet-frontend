@@ -33,11 +33,11 @@ const MascotasList = () => {
         navigate(`/mis-empresas/${id}/mascotas/crear-mascota`);
     }
 
-    const updatedMascota = (mascotaId:string) => {
+    const updatedMascota = (mascotaId: string) => {
         navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
     }
 
-    const removedMascota = async(mascotaId:string) => {
+    const removedMascota = async (mascotaId: string) => {
         const result = await Swal.fire({
             title: "¿Estás seguro de desactivar este registro?",
             text: "¡No podrás revertir esto!",
@@ -49,11 +49,11 @@ const MascotasList = () => {
             cancelButtonText: "Cancelar",
         });
 
-        if(result.isConfirmed){
+        if (result.isConfirmed) {
             const desactMascota = await removeMascota(mascotaId);
-            if(desactMascota){
+            if (desactMascota) {
                 Swal.fire("Registro Desactivado!", "El Cliente ha sido desactivado.", "success");
-                setMascotas((prevMascotas) => prevMascotas.filter((mascotas)=>mascotas.mas_id !== mascotaId))
+                setMascotas((prevMascotas) => prevMascotas.filter((mascotas) => mascotas.mas_id !== mascotaId))
             } else {
                 Swal.fire("Error", "No se pudo desactivar el cliente.", "error");
             }
@@ -66,7 +66,7 @@ const MascotasList = () => {
                 <h2 className="text-black text-2xl font-bold mb-4">NUESTRAS MASCOTAS</h2>
                 <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
                     onClick={crearMascota}
-                    >
+                >
                     ➕ Crear mascotas
                 </button>
             </div>
@@ -82,8 +82,8 @@ const MascotasList = () => {
                             <th className="p-2">Estado</th>
                             <th className="p-2">dueño</th>
                             <th className="p-2">Acciones</th>
-                            
-                            <th className="p-2">Modificar</th>
+
+                            {/* <th className="p-2">Modificar</th> */}
                             <th className="p-2">Desactivar</th>
                         </tr>
                     </thead>
@@ -116,19 +116,19 @@ const MascotasList = () => {
                                     </button>
                                 </td> */}
 
-                                <td className="p-2 whitespace-nowrap">
+                                {/* <td className="p-2 whitespace-nowrap">
                                     <button
                                         // onClick={() => handleVerEmpresa(empresa.emp_id)}
                                         className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
                                         🔎 Ver
                                     </button>
-                                </td>
+                                </td> */}
 
                                 <td className="p-2 whitespace-nowrap">
                                     <button
                                         onClick={() => updatedMascota(mascota.mas_id)}
                                         className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600">
-                                        📝 Modificar
+                                        📝 Ver
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">

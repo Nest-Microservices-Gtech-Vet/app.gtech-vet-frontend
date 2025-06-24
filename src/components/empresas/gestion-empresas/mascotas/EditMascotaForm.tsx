@@ -111,7 +111,7 @@ const EditMascotaForm = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                     didClose: () => {
-                        navigate(`/mis-empresas/${empresaId}/mascotas`); // Ruta a la lista de empresas
+                        navigate(`/mis-empresas/${id}/mascotas`); // Ruta a la lista de empresas
                     }
                 });
             } else { alert("Error al actualizar el registro"); }
@@ -123,179 +123,209 @@ const EditMascotaForm = () => {
 
 
     return (
-        <form onSubmit={updatedMascotaq} className="w-full max-w-screen-xl mx-auto p-8 rounded-xl shadow bg-white">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* Sección izquierda: Datos de la Mascota */}
-                <div className="lg:col-span-2 border-r border-gray-200 pr-6">
-                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">🐾 Datos de la Mascota</h2>
+        <div className="w-full max-w-screen-xl mx-auto mb-4">
+            <div className="flex flex-wrap justify-center items-center px-6 py-4">
 
+                <div className="flex gap-3 mt-2 lg:mt-0 flex-wrap">
+                    <button
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historial-clinico`)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition"
+                    >
+                        🩺 Historial Clínico
+                    </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
-                        {/* Repite este bloque para cada campo */}
-                        <div>
-                            <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
-                            <input
-                                type="text"
-                                id="mas_nombre"
-                                value={formData.mas_nombre}
-                                onChange={(e) => setFormData({ ...formData, mas_nombre: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                placeholder="Ingrese nombre"
-                            />
-                        </div>
+                    <button
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/crear-consulta`)}
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md transition"
+                    >
+                        ➕ Nueva Consulta
+                    </button>
 
-                        <div>
-                            <label htmlFor="mas_fechaNac" className="block mb-1 text-sm font-medium text-gray-700">Fecha de nacimiento</label>
-                            <input
-                                type="date"
-                                id="mas_fechaNac"
-                                value={formData.mas_fechaNac?.split("T")[0] || ""}
-                                onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="mas_color" className="block mb-1 text-sm font-medium text-gray-700">Color</label>
-                            <input
-                                type="text"
-                                id="mas_color"
-                                value={formData.mas_color}
-                                onChange={(e) => setFormData({ ...formData, mas_color: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                placeholder="Color"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="mas_microchip" className="block mb-1 text-sm font-medium text-gray-700">Microchip</label>
-                            <input
-                                type="text"
-                                id="mas_microchip"
-                                value={formData.mas_microchip}
-                                onChange={(e) => setFormData({ ...formData, mas_microchip: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                placeholder="Microchip"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">Foto (URL)</label>
-                            <input
-                                type="text"
-                                id="mas_foto"
-                                value={formData.mas_foto}
-                                onChange={(e) => setFormData({ ...formData, mas_foto: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                placeholder="URL de foto"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="mas_notas" className="block mb-1 text-sm font-medium text-gray-700">Notas</label>
-                            <input
-                                type="text"
-                                id="mas_notas"
-                                value={formData.mas_notas}
-                                onChange={(e) => setFormData({ ...formData, mas_notas: e.target.value })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                placeholder="Notas"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Esterilizado</label>
-                            <select
-                                value={formData.mas_esterilizado ? "true" : "false"}
-                                onChange={(e) => setFormData({ ...formData, mas_esterilizado: e.target.value === "true" })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="true">Sí</option>
-                                <option value="false">No</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Estado</label>
-                            <select
-                                value={formData.activo ? "true" : "false"}
-                                onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="true">Activo</option>
-                                <option value="false">Inactivo</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
-                            <select
-                                value={formData.especie_id}
-                                onChange={handleEspecieCHange}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value={0}>-- Selecciona Especie --</option>
-                                {especies.map((esp: any) => (
-                                    <option key={esp.id} value={esp.id}>{esp.nombre}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>
-                            <select
-                                value={formData.raza_id}
-                                onChange={(e) => setFormData({ ...formData, raza_id: Number(e.target.value) })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="">-- Selecciona Raza --</option>
-                                {razas.map((raza: any) => (
-                                    <option key={raza.id} value={raza.id}>{raza.nombre}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
+                    <button
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/vacunas`)}
+                        className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition"
+                    >
+                        💉 Vacunas
+                    </button>
                 </div>
 
-                {/* Sección derecha: Cliente */}
-                <div>
-                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
+            </div>
+            <form onSubmit={updatedMascotaq} className="w-full max-w-screen-xl mx-auto p-8 rounded-xl shadow bg-white">
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    {/* Sección izquierda: Datos de la Mascota */}
+                    <div className="lg:col-span-2 border-r border-gray-200 pr-6">
+                        <h2 className="text-2xl font-semibold mb-6 text-gray-800">🐾 Datos de la Mascota</h2>
+
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+                            {/* Repite este bloque para cada campo */}
+                            <div>
+                                <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
+                                <input
+                                    type="text"
+                                    id="mas_nombre"
+                                    value={formData.mas_nombre}
+                                    onChange={(e) => setFormData({ ...formData, mas_nombre: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                    placeholder="Ingrese nombre"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="mas_fechaNac" className="block mb-1 text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+                                <input
+                                    type="date"
+                                    id="mas_fechaNac"
+                                    value={formData.mas_fechaNac?.split("T")[0] || ""}
+                                    onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="mas_color" className="block mb-1 text-sm font-medium text-gray-700">Color</label>
+                                <input
+                                    type="text"
+                                    id="mas_color"
+                                    value={formData.mas_color}
+                                    onChange={(e) => setFormData({ ...formData, mas_color: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                    placeholder="Color"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="mas_microchip" className="block mb-1 text-sm font-medium text-gray-700">Microchip</label>
+                                <input
+                                    type="text"
+                                    id="mas_microchip"
+                                    value={formData.mas_microchip}
+                                    onChange={(e) => setFormData({ ...formData, mas_microchip: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                    placeholder="Microchip"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">Foto (URL)</label>
+                                <input
+                                    type="text"
+                                    id="mas_foto"
+                                    value={formData.mas_foto}
+                                    onChange={(e) => setFormData({ ...formData, mas_foto: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                    placeholder="URL de foto"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="mas_notas" className="block mb-1 text-sm font-medium text-gray-700">Notas</label>
+                                <input
+                                    type="text"
+                                    id="mas_notas"
+                                    value={formData.mas_notas}
+                                    onChange={(e) => setFormData({ ...formData, mas_notas: e.target.value })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                    placeholder="Notas"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Esterilizado</label>
+                                <select
+                                    value={formData.mas_esterilizado ? "true" : "false"}
+                                    onChange={(e) => setFormData({ ...formData, mas_esterilizado: e.target.value === "true" })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                >
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Estado</label>
+                                <select
+                                    value={formData.activo ? "true" : "false"}
+                                    onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                >
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
+                                <select
+                                    value={formData.especie_id}
+                                    onChange={handleEspecieCHange}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                >
+                                    <option value={0}>-- Selecciona Especie --</option>
+                                    {especies.map((esp: any) => (
+                                        <option key={esp.id} value={esp.id}>{esp.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>
+                                <select
+                                    value={formData.raza_id}
+                                    onChange={(e) => setFormData({ ...formData, raza_id: Number(e.target.value) })}
+                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                >
+                                    <option value="">-- Selecciona Raza --</option>
+                                    {razas.map((raza: any) => (
+                                        <option key={raza.id} value={raza.id}>{raza.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Sección derecha: Cliente */}
                     <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
-                        <select
-                            value={formData.cliente_id}
-                            onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
-                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                        >
-                            <option value="0">-- Selecciona Cliente --</option>
-                            {clientes.map((cli) => (
-                                <option key={cli.cli_id} value={cli.cli_id}>
-                                    {cli.cli_nombre} {cli.cli_apellido}
-                                </option>
-                            ))}
-                        </select>
+                        <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
+                            <select
+                                value={formData.cliente_id}
+                                onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                            >
+                                <option value="0">-- Selecciona Cliente --</option>
+                                {clientes.map((cli) => (
+                                    <option key={cli.cli_id} value={cli.cli_id}>
+                                        {cli.cli_nombre} {cli.cli_apellido}
+                                    </option>
+                                ))}
+                            </select>
 
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate(`/mis-empresas/${id}/clientes/crear-cliente?returnTo=/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
-                            }
-                            className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
-                        >
-                            + Crear Propietario
-                        </button>
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigate(`/mis-empresas/${id}/clientes/crear-cliente?returnTo=/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
+                                }
+                                className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
+                            >
+                                + Crear Propietario
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Botón de acción */}
-            <div className="mt-10 flex justify-center">
-                <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
+                {/* Botón de acción */}
+                <div className="mt-10 flex justify-center">
+                    <div className="flex justify-center mt-4">
+                        <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     );
 
 

@@ -6,9 +6,19 @@ import Swal from "sweetalert2";
 
 const CreateClienteForm = () => {
     const { id: empresaId, mascotaId } = useParams();
+    const{id} = useParams();
     const [searchParams] = useSearchParams();
     const returnTo = searchParams.get("returnTo");
     const navigate = useNavigate();
+
+    const extractEmpresaId = () => {
+        if (empresaId) return Number(empresaId); // Si viene desde la URL
+        const returnTo = searchParams.get("returnTo");
+        const match = returnTo?.match(/mis-empresas\/(\d+)/); // extrae el ID del string
+        if (match) return Number(match[1]); // si encuentra un número
+        return null;
+    };
+
     const [formData, setFormData] = useState({
         cli_identificacion: "",
         cli_nombre: "",
@@ -18,12 +28,28 @@ const CreateClienteForm = () => {
         cli_direccion: "",
         cli_observaciones: "",
         activo: true,
-        empresa_id: Number(empresaId),
+        empresa_id: extractEmpresaId() || 0,
     });
 
+
+    
     const sendCliente = async (e: React.FormEvent) => {
         e.preventDefault();
-        const resultado = await createCliente(formData);
+
+        const empresa_id_final = extractEmpresaId();
+
+        if (!empresa_id_final) {
+            alert("No se pudo determinar el ID de la empresa.");
+            return;
+        }
+
+        const clienteFinal = {
+            ...formData,
+            empresa_id: empresa_id_final,
+        };
+
+        console.log("Formulario a enviar:", clienteFinal);
+        const resultado = await createCliente(clienteFinal);
         if (resultado) {
             Swal.fire({
                 icon: 'success',
@@ -32,9 +58,12 @@ const CreateClienteForm = () => {
                 timer: 5000,
                 timerProgressBar: true,
                 didClose: () => {
-                    const redireccion = returnTo ? returnTo : `/mis-empresas/${empresaId}/clientes`;
-                    console.log("🔄 Redirigiendo a:", redireccion);
-                    navigate(redireccion);
+                    if (returnTo) {
+                        const redirectWithCliente = `${returnTo}${returnTo.includes("?") ? "&" : "?"}newClienteId=${resultado.cli_id}`;
+                        navigate(redirectWithCliente);
+                    } else {
+                        navigate(`/mis-empresas/${id}/clientes`);
+                    }
                 }
             });
             setFormData({

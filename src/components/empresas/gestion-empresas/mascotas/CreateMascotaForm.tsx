@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { crearMascota, getMascotaById } from "../../../../services/gestion-empresa/mascotas/mascotas";
 import Swal from "sweetalert2";
 import { getClientes } from "../../../../services/gestion-empresa/clientes/clientes";
@@ -9,8 +9,11 @@ import { Raza } from "../../../../types/mascotas/raza";
 import { Especie } from "../../../../types/mascotas/especie";
 
 const CreateMascotaForm = () => {
-    const { id: empresaId } = useParams();
-     const {mascotaId } = useParams();
+    const { empresaId } = useParams();
+    const { mascotaId } = useParams();
+    const [searchParams] = useSearchParams();
+    const { id } = useParams();
+    const empresaIdNum = id ? parseInt(id, 10) : 0;
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         mas_nombre: "",
@@ -24,7 +27,7 @@ const CreateMascotaForm = () => {
         especie_id: 0,
         raza_id: 0,
         cliente_id: 0,
-        empresa_id: Number(empresaId),
+        empresa_id: empresaIdNum,
         activo: true,
     });
 
@@ -34,9 +37,19 @@ const CreateMascotaForm = () => {
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
 
     useEffect(() => {
+        const newClienteId = searchParams.get("newClienteId");
+        if (newClienteId) {
+            setFormData((prev) => ({
+                ...prev,
+                cliente_id: Number(newClienteId),
+            }));
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
         const fetchData = async () => {
 
-            
+
             const clientesRes = await getClientes();
             setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
 
@@ -55,7 +68,7 @@ const CreateMascotaForm = () => {
             }));
             setRazas(razasMapped);
             setRazasTodas(razasMapped);
-           
+
 
         };
         fetchData();
@@ -63,9 +76,9 @@ const CreateMascotaForm = () => {
 
     const handleEspecieCHange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const especieId = Number(e.target.value);
-        setFormData({...formData, especie_id: especieId, raza_id:0});
+        setFormData({ ...formData, especie_id: especieId, raza_id: 0 });
 
-        const razasFiltradas = razastodas.filter(r =>  r.especie_id === especieId);
+        const razasFiltradas = razastodas.filter(r => r.especie_id === especieId);
         setRazas(razasFiltradas);
     }
 
@@ -76,8 +89,8 @@ const CreateMascotaForm = () => {
 
         const formDataFixed = {
             ...formData,
-            empresa_id: Number(empresaId),
-            especie_id:Number(formData.especie_id),
+            empresa_id: empresaIdNum,
+            especie_id: Number(formData.especie_id),
             raza_id: Number(formData.raza_id),
         }
 
@@ -94,7 +107,7 @@ const CreateMascotaForm = () => {
                 timer: 5000,
                 timerProgressBar: true,
                 didClose: () => {
-                    navigate(`/mis-empresas/${empresaId}/mascotas`);
+                    navigate(`/mis-empresas/${id}/mascotas`);
                 }
             });
             setFormData({
@@ -117,221 +130,184 @@ const CreateMascotaForm = () => {
         }
     }
     return (
-        <form onSubmit={sendMascota} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
+        <form onSubmit={sendMascota} className="w-full max-w-screen-xl mx-auto p-8 rounded-xl shadow bg-white">
 
-            <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
-                <div className="div">
-                    <h2>aqui va una seccion par adirigir al formulario de crear</h2>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                {/* Sección izquierda: Datos de la Mascota */}
+                <div className="lg:col-span-2 border-r border-gray-200 pr-6">
+                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">🐾 Datos de la Mascota</h2>
+
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+                        {/* Repite este bloque para cada campo */}
+                        <div>
+                            <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
                             <input
-                                value={formData.mas_nombre}
-                                onChange={(e) => setFormData({ ...formData, mas_nombre: e.target.value })}
                                 type="text"
                                 id="mas_nombre"
-                                name="mas_nombre"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_nombre"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Nombre</label>
+                                value={formData.mas_nombre}
+                                onChange={(e) => setFormData({ ...formData, mas_nombre: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                placeholder="Ingrese nombre"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label htmlFor="mas_fechaNac" className="block mb-1 text-sm font-medium text-gray-700">Fecha de nacimiento</label>
                             <input
-                                value={formData.mas_fechaNac}
-                                onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
-                                type="text"
+                                type="date"
                                 id="mas_fechaNac"
-                                name="mas_fechaNac"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_fechaNac"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Fecha de nacimiento</label>
+                                value={formData.mas_fechaNac?.split("T")[0] || ""}
+                                onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label htmlFor="mas_color" className="block mb-1 text-sm font-medium text-gray-700">Color</label>
                             <input
-                                value={formData.mas_color}
-                                onChange={(e) => setFormData({ ...formData, mas_color: e.target.value })}
                                 type="text"
                                 id="mas_color"
-                                name="mas_color"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_color"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Color</label>
+                                value={formData.mas_color}
+                                onChange={(e) => setFormData({ ...formData, mas_color: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                placeholder="Color"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label htmlFor="mas_microchip" className="block mb-1 text-sm font-medium text-gray-700">Microchip</label>
                             <input
-                                value={formData.mas_microchip}
-                                onChange={(e) => setFormData({ ...formData, mas_microchip: e.target.value })}
                                 type="text"
                                 id="mas_microchip"
-                                name="mas_microchip"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_microchip"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar microchip</label>
+                                value={formData.mas_microchip}
+                                onChange={(e) => setFormData({ ...formData, mas_microchip: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                placeholder="Microchip"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">Foto (URL)</label>
                             <input
-                                value={formData.mas_foto}
-                                onChange={(e) => setFormData({ ...formData, mas_foto: e.target.value })}
                                 type="text"
                                 id="mas_foto"
-                                name="mas_foto"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_foto"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar foto</label>
+                                value={formData.mas_foto}
+                                onChange={(e) => setFormData({ ...formData, mas_foto: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                placeholder="URL de foto"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label htmlFor="mas_notas" className="block mb-1 text-sm font-medium text-gray-700">Notas</label>
                             <input
-                                value={formData.mas_notas}
-                                onChange={(e) => setFormData({ ...formData, mas_notas: e.target.value })}
                                 type="text"
                                 id="mas_notas"
-                                name="mas_notas"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="mas_notas"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Notas</label>
+                                value={formData.mas_notas}
+                                onChange={(e) => setFormData({ ...formData, mas_notas: e.target.value })}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                placeholder="Notas"
+                            />
                         </div>
-                    </div>
 
-
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Esterilizado</label>
                             <select
                                 value={formData.mas_esterilizado ? "true" : "false"}
                                 onChange={(e) => setFormData({ ...formData, mas_esterilizado: e.target.value === "true" })}
-                                className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             >
-                                <option value="true">Si</option>
+                                <option value="true">Sí</option>
                                 <option value="false">No</option>
                             </select>
-                            <label
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 "
-                            >
-                                Esterilizado
-                            </label>
                         </div>
-                    </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Estado</label>
                             <select
                                 value={formData.activo ? "true" : "false"}
                                 onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
-                                className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value="true">Activo</option>
                                 <option value="false">Inactivo</option>
                             </select>
-                            <label
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 "
-                            >
-                                Estado
-                            </label>
                         </div>
-                    </div>
 
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.cliente_id}
-                                onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
-                                className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="0">-- Selecciona Cliente --</option>
-                                {clientes.map((cli) => (
-                                    <option key={cli.cli_id} value={cli.cli_id}>
-                                        {cli.cli_nombre} {cli.cli_apellido}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600">
-                                Cliente
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* Especie */}
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
                             <select
                                 value={formData.especie_id}
-                                onChange={handleEspecieCHange }
-                                className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                onChange={handleEspecieCHange}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value={0}>-- Selecciona Especie --</option>
-                                {especies.map((esp:any) => (
-                                    <option key={esp.id} value={esp.id}>
-                                        {esp.nombre}
-                                    </option>
+                                {especies.map((esp: any) => (
+                                    <option key={esp.id} value={esp.id}>{esp.nombre}</option>
                                 ))}
                             </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600">
-                                Especie
-                            </label>
                         </div>
-                    </div>
 
-                    {/* Raza */}
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>
                             <select
                                 value={formData.raza_id}
                                 onChange={(e) => setFormData({ ...formData, raza_id: Number(e.target.value) })}
-                                className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value="">-- Selecciona Raza --</option>
                                 {razas.map((raza: any) => (
-                                    <option key={raza.id} value={raza.id}>
-                                        {raza.nombre}
-                                    </option>
+                                    <option key={raza.id} value={raza.id}>{raza.nombre}</option>
                                 ))}
                             </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600">
-                                Raza
-                            </label>
                         </div>
                     </div>
-
                 </div>
+
+                {/* Sección derecha: Cliente */}
+                <div>
+                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
+                        <select
+                            value={formData.cliente_id}
+                            onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
+                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                        >
+                            <option value="0">-- Selecciona Cliente --</option>
+                            {clientes.map((cli) => (
+                                <option key={cli.cli_id} value={cli.cli_id}>
+                                    {cli.cli_nombre} {cli.cli_apellido}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            type="button"
+                            className="text-blue-600 underline hover:text-blue-800"
+                            onClick={() => {
+                                const returnTo = mascotaId
+                                    ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
+                                    : `/mis-empresas/${id}/mascotas/crear-mascota`;
+
+                                navigate(
+                                    `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
+                                );
+                            }}
+                        >
+                            ➕ Crear nuevo cliente
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            {/* Botón de acción */}
+            <div className="mt-10 flex justify-center">
                 <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Mascota</button>
+                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
                 </div>
             </div>
         </form>

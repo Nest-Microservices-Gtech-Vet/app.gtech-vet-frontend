@@ -120,7 +120,11 @@ const CreateMascotaForm = () => {
 
             <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
+                <div className="div">
+                    <h2>aqui va una seccion par adirigir al formulario de crear</h2>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
+                    
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input

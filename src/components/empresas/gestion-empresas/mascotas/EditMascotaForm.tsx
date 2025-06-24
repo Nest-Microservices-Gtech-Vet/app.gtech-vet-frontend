@@ -121,7 +121,7 @@ const EditMascotaForm = () => {
     }
 
     return (
-       <form onSubmit={updatedMascotaq} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
+        <form onSubmit={updatedMascotaq} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
 
             <div className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
@@ -292,11 +292,11 @@ const EditMascotaForm = () => {
                         <div className="relative bg-inherit">
                             <select
                                 value={formData.especie_id}
-                                onChange={handleEspecieCHange }
+                                onChange={handleEspecieCHange}
                                 className="peer bg-gray-50 h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
                             >
                                 <option value={0}>-- Selecciona Especie --</option>
-                                {especies.map((esp:any) => (
+                                {especies.map((esp: any) => (
                                     <option key={esp.id} value={esp.id}>
                                         {esp.nombre}
                                     </option>

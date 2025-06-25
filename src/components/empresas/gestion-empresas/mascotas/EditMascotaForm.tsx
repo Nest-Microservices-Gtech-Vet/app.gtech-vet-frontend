@@ -129,14 +129,14 @@ const EditMascotaForm = () => {
 
                 <div className="flex gap-3 mt-2 lg:mt-0 flex-wrap">
                     <button
-                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historial-clinico`)}
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historia-clinica`)}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition"
                     >
                         🩺 Historial Clínico
                     </button>
 
                     <button
-                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/crear-consulta`)}
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/nueva`)}
                         className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md transition"
                     >
                         ➕ Nueva Consulta

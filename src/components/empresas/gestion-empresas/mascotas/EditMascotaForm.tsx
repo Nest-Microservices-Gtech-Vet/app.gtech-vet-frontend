@@ -129,22 +129,29 @@ const EditMascotaForm = () => {
 
                 <div className="flex gap-3 mt-2 lg:mt-0 flex-wrap">
                     <button
+                        onClick={() => navigate(`/mis-empresas/${id}/mascotas`)}
+                        className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-md transition"
+                    >
+                        🔙 Volver a Mascota
+                    </button>
+
+                    <button
                         onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historia-clinica`)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition"
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition"
                     >
                         🩺 Historial Clínico
                     </button>
 
                     <button
                         onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/nueva`)}
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md transition"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 rounded-md transition"
                     >
                         ➕ Nueva Consulta
                     </button>
 
                     <button
                         onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/vacunas`)}
-                        className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition"
+                        className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
                     >
                         💉 Vacunas
                     </button>

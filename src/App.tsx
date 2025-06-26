@@ -28,6 +28,7 @@ import CreateMascotaForm from "./components/empresas/gestion-empresas/mascotas/C
 import EditMascotaForm from "./components/empresas/gestion-empresas/mascotas/EditMascotaForm";
 import CreateConsultaForm from "./components/empresas/gestion-empresas/consultas/CreateConsultaForm";
 import HistoriaClinicaList from "./components/empresas/gestion-empresas/historia-clinica/HistoriaClinicaList";
+import EditConsultaForm from "./components/empresas/gestion-empresas/consultas/EditConsultaForm";
 
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -275,6 +276,7 @@ const App = () => {
 
             <Route path="mascotas/:mascotaId/historia-clinica" element={<HistoriaClinicaList />} />
             <Route path="mascotas/editar-mascota/:mascotaId/historia-clinica/nueva" element={<CreateConsultaForm />} />
+            <Route path="mascotas/editar-mascota/:mascotaId/historia-clinica/:consultaId/modificar" element={<EditConsultaForm />} />
             {/* <Route path="mascotas/:mascotaId/historia-clinica/:consultaId" element={<ConsultaDetail />} /> */}
 
 

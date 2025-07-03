@@ -276,7 +276,7 @@ const CreateMascotaForm = () => {
                             onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
                             className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                         >
-                            <option value="0">-- Selecciona Cliente --</option>
+                            <option value="0">-- Selecciona El Propietario --</option>
                             {clientes.map((cli) => (
                                 <option key={cli.cli_id} value={cli.cli_id}>
                                     {cli.cli_nombre} {cli.cli_apellido}
@@ -286,7 +286,8 @@ const CreateMascotaForm = () => {
 
                         <button
                             type="button"
-                            className="text-blue-600 underline hover:text-blue-800"
+                            className="bg-blue-500 px-3 py-1 mt-2 rounded-md hover:bg-blue-600 text-white"
+                            
                             onClick={() => {
                                 const returnTo = mascotaId
                                     ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`

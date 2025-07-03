@@ -2,26 +2,16 @@ import { Consulta } from "../../../types/consulta/consulta";
 import { apiFetch } from "../../api";
 
 //inicia crear consulta
-export const crearConsulta = async (consultaData: {
-    con_fecha: string;
-    con_motivo: string;
-    con_sintomas: string;
-    con_diagnostico: string;
-    con_tratamiento: string;
-    con_recomendaciones: string;
-    historiaClinica_id: number;
-    empresa_id: number;
-
-}) => {
+export const crearConsulta = async (consultaData: Consulta & { patologiasIds: number[] }) => {
     try {
         const dataConsulta = await apiFetch(`consulta`, {
             method: "POST",
             body: JSON.stringify(consultaData),
         });
         console.log("consulta creada", dataConsulta);
-        return dataConsulta
+        return dataConsulta;
     } catch (error) {
-        console.error("error al crear consulta:", error)
+        console.error("error al crear consulta:", error);
         return null;
     }
 };
@@ -39,7 +29,7 @@ export const modifyConsulta = async (consultaId: string, consultaData: {
     empresa_id: number;
 }) => {
     try {
-        const data = await apiFetch(`consulta/mascota/${consultaId}/modificar`,{
+        const data = await apiFetch(`consulta/mascota/${consultaId}/modificar`, {
             method: "PATCH",
             body: JSON.stringify(consultaData),
         });

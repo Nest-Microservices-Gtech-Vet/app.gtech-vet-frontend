@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 const CreateClienteForm = () => {
     const { id: empresaId, mascotaId } = useParams();
-    const{id} = useParams();
+    const { id } = useParams();
     const [searchParams] = useSearchParams();
     const returnTo = searchParams.get("returnTo");
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const CreateClienteForm = () => {
     });
 
 
-    
+
     const sendCliente = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -93,6 +93,9 @@ const CreateClienteForm = () => {
                 <h2 className="text-2xl font-bold mb-4">Ingrese los datos del cliente</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
 
+
+
+
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
                             <input
@@ -102,11 +105,17 @@ const CreateClienteForm = () => {
                                 id="cli_identificacion"
                                 name="cli_identificacion"
                                 className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                placeholder="Ejemplo:1753696804001"
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_identificacion"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar RUC o Cedula</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto 
+      `}>Ingresar RUC o Cedula</label>
                         </div>
                     </div>
 
@@ -119,11 +128,17 @@ const CreateClienteForm = () => {
                                 id="cli_nombre"
                                 name="cli_nombre"
                                 className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                placeholder="Ejemplo: Santiago "
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_nombre"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Nombre</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}>Ingresar Nombre</label>
                         </div>
                     </div>
 
@@ -131,18 +146,31 @@ const CreateClienteForm = () => {
                         <div className="relative bg-inherit">
                             <input
                                 value={formData.cli_apellido}
-                                onChange={(e) => setFormData({ ...formData, cli_apellido: e.target.value })}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, cli_apellido: e.target.value })
+                                }
                                 type="text"
                                 id="cli_apellido"
                                 name="cli_apellido"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-black ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600 placeholder-opacity-0 focus:placeholder-opacity-100 transition-all"
+                                placeholder="Ejemplo: Mendoza"
+                                autoComplete="off"
+                            />
                             <label
                                 htmlFor="cli_apellido"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Apellido</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}
+                            >
+                                Ingresar Apellido
+                            </label>
                         </div>
                     </div>
+
 
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="relative bg-inherit">
@@ -152,12 +180,18 @@ const CreateClienteForm = () => {
                                 type="email"
                                 id="cli_email"
                                 name="cli_email"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                placeholder="Ejemplo: ejemplo@gmail.com "
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_email"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Email</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}>Ingresar Email</label>
                         </div>
                     </div>
 
@@ -169,12 +203,18 @@ const CreateClienteForm = () => {
                                 type="text"
                                 id="cli_celular"
                                 name="cli_celular"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                placeholder="Ejemplo: 0987654321 "
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_celular"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Celular</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}>Ingresar Celular</label>
                         </div>
                     </div>
 
@@ -186,12 +226,18 @@ const CreateClienteForm = () => {
                                 type="text"
                                 id="cli_direccion"
                                 name="cli_direccion"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                placeholder="Ejemplo: Quito-ecuador "
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_direccion"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Direccion</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}>Ingresar Direccion</label>
                         </div>
                     </div>
 
@@ -203,12 +249,18 @@ const CreateClienteForm = () => {
                                 type="text"
                                 id="cli_observaciones"
                                 name="cli_observaciones"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
+                                className="peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+                                placeholder="Ejemplo: Dueño dos mascotas "
                                 autoComplete="new-password" />
                             <label
                                 htmlFor="cli_observaciones"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-50 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50 ">Ingresar Observaciones</label>
+                                className={`
+        absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
+        peer-focus:bg-gray-50
+        -top-3 text-sm w-auto
+      `}>Ingresar Observaciones</label>
                         </div>
                     </div>
 

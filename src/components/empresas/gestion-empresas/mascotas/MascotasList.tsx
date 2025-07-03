@@ -77,10 +77,10 @@ const MascotasList = () => {
                         <tr className="text-left">
                             <th className="p-2">Nombres</th>
                             <th className="p-2">Fecha Nacimiento</th>
+                            <th className="p-2">Especie</th>
                             <th className="p-2">Color</th>
                             <th className="p-2">Esterilizado</th>
                             <th className="p-2">Estado</th>
-                            <th className="p-2">dueño</th>
                             <th className="p-2">Acciones</th>
 
                             {/* <th className="p-2">Modificar</th> */}
@@ -92,7 +92,7 @@ const MascotasList = () => {
                             <tr key={mascota.mas_id} className="shadow-amber-50">
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_nombre}</td>
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_fechaNac?.split('T')[0] || ""}</td>
-                                {/* <td className="p-2 whitespace-nowrap">{mascota.mas_identificacion}</td> */}
+                                <td className="p-2 whitespace-nowrap">{mascota.especie_id}</td>
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_color}</td>
                                 <td className="p-2 whitespace-nowrap">
                                     {mascota.mas_esterilizado ? (
@@ -109,7 +109,7 @@ const MascotasList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
-                                <td className="p-2 whitespace-nowrap">{mascota.cliente_id}</td>
+                                
                                 {/* <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => handleEmpresaUsuario(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios

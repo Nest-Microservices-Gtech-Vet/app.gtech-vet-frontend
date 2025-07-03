@@ -26,7 +26,7 @@ const HistoriaClinicaList = () => {
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">📋 Historia Clínica</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">📋 Historia Clínica n°: {historiaClinica.hic_id}</h2>
 
       <div className="flex justify-items-start gap-4 mb-6">
         <button
@@ -41,6 +41,12 @@ const HistoriaClinicaList = () => {
         >
           ➕ Nueva Consulta
         </button>
+        <button
+          onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/vacunas`)}
+          className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
+        >
+          💉 Vacunas
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -50,6 +56,7 @@ const HistoriaClinicaList = () => {
             <div className="mb-4">
               <p><strong>Consultas registradas:</strong> {historiaClinica.consultas?.length ?? 0}</p>
             </div>
+
             <p><strong>Estado HC:</strong> {historiaClinica.hic_estado}</p>
             <p><strong>Nombre Mascota:</strong> {historiaClinica.mascota?.mas_nombre || 'No disponible'}</p>
             <p><strong>Propietario:</strong> {historiaClinica.mascota?.propietario?.cli_nombre || 'No disponible'}</p>
@@ -71,8 +78,16 @@ const HistoriaClinicaList = () => {
                 >
                   <div className="flex justify-between items-center">
                     <div className="text-gray-800 text-sm">
-                      <p><strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}</p>
+                      {/* <p><strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}</p>
                       <p><strong>📝 Motivo:</strong> {consulta.con_motivo}</p>
+                      <p><strong>📝 firmante- doc.dantiago david:</strong> </p>
+                      <p><strong>📝 examenes:</strong> si  </p> */}
+                      <p>
+                        <strong>📝 Numero de consulta:</strong> {consulta.con_numero_mascota}
+                        <strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}
+                        <strong>📝 Motivo:</strong> {consulta.con_motivo}</p>
+                      <p><strong>📝 firmante- doc.dantiago david:</strong>
+                        <strong>📝 examenes:</strong> si  </p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -89,8 +104,9 @@ const HistoriaClinicaList = () => {
                         }
                         className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-3 py-1 rounded-md transition"
                       >
-                        ✏️ Editar
+                        ✏️ Ver
                       </button>
+                      {/* desactivar ver despues de 48 horas */}
                     </div>
 
 
@@ -102,10 +118,10 @@ const HistoriaClinicaList = () => {
                   >
                     {expanded === consulta.con_id && (
                       <div className="pt-4 mt-2 border-t border-gray-200 bg-gray-50 rounded-md px-4 py-3 text-sm text-gray-700 space-y-2">
-                        <p><strong>🩻 Sintomas:</strong> {consulta.con_sintomas || 'No especificado'}</p>
-                        <p><strong>🩻 Diagnóstico:</strong> {consulta.con_diagnostico || 'No especificado'}</p>
-                        <p><strong>💊 Tratamiento:</strong> {consulta.con_tratamiento || 'No especificado'}</p>
-                        <p><strong>🗒️ Recomendaciones:</strong> {consulta.con_recomendaciones || 'Sin Recomendaciones'}</p>
+                        <p><strong>🗒️ Diagnostico Presuntivo:</strong> {consulta.con_diagnosticoPresuntivo || 'No especificado'}</p>
+                        <p><strong>🩻 Observaciones:</strong> {consulta.con_observaciones || 'No especificado'}</p>
+                        <p><strong>💊 Recomendadiones:</strong> {consulta.con_recomendaciones || 'No especificado'}</p>
+                        
                       </div>
                     )}
                   </div>

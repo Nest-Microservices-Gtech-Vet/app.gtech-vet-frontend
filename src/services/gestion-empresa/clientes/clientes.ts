@@ -2,9 +2,9 @@ import { Cliente } from "../../../types/clientes/cliente";
 import { apiFetch } from "../../api";
 
 //empieza obtener clientes
-export const getClientes = async (): Promise<{ data: Cliente[] }> => {
+export const getClientes = async (empresaId:number): Promise<{ data: Cliente[] }> => {
     try {
-        const data = await apiFetch(`clientes`);
+        const data = await apiFetch(`clientes?empresa_id=${empresaId}`);
         console.log("clientes obtenidos", data)
         return { data };
     } catch (error) {

@@ -13,8 +13,8 @@ const MascotasList = () => {
         const fetchMascotas = async () => {
             setLoading(true);
             try {
-                //const empresaId = Number(id);
-                const data = await getMascotas();
+                const empresaId = Number(id);
+                const data = await getMascotas(empresaId);
                 if (Array.isArray(data)) {
                     setMascotas(data);
                 } else {

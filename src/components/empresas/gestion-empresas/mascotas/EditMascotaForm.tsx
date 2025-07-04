@@ -36,7 +36,8 @@ const EditMascotaForm = () => {
     useEffect(() => {
         const fetchMascota = async () => {
             try {
-                const clientesRes = await getClientes();
+                const empresaId = Number(id);
+                const clientesRes = await getClientes(empresaId);
                 setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
 
                 const especiesGet = await getEspecies();

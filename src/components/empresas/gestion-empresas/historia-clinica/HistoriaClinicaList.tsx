@@ -83,7 +83,9 @@ const HistoriaClinicaList = () => {
                       <p><strong>📝 firmante- doc.dantiago david:</strong> </p>
                       <p><strong>📝 examenes:</strong> si  </p> */}
                       <p>
-                        <strong>📝 Numero de consulta:</strong> {consulta.con_numero_mascota}
+                        <strong>📝 Numero de consulta:</strong> {consulta.con_numero_mascota} 
+                        {/* muestra el id original global de la consulta */}
+                        {/* <strong>📝 id consulta:</strong>{consulta.con_id} */}
                         <strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}
                         <strong>📝 Motivo:</strong> {consulta.con_motivo}</p>
                       <p><strong>📝 firmante- doc.dantiago david:</strong>

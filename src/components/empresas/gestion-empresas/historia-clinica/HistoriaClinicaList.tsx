@@ -41,12 +41,12 @@ const HistoriaClinicaList = () => {
         >
           ➕ Nueva Consulta
         </button>
-        <button
+        {/* <button
           onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/vacunas`)}
           className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
         >
           💉 Vacunas
-        </button>
+        </button> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

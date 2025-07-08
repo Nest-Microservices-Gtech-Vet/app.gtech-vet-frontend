@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { registrarVacuna, obtenerConsultaActiva } from "../../../../services/gestion-empresa/vacunas/vacunas";
 
 const tiposVacuna = [
@@ -10,7 +10,9 @@ const tiposVacuna = [
 ];
 
 const CreateVacunasForm = () => {
+
   const { mascotaId, id: empresaId } = useParams();
+    const navigate = useNavigate();
 
   const [consultaId, setConsultaId] = useState<number | null>(null);
   const [numeroConsulta, setNumeroConsulta] = useState<number | null>(null);
@@ -75,7 +77,11 @@ const CreateVacunasForm = () => {
 
     try {
       await registrarVacuna(payload, selectedFiles);
-      Swal.fire("Éxito", "Vacuna registrada correctamente", "success");
+      Swal.fire("Éxito", "Vacuna registrada correctamente", "success").then(() =>{
+        navigate(
+      `/mis-empresas/${empresaId}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consultaId}/ver`
+    );
+      });
 
       // Limpiar formulario
       setFormData({

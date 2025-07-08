@@ -102,7 +102,7 @@ const HistoriaClinicaList = () => {
 
                       <button
                         onClick={() =>
-                          navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/${consulta.con_id}/modificar`)
+                          navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consulta.con_id}/ver`)
                         }
                         className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-3 py-1 rounded-md transition"
                       >

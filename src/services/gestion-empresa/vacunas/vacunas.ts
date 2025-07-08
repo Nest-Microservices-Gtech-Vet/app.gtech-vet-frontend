@@ -29,3 +29,8 @@ export const obtenerConsultaActiva = async (empresaId: string, mascotaId: string
   const endpoint = `consulta/activa?empresa_id=${empresaId}&mascota_id=${mascotaId}`;
   return await apiFetch(endpoint);
 };
+
+export const getVacunasPorConsulta = async (consultaId: string) => {
+  const res = await apiFetch(`vacuna/consulta/${consultaId}`);
+  return res;
+};

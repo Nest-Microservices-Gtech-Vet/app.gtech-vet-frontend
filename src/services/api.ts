@@ -3,9 +3,12 @@ const API_URL = "http://localhost:3010/api";
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     const token = localStorage.getItem("accessToken");
 
+    const isFormData = options.body instanceof FormData;
+
     const headers: HeadersInit = {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}), // Si hay token, se envía en los headers
+        ...(isFormData ? {} : { "Content-Type": "application/json" })
     };
 
     // Verifica si es un GET y tiene parámetros

@@ -42,7 +42,7 @@ const HistoriaClinicaList = () => {
           ➕ Nueva Consulta
         </button>
         <button
-          onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/vacunas`)}
+          onClick={() => navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/vacunas`)}
           className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
         >
           💉 Vacunas
@@ -127,13 +127,29 @@ const HistoriaClinicaList = () => {
                       </div>
                     )}
                   </div>
+                  <button
+  onClick={() => navigate(
+    `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consulta.con_id}/vacuna/registrar`, {
+      state: {
+        numeroConsulta: consulta.con_numero_mascota,
+      }
+    }
+  )}
+  className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
+>
+  💉 Registrar Vacuna
+</button>
                 </li>
               ))}
+              
 
             </ul>
           )}
+          
         </div>
+        
       </div>
+      
     </div>
   );
 };

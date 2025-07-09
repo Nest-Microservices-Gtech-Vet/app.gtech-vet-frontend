@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getConsultaById } from "../../../../services/gestion-empresa/consultas/consulta";
 import { getVacunasPorConsulta } from "../../../../services/gestion-empresa/vacunas/vacunas";
+import TratamientoForm from "../tratamiento/TratamientoForm";
 
 const ConsultaDetalle = () => {
     const { empresaId, mascotaId, consultaId, id } = useParams();
@@ -135,6 +136,11 @@ const ConsultaDetalle = () => {
                         <>
                             <h3 className="text-xl font-semibold mb-4 text-gray-700">💊 Tratamiento Prescrito</h3>
                             <p>Aquí puedes mostrar o registrar el tratamiento de esta consulta.</p>
+                            <TratamientoForm
+                                consultaId={consulta.con_id}
+                                mascotaId={consulta.mascota_id}
+                                empresaId={parseInt(id!)}
+                            />
                         </>
                     )}
 

@@ -126,7 +126,7 @@ const EditMascotaForm = () => {
     return (
 
         <div className="w-full max-w-screen-xl mx-auto mb-4">
-            <div className="flex flex-wrap justify-center items-center px-6 py-4">
+            <div className="flex flex-wrap justify-items-start items-center px-6 py-4">
 
                 <div className="flex gap-3 mt-2 lg:mt-0 flex-wrap">
                     <button

@@ -37,6 +37,10 @@ const MascotasList = () => {
         navigate(`/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
     }
 
+    const historiClinica = (mascotaId: string) => {
+        navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historia-clinica`)
+    }
+
     const removedMascota = async (mascotaId: string) => {
         const result = await Swal.fire({
             title: "¿Estás seguro de desactivar este registro?",
@@ -83,7 +87,7 @@ const MascotasList = () => {
                             <th className="p-2">Estado</th>
                             <th className="p-2">Acciones</th>
 
-                            {/* <th className="p-2">Modificar</th> */}
+                            <th className="p-2">Medico</th>
                             <th className="p-2">Desactivar</th>
                         </tr>
                     </thead>
@@ -120,7 +124,7 @@ const MascotasList = () => {
                                     <button
                                         // onClick={() => handleVerEmpresa(empresa.emp_id)}
                                         className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        🔎 Ver
+                                        🔎 Histoaria Clinica
                                     </button>
                                 </td> */}
 
@@ -129,6 +133,14 @@ const MascotasList = () => {
                                         onClick={() => updatedMascota(mascota.mas_id)}
                                         className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600">
                                         📝 Ver
+                                    </button>
+                                </td>
+
+                                <td className="p-2 whitespace-nowrap">
+                                    <button
+                                        onClick={() => historiClinica(mascota.mas_id)}
+                                        className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
+                                        🔎 Histoaria Clinica
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">

@@ -112,6 +112,8 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
                 💾 Guardar receta
             </button>
         </div>
+
+        
     );
 };
 

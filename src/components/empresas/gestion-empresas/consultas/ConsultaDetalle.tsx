@@ -4,11 +4,15 @@ import Swal from "sweetalert2";
 import { getConsultaById } from "../../../../services/gestion-empresa/consultas/consulta";
 import { getVacunasPorConsulta } from "../../../../services/gestion-empresa/vacunas/vacunas";
 import TratamientoForm from "../tratamiento/TratamientoForm";
+import { tratamientoByConsultaId, } from "../../../../services/gestion-empresa/tratamiento/tratamiento";
+import { TratamientoResponse } from "../../../../types/tratamiento/tratamiento";
 
 const ConsultaDetalle = () => {
-    const { empresaId, mascotaId, consultaId, id } = useParams();
+    const { empresaId, mascotaId, consultaId, id, tratamientoId } = useParams();
     const [consulta, setConsulta] = useState<any>(null);
     const [vacunas, setVacunas] = useState<any[]>([]);
+const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
+
     const [vistaActiva, setVistaActiva] = useState<"vacunas" | "tratamiento" | "examenes">("vacunas");
     const navigate = useNavigate();
 
@@ -29,7 +33,40 @@ const ConsultaDetalle = () => {
         fetchData();
     }, [consultaId]);
 
+    useEffect(() => {
+        const fetchTratamiento = async () => {
+            if (!consulta?.con_id) return;
+
+            try {
+                const data = await tratamientoByConsultaId(consulta.con_id);
+                setTratamientos(data);
+            } catch (error) {
+                console.error("Error al obtener tratamiento:", error);
+            }
+        };
+
+        fetchTratamiento();
+    }, [consulta]);
+
     if (!consulta) return <p>🔄 Cargando consulta...</p>;
+
+
+
+    // useEffect(() => {
+    //     const fetchTratamiento = async () => {
+    //         if (!consulta?.con_id) return;
+
+    //         try {
+    //             const data = await tratamientoById(consulta.con_id);
+    //             setTratamiento(data);
+    //         } catch (error) {
+    //             console.error("Error al obtener tratamiento:", error);
+    //         }
+    //     };
+
+    //     fetchTratamiento();
+    // }, [consulta]);
+
 
     return (
         <div className="p-6 max-w-screen-2xl mx-auto bg-white shadow rounded">
@@ -134,15 +171,33 @@ const ConsultaDetalle = () => {
 
                     {vistaActiva === "tratamiento" && (
                         <>
-                            <h3 className="text-xl font-semibold mb-4 text-gray-700">💊 Tratamiento Prescrito</h3>
-                            <p>Aquí puedes mostrar o registrar el tratamiento de esta consulta.</p>
                             <TratamientoForm
                                 consultaId={consulta.con_id}
                                 mascotaId={consulta.mascota_id}
                                 empresaId={parseInt(id!)}
                             />
+                            {tratamientos.length === 0 ? (
+                                <p className="text-gray-500 mt-4">No hay tratamientos registrados.</p>
+                            ) : (
+                                tratamientos.map((tratamiento) => (
+                                    <div key={tratamiento.tra_id} className="mt-6 border-t pt-4">
+                                        <h4 className="text-md font-semibold mb-2 text-gray-700">🧾 Tratamiento #{tratamiento.tra_id}</h4>
+                                        <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                                            {tratamiento.medicamentos.map((m) => (
+                                                <li key={m.med_id}>
+                                                    <strong>{m.med_nombre}</strong> – {m.med_dosis}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))
+                            )}
                         </>
                     )}
+
+                    <div>
+
+                    </div>
 
                     {vistaActiva === "examenes" && (
                         <>

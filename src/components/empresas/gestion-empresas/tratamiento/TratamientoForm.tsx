@@ -77,14 +77,14 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
                     value={medicamento.nombre}
                     onChange={(e) => handleChange("nombre", e.target.value)}
                     placeholder="Nombre del medicamento"
-                    className="border rounded px-3 py-2 w-full"
+                    className=" rounded px-3 py-2 w-full"
                 />
                 <input
                     type="text"
                     value={medicamento.dosis}
                     onChange={(e) => handleChange("dosis", e.target.value)}
                     placeholder="Dosis (Ej: 1 tab cada 12h por 5 días)"
-                    className="border rounded px-3 py-2 w-full"
+                    className=" rounded px-3 py-2 w-full"
                 />
             </div>
 

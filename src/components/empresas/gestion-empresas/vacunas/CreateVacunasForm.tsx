@@ -111,7 +111,7 @@ const CreateVacunasForm = () => {
           type="date"
           value={formData.vac_fecha}
           onChange={(e) => setFormData({ ...formData, vac_fecha: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
           required
         />
       </div>
@@ -122,7 +122,7 @@ const CreateVacunasForm = () => {
         <select
           value={formData.vac_tipo}
           onChange={(e) => setFormData({ ...formData, vac_tipo: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
           required
         >
           <option value="">-- Selecciona tipo --</option>
@@ -139,7 +139,7 @@ const CreateVacunasForm = () => {
           type="text"
           value={formData.vac_nombre}
           onChange={(e) => setFormData({ ...formData, vac_nombre: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
           placeholder="Ej: Vanguard Plus 5, Drontal..."
           required
         />
@@ -152,7 +152,7 @@ const CreateVacunasForm = () => {
           type="text"
           value={formData.vac_lote}
           onChange={(e) => setFormData({ ...formData, vac_lote: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
           placeholder="Ej: Lote XYZ123"
           required
         />
@@ -165,7 +165,7 @@ const CreateVacunasForm = () => {
           type="date"
           value={formData.vac_proxima}
           onChange={(e) => setFormData({ ...formData, vac_proxima: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
         />
       </div>
 
@@ -174,8 +174,9 @@ const CreateVacunasForm = () => {
         <label className="block font-semibold mb-1">📝 Observaciones (opcional)</label>
         <textarea
           value={formData.vac_observacion}
+          placeholder="Ej: Pendiente alas siguiente vacunas"
           onChange={(e) => setFormData({ ...formData, vac_observacion: e.target.value })}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
           rows={3}
         />
       </div>
@@ -188,7 +189,7 @@ const CreateVacunasForm = () => {
           multiple
           accept="image/*,application/pdf"
           onChange={handleFileChange}
-          className="w-full border rounded p-2"
+          className="w-full shadow-sm  rounded p-2"
         />
       </div>
 

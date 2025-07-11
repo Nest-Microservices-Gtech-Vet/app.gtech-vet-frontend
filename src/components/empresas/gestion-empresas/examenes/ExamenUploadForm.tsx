@@ -104,7 +104,7 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }: Props) => 
       </div> */}
 
       {CATEGORIAS.map((cat) => (
-        <div key={cat} className="border p-4 rounded shadow-sm bg-white">
+        <div key={cat} className=" p-4 rounded shadow-sm bg-white">
           <label className="flex items-center gap-2 font-semibold text-lg">
             <input
               type="checkbox"

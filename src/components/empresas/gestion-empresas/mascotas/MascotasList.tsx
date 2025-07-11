@@ -140,7 +140,7 @@ const MascotasList = () => {
                                     <button
                                         onClick={() => historiClinica(mascota.mas_id)}
                                         className="bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600">
-                                        🔎 Histoaria Clinica
+                                        🔎 Historia Clinica
                                     </button>
                                 </td>
                                 <td className="p-2 whitespace-nowrap">

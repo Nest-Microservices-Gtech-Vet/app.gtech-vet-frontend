@@ -13,13 +13,13 @@ const ExamenList = ({ examenes }: Props) => {
   return (
     <div className="space-y-6">
       {examenes.map((exam) => (
-        <div key={exam.exam_id} className="p-4 border rounded bg-gray-50 shadow">
+        <div key={exam.exam_id} className="p-4  rounded bg-gray-50 shadow">
           <p><strong>📌 Tipo:</strong> {exam.exam_tipo}</p>
           <p><strong>📅 Fecha:</strong> {new Date(exam.created_at).toLocaleDateString()}</p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             {exam.archivos.map((archivo) => (
-              <div key={archivo.exa_id} className="border rounded p-2 bg-white shadow-sm">
+              <div key={archivo.exa_id} className=" rounded p-2 bg-white shadow-sm">
                 <img
                   src={`http://localhost:3010/uploads/${archivo.exa_url}`}
                   alt={archivo.exa_descripcion}

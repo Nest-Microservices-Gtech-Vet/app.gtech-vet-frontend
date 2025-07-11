@@ -6,12 +6,18 @@ import { getVacunasPorConsulta } from "../../../../services/gestion-empresa/vacu
 import TratamientoForm from "../tratamiento/TratamientoForm";
 import { tratamientoByConsultaId, } from "../../../../services/gestion-empresa/tratamiento/tratamiento";
 import { TratamientoResponse } from "../../../../types/tratamiento/tratamiento";
+import ExamenUploadForm from "../examenes/ExamenUploadForm";
+import ExamenList from "../examenes/ExamenesList";
+import { Examen } from "../../../../types/examenes/examen";
+import { getExamenesPorConsulta } from "../../../../services/gestion-empresa/examenes/examen";
 
 const ConsultaDetalle = () => {
     const { empresaId, mascotaId, consultaId, id, tratamientoId } = useParams();
     const [consulta, setConsulta] = useState<any>(null);
     const [vacunas, setVacunas] = useState<any[]>([]);
-const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
+    const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
+    const [examenes, setExamenes] = useState<Examen[]>([]);
+
 
     const [vistaActiva, setVistaActiva] = useState<"vacunas" | "tratamiento" | "examenes">("vacunas");
     const navigate = useNavigate();
@@ -48,24 +54,24 @@ const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
         fetchTratamiento();
     }, [consulta]);
 
+    useEffect(() => {
+        const fetchExamenes = async () => {
+            if (!consulta?.con_id) return;
+
+            try {
+                const data = await getExamenesPorConsulta(consulta.con_id);
+                setExamenes(data);
+            } catch (error) {
+                console.error("Error al obtener exámenes:", error);
+            }
+        };
+
+        fetchExamenes();
+    }, [consulta]);
+
+
     if (!consulta) return <p>🔄 Cargando consulta...</p>;
 
-
-
-    // useEffect(() => {
-    //     const fetchTratamiento = async () => {
-    //         if (!consulta?.con_id) return;
-
-    //         try {
-    //             const data = await tratamientoById(consulta.con_id);
-    //             setTratamiento(data);
-    //         } catch (error) {
-    //             console.error("Error al obtener tratamiento:", error);
-    //         }
-    //     };
-
-    //     fetchTratamiento();
-    // }, [consulta]);
 
 
     return (
@@ -203,6 +209,13 @@ const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
                         <>
                             <h3 className="text-xl font-semibold mb-4 text-gray-700">🧪 Exámenes Realizados</h3>
                             <p>Aquí puedes mostrar o registrar los exámenes realizados.</p>
+                            <ExamenUploadForm empresaId={parseInt(id!)} consultaId={consulta.con_id} onUploadSuccess={() => {
+                                // recarga exámenes al subir
+                                getExamenesPorConsulta(consulta.con_id).then(setExamenes);
+                            }} />
+                            <div className="mt-6">
+                                <ExamenList examenes={examenes} />
+                            </div>
                         </>
                     )}
                 </div>

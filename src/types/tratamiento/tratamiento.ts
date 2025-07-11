@@ -1,7 +1,7 @@
 export interface MedicamentoInput {
-    med_id: number;
-    med_nombre: string;
-    med_dosis: string;
+    med_id?: number;
+    nombre: string;
+    dosis: string;
     empresa_id: number;
 
 }

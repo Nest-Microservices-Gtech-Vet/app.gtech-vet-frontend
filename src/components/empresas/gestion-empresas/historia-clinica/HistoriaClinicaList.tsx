@@ -83,7 +83,7 @@ const HistoriaClinicaList = () => {
                       <p><strong>📝 firmante- doc.dantiago david:</strong> </p>
                       <p><strong>📝 examenes:</strong> si  </p> */}
                       <p>
-                        <strong>📝 Numero de consulta:</strong> {consulta.con_numero_mascota} 
+                        <strong>📝 Numero de consulta:</strong> {consulta.con_numero_mascota}
                         {/* muestra el id original global de la consulta */}
                         {/* <strong>📝 id consulta:</strong>{consulta.con_id} */}
                         <strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}
@@ -123,33 +123,22 @@ const HistoriaClinicaList = () => {
                         <p><strong>🗒️ Diagnostico Presuntivo:</strong> {consulta.con_diagnosticoPresuntivo || 'No especificado'}</p>
                         <p><strong>🩻 Observaciones:</strong> {consulta.con_observaciones || 'No especificado'}</p>
                         <p><strong>💊 Recomendadiones:</strong> {consulta.con_recomendaciones || 'No especificado'}</p>
-                        
+
                       </div>
                     )}
                   </div>
-                  <button
-  onClick={() => navigate(
-    `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consulta.con_id}/vacuna/registrar`, {
-      state: {
-        numeroConsulta: consulta.con_numero_mascota,
-      }
-    }
-  )}
-  className="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md transition"
->
-  💉 Registrar Vacuna
-</button>
+
                 </li>
               ))}
-              
+
 
             </ul>
           )}
-          
+
         </div>
-        
+
       </div>
-      
+
     </div>
   );
 };

@@ -3,8 +3,6 @@ import Swal from "sweetalert2";
 import { MedicamentoInput } from "../../../../types/tratamiento/tratamiento";
 import { creartratamiento } from "../../../../services/gestion-empresa/tratamiento/tratamiento";
 
-
-
 interface TratamientoFormProps {
     consultaId: number;
     mascotaId: number;
@@ -13,10 +11,10 @@ interface TratamientoFormProps {
 
 const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormProps) => {
     const [medicamento, setMedicamento] = useState<MedicamentoInput>({
+        med_id: 0, // valor por defecto para nuevos medicamentos
         nombre: "",
         dosis: "",
         empresa_id: empresaId,
-
     });
 
     const [listaMedicamentos, setListaMedicamentos] = useState<MedicamentoInput[]>([]);
@@ -31,8 +29,13 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
             return;
         }
 
-        setListaMedicamentos([...listaMedicamentos, medicamento]);
-        setMedicamento({ nombre: "", dosis: "" ,empresa_id: empresaId });
+        setListaMedicamentos([...listaMedicamentos, { ...medicamento }]);
+        setMedicamento({
+            med_id: 0,
+            nombre: "",
+            dosis: "",
+            empresa_id: empresaId,
+        });
     };
 
     const guardarTratamiento = async () => {
@@ -43,11 +46,17 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
 
         try {
             await creartratamiento({
-                consulta_id: consultaId,
-                mascota_id: mascotaId,
-                empresa_id: empresaId,
-                medicamentos: listaMedicamentos.map(({ nombre, dosis }) => ({ nombre, dosis,empresa_id: empresaId,  })),
-            });
+  consulta_id: consultaId,
+  mascota_id: mascotaId,
+  empresa_id: empresaId,
+  medicamentos: listaMedicamentos.map(({ nombre, dosis }) => ({
+    nombre,
+    dosis,
+    empresa_id: empresaId,
+  })),
+});
+
+
 
             Swal.fire("✅ Receta guardada", "El tratamiento fue registrado", "success");
             setListaMedicamentos([]);
@@ -77,7 +86,6 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
                     placeholder="Dosis (Ej: 1 tab cada 12h por 5 días)"
                     className="border rounded px-3 py-2 w-full"
                 />
-                
             </div>
 
             <div className="flex gap-2 mb-6">
@@ -97,7 +105,6 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
                         {listaMedicamentos.map((m, idx) => (
                             <li key={idx}>
                                 <strong>{m.nombre}</strong> – {m.dosis}
-                                
                             </li>
                         ))}
                     </ul>
@@ -112,8 +119,6 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId }: TratamientoFormPr
                 💾 Guardar receta
             </button>
         </div>
-
-        
     );
 };
 

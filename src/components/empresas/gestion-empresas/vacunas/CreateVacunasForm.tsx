@@ -10,9 +10,8 @@ const tiposVacuna = [
 ];
 
 const CreateVacunasForm = () => {
-
   const { mascotaId, id: empresaId } = useParams();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [consultaId, setConsultaId] = useState<number | null>(null);
   const [numeroConsulta, setNumeroConsulta] = useState<number | null>(null);
@@ -46,9 +45,21 @@ const CreateVacunasForm = () => {
   }, [empresaId, mascotaId]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFiles(Array.from(e.target.files));
+    if (!e.target.files) return;
+    const nuevos = Array.from(e.target.files);
+    const nombresExistentes = new Set(selectedFiles.map(f => f.name));
+    const noDuplicados = nuevos.filter(f => !nombresExistentes.has(f.name));
+
+    if (noDuplicados.length === 0) {
+      Swal.fire("Archivo duplicado", "Ya seleccionaste estos archivos", "info");
+      return;
     }
+
+    setSelectedFiles(prev => [...prev, ...noDuplicados]);
+  };
+
+  const quitarArchivo = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,20 +81,18 @@ const CreateVacunasForm = () => {
       numeroConsulta: numeroConsulta,
     };
 
-    // Si hay valor en vac_proxima, lo agregamos como string ISO. Si está vacío, no lo enviamos.
     if (formData.vac_proxima && formData.vac_proxima.trim() !== "") {
       payload.vac_proxima = new Date(formData.vac_proxima).toISOString();
     }
 
     try {
       await registrarVacuna(payload, selectedFiles);
-      Swal.fire("Éxito", "Vacuna registrada correctamente", "success").then(() =>{
+      Swal.fire("Éxito", "Vacuna registrada correctamente", "success").then(() => {
         navigate(
-      `/mis-empresas/${empresaId}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consultaId}/ver`
-    );
+          `/mis-empresas/${empresaId}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consultaId}/ver`
+        );
       });
 
-      // Limpiar formulario
       setFormData({
         vac_fecha: "",
         vac_proxima: "",
@@ -99,30 +108,27 @@ const CreateVacunasForm = () => {
     }
   };
 
-
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-sky-700">💉 Registrar Vacuna o Desparasitación</h2>
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-4">
+      <h2 className="text-2xl font-semibold text-sky-700">💉 Registrar Vacuna o Desparasitación</h2>
 
-      {/* Fecha de aplicación */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">📅 Fecha de aplicación</label>
         <input
           type="date"
           value={formData.vac_fecha}
           onChange={(e) => setFormData({ ...formData, vac_fecha: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
           required
         />
       </div>
 
-      {/* Tipo de procedimiento */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">🧪 Tipo de procedimiento</label>
         <select
           value={formData.vac_tipo}
           onChange={(e) => setFormData({ ...formData, vac_tipo: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
           required
         >
           <option value="">-- Selecciona tipo --</option>
@@ -132,69 +138,80 @@ const CreateVacunasForm = () => {
         </select>
       </div>
 
-      {/* Nombre del producto */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">💊 Nombre del producto aplicado</label>
         <input
           type="text"
           value={formData.vac_nombre}
           onChange={(e) => setFormData({ ...formData, vac_nombre: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
           placeholder="Ej: Vanguard Plus 5, Drontal..."
           required
         />
       </div>
 
-      {/* Número de lote */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">🔢 Número de lote</label>
         <input
           type="text"
           value={formData.vac_lote}
           onChange={(e) => setFormData({ ...formData, vac_lote: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
           placeholder="Ej: Lote XYZ123"
           required
         />
       </div>
 
-      {/* Fecha de próxima dosis */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">📆 Fecha de próxima dosis (opcional)</label>
         <input
           type="date"
           value={formData.vac_proxima}
           onChange={(e) => setFormData({ ...formData, vac_proxima: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
         />
       </div>
 
-      {/* Observaciones */}
-      <div className="mb-4">
+      <div>
         <label className="block font-semibold mb-1">📝 Observaciones (opcional)</label>
         <textarea
           value={formData.vac_observacion}
-          placeholder="Ej: Pendiente alas siguiente vacunas"
           onChange={(e) => setFormData({ ...formData, vac_observacion: e.target.value })}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
+           placeholder="Ej: Pendiente alas siguiente vacunas"
           rows={3}
         />
       </div>
 
-      {/* Subir archivos */}
-      <div className="mb-6">
+      <div>
         <label className="block font-semibold mb-1">📎 Adjuntar archivos (opcional)</label>
         <input
           type="file"
           multiple
           accept="image/*,application/pdf"
           onChange={handleFileChange}
-          className="w-full shadow-sm  rounded p-2"
+          className="w-full shadow-sm rounded p-2"
         />
+
+        {selectedFiles.length > 0 && (
+          <ul className="mt-2 space-y-1 text-sm">
+            {selectedFiles.map((file, i) => (
+              <li key={i} className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded">
+                <span className="truncate">{file.name}</span>
+                <button
+                  type="button"
+                  onClick={() => quitarArchivo(i)}
+                  className="text-red-600 hover:underline text-xs"
+                >
+                  Quitar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      {/* Botón */}
-      <div className="text-center">
+      <div className="text-center pt-4">
         <button
           type="submit"
           className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"

@@ -2,7 +2,7 @@ import { Mascota } from "../../../types/mascotas/mascota";
 import { apiFetch } from "../../api";
 
 //empieza obtener  mascotas
-export const getMascotas = async (empresaId:number): Promise<Mascota[]> => {
+export const getMascotas = async (empresaId: number): Promise<Mascota[]> => {
     try {
         const data = await apiFetch(`mascotas?empresa_id=${empresaId}`);
         // console.log("Mascotas obtenidos", data)
@@ -30,33 +30,18 @@ export const getMascotaById = async (mascotaId: string): Promise<Mascota> => {
 //termina obtener mascotas por id
 //***************************************************************** */
 //empieza editar  mascotas por id
-export const updateMascota = async (mascotaId: string, mascotaData: {
-    mas_nombre: string;
-    mas_fechaNac: string;
-    mas_peso: number;
-    mas_color: string;
-    mas_esterilizado: boolean;
-    mas_microchip: string;
-    mas_foto: string;
-    mas_notas: string;
-    especie_id: number;
-    raza_id: number;
-    cliente_id: number;
-    empresa_id: number;
-    activo: boolean;
-}) => { 
-    try {
-        const data = await apiFetch(`mascotas/${mascotaId}`, {
-            method: "PATCH",
-            body: JSON.stringify(mascotaData),
-        });
-        console.log("mascota actualizado:", data);
-        return data;
-    } catch (error) {
-        console.error("Error al actualizar mascota:", error);
-        return null;
-    }
-};
+// services/mascotas/mascotas.ts
+export async function updateMascota(mascotaId: number, formData: FormData) {
+  const response = await apiFetch(`mascotas/${mascotaId}`, {
+    method: 'PATCH',
+    body: formData,
+  });
+
+  return response; // ya está parseado, no necesitas hacer `.json()`
+}
+
+
+
 //termina editar mascotas por id
 //***************************************************************** */
 //empieza crear  mascotas
@@ -90,12 +75,12 @@ export const crearMascota = async (mascotaData: {
 //termina crear mascotas
 //***************************************************************** */
 //empieza borrado logico de  mascotas
-export const removeMascota = async( mascotaId:string)=>{
+export const removeMascota = async (mascotaId: string) => {
     try {
-        const data = await apiFetch(`mascotas/${mascotaId}`,{
+        const data = await apiFetch(`mascotas/${mascotaId}`, {
             method: "DELETE",
         });
-        console.log("Mascota desacitivada",data);
+        console.log("Mascota desacitivada", data);
         return data;
     } catch (error) {
         console.error("Error al desactivar Mascota:", error);

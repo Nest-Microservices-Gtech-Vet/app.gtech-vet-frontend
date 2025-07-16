@@ -20,7 +20,7 @@ const EditMascotaForm = () => {
         mas_color: "",
         mas_esterilizado: false,
         mas_microchip: "",
-        mas_foto: "",
+        mas_foto: null as File | null | string,
         mas_notas: "",
         especie_id: 0,
         raza_id: 0,
@@ -86,40 +86,48 @@ const EditMascotaForm = () => {
 
     const updatedMascotaq = async (e: React.FormEvent) => {
         e.preventDefault();
-        const mascotaDataToUpdate = {
-            mas_nombre: formData.mas_nombre,
-            mas_fechaNac: formData.mas_fechaNac,
-            mas_peso: formData.mas_peso,
-            mas_color: formData.mas_color,
-            mas_esterilizado: formData.mas_esterilizado,
-            mas_microchip: formData.mas_microchip,
-            mas_foto: formData.mas_foto,
-            mas_notas: formData.mas_notas,
-            especie_id: formData.especie_id,
-            raza_id: formData.raza_id,
-            cliente_id: formData.cliente_id,
-            empresa_id: formData.empresa_id,
-            activo: formData.activo,
-        };
+
+        const form = new FormData();
+        form.append("mas_nombre", formData.mas_nombre);
+        form.append("mas_fechaNac", formData.mas_fechaNac);
+        form.append("mas_peso", String(formData.mas_peso));
+        form.append("mas_color", formData.mas_color);
+        form.append("mas_esterilizado", String(formData.mas_esterilizado));
+        form.append("mas_microchip", formData.mas_microchip);
+        form.append("mas_notas", formData.mas_notas);
+        form.append("especie_id", String(formData.especie_id));
+        form.append("raza_id", String(formData.raza_id));
+        form.append("cliente_id", String(formData.cliente_id));
+        form.append("empresa_id", String(formData.empresa_id));
+        form.append("activo", String(formData.activo));
+
+        // Solo si se seleccionó una nueva foto, la agregamos
+        if (formData.mas_foto && formData.mas_foto instanceof File) {
+            form.append("mas_foto", formData.mas_foto);
+        }
+
         try {
-            const result = await updateMascota(mascotaId!, mascotaDataToUpdate);
+            const result = await updateMascota(Number(mascotaId ?? 0), form); // ← nuevo
             if (result) {
                 Swal.fire({
-                    icon: 'success',
-                    title: '¡Registro modificado!',
-                    text: 'Los cambios fueron guardados correctamente.',
+                    icon: "success",
+                    title: "¡Registro modificado!",
+                    text: "Los cambios fueron guardados correctamente.",
                     timer: 2300,
                     timerProgressBar: true,
                     showConfirmButton: false,
                     didClose: () => {
-                        navigate(`/mis-empresas/${id}/mascotas`); // Ruta a la lista de empresas
-                    }
+                        navigate(`/mis-empresas/${id}/mascotas`);
+                    },
                 });
-            } else { alert("Error al actualizar el registro"); }
+            } else {
+                alert("Error al actualizar el registro");
+            }
         } catch (error) {
             console.error("Error al actualizar el registro:", error);
         }
-    }
+    };
+
 
 
 
@@ -169,6 +177,50 @@ const EditMascotaForm = () => {
 
 
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+
+                            <div className="col-span-full">
+                                {/* Mostrar imagen actual si es string (de base de datos) */}
+                                {typeof formData.mas_foto === "string" && (
+                                    <div className="mb-2">
+                                        <label className="block text-sm font-medium text-gray-700">Foto actual</label>
+                                        <img
+                                            src={`http://localhost:3010/uploads/perfil/${formData.mas_foto}`} // Ajusta si tu ruta base es otra
+                                            alt="Foto mascota"
+                                            className="w-32 h-32 object-cover rounded border"
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Mostrar previsualización si se selecciona una nueva */}
+                                {formData.mas_foto instanceof File && (
+                                    <div className="mb-2">
+                                        <label className="block text-sm font-medium text-gray-700">Nueva foto seleccionada</label>
+                                        <img
+                                            src={URL.createObjectURL(formData.mas_foto)}
+                                            alt="Nueva foto"
+                                            className="w-32 h-32 object-cover rounded border"
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Input para cambiar la foto */}
+                                <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">
+                                    Cambiar foto
+                                </label>
+                                <input
+                                    type="file"
+                                    id="mas_foto"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setFormData({ ...formData, mas_foto: file });
+                                        }
+                                    }}
+
+                                    className="w-2xs h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                />
+                            </div>
                             {/* Repite este bloque para cada campo */}
                             <div>
                                 <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
@@ -217,17 +269,8 @@ const EditMascotaForm = () => {
                                 />
                             </div>
 
-                            <div>
-                                <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">Foto (URL)</label>
-                                <input
-                                    type="text"
-                                    id="mas_foto"
-                                    value={formData.mas_foto}
-                                    onChange={(e) => setFormData({ ...formData, mas_foto: e.target.value })}
-                                    className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                    placeholder="URL de foto"
-                                />
-                            </div>
+
+
 
                             <div>
                                 <label htmlFor="mas_notas" className="block mb-1 text-sm font-medium text-gray-700">Notas</label>

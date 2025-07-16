@@ -105,6 +105,7 @@ const ConsultaDetalle = () => {
                         <p><strong>🩻 Diagnóstico:</strong> {consulta.con_diagnosticoPresuntivo}</p>
                         <p className="col-span-2"><strong>📝 Observaciones:</strong> {consulta.con_observaciones}</p>
                         <p className="col-span-2"><strong>✅ Recomendaciones:</strong> {consulta.con_recomendaciones}</p>
+                        
                     </div>
 
                     {/* Botones de navegación de vista */}
@@ -156,6 +157,7 @@ const ConsultaDetalle = () => {
                                         <p><strong>🧪 Tipo:</strong> {v.vac_tipo}</p>
                                         <p><strong>🔢 Lote:</strong> {v.vac_lote}</p>
                                         <p><strong>📝 Observaciones:</strong> {v.vac_observacion || 'Ninguna'}</p>
+                                        <p><strong>📆 Fecha proxima vacuna:</strong> {new Date(v.vac_proxima).toLocaleDateString()}</p>
 
                                         {v.VacunaFoto && v.VacunaFoto.length > 0 && (
                                             <div className="flex gap-2 mt-2">

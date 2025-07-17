@@ -11,11 +11,10 @@ const tiposVacuna = [
 
 const CreateVacunasForm = () => {
   const { mascotaId, id: empresaId } = useParams();
+  const [historiaClinicaId, setHistoriaClinicaId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [consultaId, setConsultaId] = useState<number | null>(null);
-  const [numeroConsulta, setNumeroConsulta] = useState<number | null>(null);
-
+ 
   const [formData, setFormData] = useState({
     vac_fecha: "",
     vac_proxima: "",
@@ -31,8 +30,9 @@ const CreateVacunasForm = () => {
     const fetchConsulta = async () => {
       try {
         const result = await obtenerConsultaActiva(empresaId!, mascotaId!);
-        setConsultaId(result.con_id);
-        setNumeroConsulta(result.con_numero_mascota);
+   
+        //setNumeroConsulta(result.con_numero_mascota);
+         setHistoriaClinicaId(result.historiaClinica_id);
       } catch (err) {
         Swal.fire("Error", "No se pudo cargar la consulta activa", "error");
         console.error(err);
@@ -65,7 +65,7 @@ const CreateVacunasForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!empresaId || !mascotaId || !numeroConsulta) {
+    if (!empresaId || !mascotaId || !historiaClinicaId) {
       Swal.fire("Error", "Faltan datos obligatorios", "error");
       return;
     }
@@ -78,7 +78,8 @@ const CreateVacunasForm = () => {
       vac_observacion: formData.vac_observacion,
       empresa_id: empresaId,
       mascota_id: mascotaId,
-      numeroConsulta: numeroConsulta,
+      historiaClinica_id: historiaClinicaId.toString(),
+     
     };
 
     if (formData.vac_proxima && formData.vac_proxima.trim() !== "") {
@@ -89,7 +90,7 @@ const CreateVacunasForm = () => {
       await registrarVacuna(payload, selectedFiles);
       Swal.fire("Éxito", "Vacuna registrada correctamente", "success").then(() => {
         navigate(
-          `/mis-empresas/${empresaId}/mascotas/editar-mascota/${mascotaId}/historia-clinica/consulta/${consultaId}/ver`
+          `/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`
         );
       });
 

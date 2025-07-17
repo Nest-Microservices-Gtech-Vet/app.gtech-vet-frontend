@@ -78,6 +78,12 @@ const HistoriaClinicaList = () => {
         >
           ➕ Nueva Consulta
         </button>
+        <button
+          onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historia-clinica/registrar-vacuna`)}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition"
+        >
+          ➕ Vacunas
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

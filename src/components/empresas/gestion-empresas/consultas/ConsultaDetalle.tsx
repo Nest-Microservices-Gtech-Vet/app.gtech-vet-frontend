@@ -19,7 +19,7 @@ const ConsultaDetalle = () => {
     const [examenes, setExamenes] = useState<Examen[]>([]);
 
 
-    const [vistaActiva, setVistaActiva] = useState<"vacunas" | "tratamiento" | "examenes">("vacunas");
+    const [vistaActiva, setVistaActiva] = useState<"tratamiento" | "examenes">("tratamiento");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,8 +28,8 @@ const ConsultaDetalle = () => {
                 const datosConsulta = await getConsultaById(consultaId!);
                 setConsulta(datosConsulta);
 
-                const listaVacunas = await getVacunasPorConsulta(consultaId!);
-                setVacunas(listaVacunas);
+                // const listaVacunas = await getVacunasPorConsulta(consultaId!);
+                // setVacunas(listaVacunas);
             } catch (err) {
                 console.error(err);
                 Swal.fire("Error", "No se pudieron cargar los datos", "error");
@@ -38,7 +38,7 @@ const ConsultaDetalle = () => {
 
         fetchData();
     }, [consultaId]);
-
+// 
     useEffect(() => {
         const fetchTratamiento = async () => {
             if (!consulta?.con_id) return;
@@ -110,12 +110,12 @@ const ConsultaDetalle = () => {
 
                     {/* Botones de navegación de vista */}
                     <div className="flex flex-wrap gap-2 mt-6">
-                        <button
+                        {/* <button
                             onClick={() => setVistaActiva("vacunas")}
                             className={`py-2 px-4 rounded-md transition ${vistaActiva === "vacunas" ? "bg-sky-500 text-white" : "bg-gray-200 text-gray-700"}`}
                         >
                             💉 Vacunas
-                        </button>
+                        </button> */}
                         <button
                             onClick={() => setVistaActiva("tratamiento")}
                             className={`py-2 px-4 rounded-md transition ${vistaActiva === "tratamiento" ? "bg-sky-500 text-white" : "bg-gray-200 text-gray-700"}`}
@@ -133,7 +133,7 @@ const ConsultaDetalle = () => {
 
                 {/* LADO DERECHO: Vista dinámica según botón */}
                 <div className="lg:col-span-2 bg-white rounded-lg p-6 shadow-md">
-                    {vistaActiva === "vacunas" && (
+                    {/* {vistaActiva === "vacunas" && (
                         <>
                             <h3 className="text-xl font-semibold mb-4 text-gray-700">💉 Vacunas Registradas</h3>
                             <button
@@ -175,7 +175,7 @@ const ConsultaDetalle = () => {
                                 ))
                             )}
                         </>
-                    )}
+                    )} */}
 
                     {vistaActiva === "tratamiento" && (
                         <>

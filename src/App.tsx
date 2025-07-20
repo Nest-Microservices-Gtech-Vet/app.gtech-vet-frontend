@@ -287,7 +287,7 @@ const App = () => {
               path="/mis-empresas/:id/mascotas/editar-mascota/:mascotaId/historia-clinica/consulta/:consultaId/ver"
               element={<ConsultaDetalle />}
             />
-            <Route path="mascotas/:mascotaId/historia-clinica/registrar-vacuna" element={<CreateVacunasForm />} />
+            <Route path="mascotas/:mascotaId/registrar-vacuna" element={<CreateVacunasForm />} />
 
 
 

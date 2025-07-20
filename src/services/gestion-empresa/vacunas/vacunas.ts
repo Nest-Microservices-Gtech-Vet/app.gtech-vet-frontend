@@ -1,3 +1,4 @@
+import { Mascota } from "../../../types/mascotas/mascota";
 import { Vacuna } from "../../../types/vacunas/vacuna";
 import { apiFetch } from "../../api";
 
@@ -34,3 +35,17 @@ export const getVacunasPorConsulta = async (consultaId: string) => {
   const res = await apiFetch(`vacuna/consulta/${consultaId}`);
   return res;
 };
+
+
+export const getVacunaPorMascota = async (mascotaId: string) => {
+    try {
+        const data = await apiFetch(`vacuna/mascota/${mascotaId}`, {
+            method: "GET"
+        });
+        console.log("mascota obtenida- desde vacunas", data);
+        return data;
+    } catch (error) {
+        console.error("error al obtener mascota - desde vacunas ", error);
+        throw error;
+    }
+}

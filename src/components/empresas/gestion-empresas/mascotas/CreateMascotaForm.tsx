@@ -22,14 +22,16 @@ const CreateMascotaForm = () => {
         mas_color: "",
         mas_esterilizado: false,
         mas_microchip: "",
-        mas_foto: "",
         mas_notas: "",
+        activo: true,
         especie_id: 0,
         raza_id: 0,
         cliente_id: 0,
         empresa_id: empresaIdNum,
-        activo: true,
+        fotoFile: null as File | null,
     });
+
+
 
     const [clientes, setClientes] = useState<Cliente[]>([]);
     const [especies, setEspecies] = useState<Especie[]>([]);
@@ -87,48 +89,44 @@ const CreateMascotaForm = () => {
     const sendMascota = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const formDataFixed = {
-            ...formData,
-            empresa_id: empresaIdNum,
-            especie_id: Number(formData.especie_id),
-            raza_id: Number(formData.raza_id),
+        const data = new FormData();
+        data.append("mas_nombre", formData.mas_nombre);
+        data.append("mas_fechaNac", formData.mas_fechaNac);
+        data.append("mas_peso", String(formData.mas_peso));
+        data.append("mas_color", formData.mas_color);
+        data.append("mas_esterilizado", String(formData.mas_esterilizado));
+        data.append("mas_microchip", formData.mas_microchip);
+        data.append("mas_notas", formData.mas_notas);
+        data.append("especie_id", String(formData.especie_id));
+        data.append("raza_id", String(formData.raza_id));
+        data.append("cliente_id", String(formData.cliente_id));
+        data.append("empresa_id", String(formData.empresa_id));
+        data.append("activo", String(formData.activo));
+
+        if (formData.fotoFile) {
+            data.append("foto", formData.fotoFile);
         }
 
-
-
-
-
-        const resultado = await crearMascota(formDataFixed);
-        if (resultado) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Mascota creada!',
-                text: 'La mascota fue registrada correctamente.',
-                timer: 5000,
-                timerProgressBar: true,
-                didClose: () => {
-                    navigate(`/mis-empresas/${id}/mascotas`);
-                }
-            });
-            setFormData({
-                mas_nombre: "",
-                mas_fechaNac: "",
-                mas_peso: 0,
-                mas_color: "",
-                mas_esterilizado: false,
-                mas_microchip: "",
-                mas_foto: "",
-                mas_notas: "",
-                especie_id: 0,
-                raza_id: 0,
-                cliente_id: 0,
-                empresa_id: Number(empresaId),
-                activo: true,
-            });
-        } else {
-            alert("error al crear mascota")
+        try {
+            const result = await crearMascota(data); // Asegúrate de que `crearMascota` envíe como multipart
+            if (result) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Mascota creada!',
+                    text: 'La mascota fue registrada correctamente.',
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didClose: () => {
+                        navigate(`/mis-empresas/${id}/mascotas`);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire("Error", "No se pudo crear la mascota", "error");
         }
-    }
+    };
+
     return (
         <form onSubmit={sendMascota} className="w-full max-w-screen-xl mx-auto p-8 rounded-xl shadow bg-white">
 
@@ -188,7 +186,7 @@ const CreateMascotaForm = () => {
                             />
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">Foto (URL)</label>
                             <input
                                 type="text"
@@ -198,7 +196,23 @@ const CreateMascotaForm = () => {
                                 className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                                 placeholder="URL de foto"
                             />
+                        </div> */}
+
+                        <div>
+                            <label htmlFor="fotoFile" className="block mb-1 text-sm font-medium text-gray-700">Foto de la mascota</label>
+                            <input
+                                type="file"
+                                id="fotoFile"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0] || null;
+                                    setFormData({ ...formData, fotoFile: file });
+                                }}
+                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                            />
                         </div>
+
+
 
                         <div>
                             <label htmlFor="mas_notas" className="block mb-1 text-sm font-medium text-gray-700">Notas</label>
@@ -287,7 +301,7 @@ const CreateMascotaForm = () => {
                         <button
                             type="button"
                             className="bg-blue-500 px-3 py-1 mt-2 rounded-md hover:bg-blue-600 text-white"
-                            
+
                             onClick={() => {
                                 const returnTo = mascotaId
                                     ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`

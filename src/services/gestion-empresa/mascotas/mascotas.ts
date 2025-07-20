@@ -32,12 +32,12 @@ export const getMascotaById = async (mascotaId: string): Promise<Mascota> => {
 //empieza editar  mascotas por id
 // services/mascotas/mascotas.ts
 export async function updateMascota(mascotaId: number, formData: FormData) {
-  const response = await apiFetch(`mascotas/${mascotaId}`, {
-    method: 'PATCH',
-    body: formData,
-  });
+    const response = await apiFetch(`mascotas/${mascotaId}`, {
+        method: 'PATCH',
+        body: formData,
+    });
 
-  return response; // ya está parseado, no necesitas hacer `.json()`
+    return response; // ya está parseado, no necesitas hacer `.json()`
 }
 
 
@@ -45,33 +45,45 @@ export async function updateMascota(mascotaId: number, formData: FormData) {
 //termina editar mascotas por id
 //***************************************************************** */
 //empieza crear  mascotas
-export const crearMascota = async (mascotaData: {
-    mas_nombre: string;
-    mas_fechaNac: string;
-    mas_peso: number;
-    mas_color: string;
-    mas_esterilizado: boolean;
-    mas_microchip: string;
-    mas_foto: string;
-    mas_notas: string;
-    especie_id: number;
-    raza_id: number;
-    cliente_id: number;
-    empresa_id: number;
-    activo: boolean;
-}) => {
-    try {
-        const data = await apiFetch(`mascotas`, {
-            method: "POST",
-            body: JSON.stringify(mascotaData),
-        });
-        console.log("Mascota creada", data);
-        return data;
-    } catch (error) {
-        console.error("error al crear Mascota:", error)
-        return null;
-    }
+// export const crearMascota = async (mascotaData: {
+//     mas_nombre: string;
+//     mas_fechaNac: string;
+//     mas_peso: number;
+//     mas_color: string;
+//     mas_esterilizado: boolean;
+//     mas_microchip: string;
+//     mas_foto: string;
+//     mas_notas: string;
+//     especie_id: number;
+//     raza_id: number;
+//     cliente_id: number;
+//     empresa_id: number;
+//     activo: boolean;
+// }) => {
+//     try {
+//         const data = await apiFetch(`mascotas`, {
+//             method: "POST",
+//             body: JSON.stringify(mascotaData),
+//         });
+//         console.log("Mascota creada", data);
+//         return data;
+//     } catch (error) {
+//         console.error("error al crear Mascota:", error)
+//         return null;
+//     }
+// };
+export const crearMascota = async (formData: FormData): Promise<any> => {
+    return await apiFetch("mascotas", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: formData,
+    });
 };
+
+
+
 //termina crear mascotas
 //***************************************************************** */
 //empieza borrado logico de  mascotas

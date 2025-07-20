@@ -79,7 +79,7 @@ const HistoriaClinicaList = () => {
           ➕ Nueva Consulta
         </button>
         <button
-          onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/historia-clinica/registrar-vacuna`)}
+          onClick={() => navigate(`/mis-empresas/${id}/mascotas/${mascotaId}/registrar-vacuna`)}
           className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition"
         >
           ➕ Vacunas
@@ -123,21 +123,17 @@ const HistoriaClinicaList = () => {
                       <p><strong>🆔 N° Consulta:</strong> {consulta.con_numero_mascota}</p>
                       <p><strong>📅 Fecha:</strong> {new Date(consulta.con_fecha).toLocaleDateString()}</p>
                       <p><strong>📝 Motivo:</strong> {consulta.con_motivo}</p>
-                      
-                        <p>
-                          <strong>📝 Firmante:</strong>{" "}
-                          {creadores[consulta.createdBy]?.usua_nombre
-                            ? `Dr. ${creadores[consulta.createdBy].usua_nombre} ${creadores[consulta.createdBy].usua_apellido}`
-                            : `ID: ${consulta.createdBy}`}
-                        </p>
 
-
-
-                        <p><strong>📝 examenes:</strong> si  </p>
-                        <p>
-  <strong>🧪 Exámenes:</strong>{" "}
-  {consulta.Examen && consulta.Examen.length > 0 ? "✅ Sí" : "❌ No"}
-</p>
+                      <p>
+                        <strong>📝 Firmante:</strong>{" "}
+                        {creadores[consulta.createdBy]?.usua_nombre
+                          ? `Dr. ${creadores[consulta.createdBy].usua_nombre} ${creadores[consulta.createdBy].usua_apellido}`
+                          : `ID: ${consulta.createdBy}`}
+                      </p>
+                      <p>
+                        <strong>🧪 Exámenes:</strong>{" "}
+                        {consulta.Examen && consulta.Examen.length > 0 ? "✅ Sí" : "❌ No"}
+                      </p>
 
                     </div>
 

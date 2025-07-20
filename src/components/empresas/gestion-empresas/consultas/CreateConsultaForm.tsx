@@ -3,18 +3,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getHistoriaClinicaByMascotaId } from "../../../../services/gestion-empresa/historia-clinica/historiaClinica";
 import { crearConsulta } from "../../../../services/gestion-empresa/consultas/consulta";
-import { getMascotaById } from "../../../../services/gestion-empresa/mascotas/mascotas";
-import { getPatologiasByEspecieRaza } from "../../../../services/gestion-empresa/patologias/patologias";
+
 import { Consulta } from "../../../../types/consulta/consulta";
-import { Patologia } from "../../../../types/patologias/patologias";
 
 const CreateConsultaForm = () => {
   const { empresaId, mascotaId, id } = useParams();
   const navigate = useNavigate();
 
   const [historiaClinicaId, setHistoriaClinicaId] = useState<number | null>(null);
-  const [patologias, setPatologias] = useState<Patologia[]>([]);
-  const [selectedPatologias, setSelectedPatologias] = useState<number[]>([]);
+
+
 
   const [formData, setFormData] = useState<Consulta>({
     con_fecha: new Date().toISOString(),
@@ -52,9 +50,7 @@ const CreateConsultaForm = () => {
           mascota_id: Number(mascotaId), // 👈 REAFIRMAMOS
         }));
 
-        const mascota = await getMascotaById(mascotaId!);
-        const patologiasList = await getPatologiasByEspecieRaza(mascota.especie_id, mascota.raza_id);
-        setPatologias(patologiasList);
+        
       } catch (error) {
         console.error(error);
         Swal.fire("Error", "No se pudo cargar la información necesaria", "error");
@@ -76,7 +72,7 @@ const CreateConsultaForm = () => {
     try {
       const payload = {
         ...formData,
-        patologiasIds: selectedPatologias,
+       
       };
 
       await crearConsulta(payload);
@@ -472,35 +468,7 @@ const CreateConsultaForm = () => {
           </div>
         </div>
 
-        {/* Selector de Patologías - ocupa todo el ancho */}
-        <div className="col-span-2 md:col-span-3 bg-gray-50 p-4 rounded-lg">
-          <label className="block mb-2 font-semibold text-gray-700">Patologías relacionadas</label>
-          <div className="max-h-48 overflow-y-auto  rounded p-3 bg-white">
-            {patologias.length === 0 ? (
-              <p className="italic text-gray-500">No hay patologías disponibles para esta especie y raza.</p>
-            ) : (
-              patologias.map((pat) => (
-                <label key={pat.pat_id} className="flex items-center space-x-3 mb-1 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    value={pat.pat_id}
-                    checked={selectedPatologias.includes(pat.pat_id)}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      if (e.target.checked) {
-                        setSelectedPatologias((prev) => [...prev, value]);
-                      } else {
-                        setSelectedPatologias((prev) => prev.filter((id) => id !== value));
-                      }
-                    }}
-                    className="h-5 w-5 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
-                  />
-                  <span className="text-gray-800">{pat.pat_nombre}</span>
-                </label>
-              ))
-            )}
-          </div>
-        </div>
+  
       </div>
 
       <div className="flex justify-center mt-8">

@@ -2,7 +2,7 @@ import { Consulta } from "../../../types/consulta/consulta";
 import { apiFetch } from "../../api";
 
 //inicia crear consulta
-export const crearConsulta = async (consultaData: Consulta & { patologiasIds: number[] }) => {
+export const crearConsulta = async (consultaData: Consulta & { patologiasIds?: number[] }) => {
     try {
         const dataConsulta = await apiFetch(`consulta`, {
             method: "POST",

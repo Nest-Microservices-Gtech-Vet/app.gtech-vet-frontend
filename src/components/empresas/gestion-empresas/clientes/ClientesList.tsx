@@ -83,23 +83,39 @@ const ClientesList = () => {
 
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
-            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-                <h2 className="text-black text-2xl font-bold mb-4">NUESTROS CLIENTES</h2>
-                <div className="flex items-center gap-2">
-                    <input
-                        type="text"
-                        placeholder="Buscar cliente..."
-                        value={search}
-                        onChange={handleSearchChange}
-                        className="mb-1 p-2 border rounded w-80  shadow-amber-50"
-                    />
-                    
-                </div>
-                <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
-                    onClick={crearCliente}>
-                    ➕ Crear Clientes
-                </button>
-            </div>
+            <div className="w-full bg-white rounded-lg shadow-sm px-6 py-4 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    {/* Título */}
+    <h2 className="text-2xl font-semibold text-gray-800">👥 Nuestros Clientes</h2>
+
+    {/* Buscador */}
+    <div className="flex items-center w-full md:w-1/2 bg-gray-100 rounded-lg px-3 py-1 border border-gray-300 focus-within:ring-2 ring-blue-400">
+        <svg
+            className="w-5 h-5 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+        >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z" />
+        </svg>
+        <input
+            type="text"
+            placeholder="Buscar cliente..."
+            value={search}
+            onChange={handleSearchChange}
+            className="bg-transparent w-full px-3 py-2 focus:outline-none text-gray-700"
+        />
+    </div>
+
+    {/* Botón crear */}
+    <button
+        onClick={crearCliente}
+        className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
+    >
+        ➕ Crear Cliente
+    </button>
+</div>
+
 
             <div className="w-full overflow-x-auto">
                 <table className="w-full bg-gray-50 rounded-lg overflow-hidden">

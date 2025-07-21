@@ -2,9 +2,9 @@ import { Mascota } from "../../../types/mascotas/mascota";
 import { apiFetch } from "../../api";
 
 //empieza obtener  mascotas
-export const getMascotas = async (empresaId: number): Promise<Mascota[]> => {
+export const getMascotas = async (empresaId: number,search: string): Promise<Mascota[]> => {
     try {
-        const data = await apiFetch(`mascotas?empresa_id=${empresaId}`);
+        const data = await apiFetch(`mascotas?empresa_id=${empresaId}&search=${search}`);
         // console.log("Mascotas obtenidos", data)
         return data;
     } catch (error) {

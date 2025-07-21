@@ -3,9 +3,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getMascotas, removeMascota } from "../../../../services/gestion-empresa/mascotas/mascotas";
 import Swal from "sweetalert2";
 
+const useDebounce = (value: string, delay: number = 500): string => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
+
 const MascotasList = () => {
     const [mascotas, setMascotas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const debouncedSearch = useDebounce(search, 500);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -14,7 +29,7 @@ const MascotasList = () => {
             setLoading(true);
             try {
                 const empresaId = Number(id);
-                const data = await getMascotas(empresaId);
+                const data = await getMascotas(empresaId, debouncedSearch);
                 if (Array.isArray(data)) {
                     setMascotas(data);
                 } else {
@@ -27,7 +42,11 @@ const MascotasList = () => {
             }
         };
         fetchMascotas();
-    }, [id]);
+    }, [id, debouncedSearch]);
+
+     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    };
 
     const crearMascota = () => {
         navigate(`/mis-empresas/${id}/mascotas/crear-mascota`);
@@ -66,14 +85,37 @@ const MascotasList = () => {
 
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
-            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-                <h2 className="text-black text-2xl font-bold mb-4">NUESTRAS MASCOTAS</h2>
-                <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
-                    onClick={crearMascota}
-                >
-                    ➕ Crear mascotas
-                </button>
-            </div>
+           <div className="w-full bg-white rounded-lg shadow-sm px-6 py-4 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  {/* Título */}
+  <h2 className="text-2xl font-bold text-gray-800 w-full md:w-1/3 text-left">
+    🐶 Nuestras Mascotas
+  </h2>
+
+  {/* Buscador con ícono */}
+  <div className="w-full md:w-1/3 relative">
+    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      🔍
+    </span>
+    <input
+      type="text"
+      placeholder="Buscar mascota..."
+      value={search}
+      onChange={handleSearchChange}
+      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+
+  {/* Botón crear */}
+  <div className="w-full md:w-1/3 text-left md:text-right">
+    <button
+      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-md transition duration-300"
+      onClick={crearMascota}
+    >
+      ➕ Crear Mascota
+    </button>
+  </div>
+</div>
+
 
             <div className="w-full overflow-x-auto">
                 <table className="w-full bg-gray-50 rounded-lg overflow-hidden">
@@ -96,7 +138,7 @@ const MascotasList = () => {
                             <tr key={mascota.mas_id} className="shadow-amber-50">
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_nombre}</td>
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_fechaNac?.split('T')[0] || ""}</td>
-                                <td className="p-2 whitespace-nowrap">{mascota.especie_id}</td>
+                                <td className="p-2 whitespace-nowrap"> {mascota.especie?.esp_nombre ?? 'Sin especie'}</td>
                                 <td className="p-2 whitespace-nowrap">{mascota.mas_color}</td>
                                 <td className="p-2 whitespace-nowrap">
                                     {mascota.mas_esterilizado ? (
@@ -113,7 +155,7 @@ const MascotasList = () => {
                                         <span className="text-red-500">Inactivo</span>
                                     )}
                                 </td>
-                                
+
                                 {/* <td className="p-2 whitespace-nowrap">
                                     <button onClick={() => handleEmpresaUsuario(empresa.emp_id)}  className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600">
                                         🔎 Asignar Usuarios

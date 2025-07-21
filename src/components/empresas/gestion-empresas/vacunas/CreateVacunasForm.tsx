@@ -35,8 +35,8 @@ const CreateVacunasForm = () => {
         //setNumeroConsulta(result.con_numero_mascota);
         setHistoriaClinicaId(result.historiaClinica_id);
       } catch (err) {
-        Swal.fire("Error", "No se pudo cargar la consulta activa", "error");
-        console.error(err);
+        // Swal.fire("Error", "No se pudo cargar la consulta activa", "error");
+        // console.error(err);
       }
     };
 
@@ -106,7 +106,7 @@ const CreateVacunasForm = () => {
       await registrarVacuna(payload, selectedFiles);
       Swal.fire("Éxito", "Vacuna registrada correctamente", "success").then(() => {
         navigate(
-          `/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`
+          `/mis-empresas/${empresaId}/mascotas/${mascotaId}/registrar-vacuna`
         );
       });
 
@@ -144,6 +144,12 @@ const CreateVacunasForm = () => {
             ))}
           </ul>
         )}
+        <button
+              type="submit"
+              className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
+            >
+              imprimir Vacuna
+            </button>
       </div>
 
       <div>

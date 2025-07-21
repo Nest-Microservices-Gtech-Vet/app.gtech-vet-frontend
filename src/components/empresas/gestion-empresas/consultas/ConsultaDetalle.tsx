@@ -38,7 +38,7 @@ const ConsultaDetalle = () => {
 
         fetchData();
     }, [consultaId]);
-// 
+    // 
     useEffect(() => {
         const fetchTratamiento = async () => {
             if (!consulta?.con_id) return;
@@ -105,7 +105,7 @@ const ConsultaDetalle = () => {
                         <p><strong>🩻 Diagnóstico:</strong> {consulta.con_diagnosticoPresuntivo}</p>
                         <p className="col-span-2"><strong>📝 Observaciones:</strong> {consulta.con_observaciones}</p>
                         <p className="col-span-2"><strong>✅ Recomendaciones:</strong> {consulta.con_recomendaciones}</p>
-                        
+
                     </div>
 
                     {/* Botones de navegación de vista */}
@@ -201,10 +201,16 @@ const ConsultaDetalle = () => {
                                 ))
                             )}
                         </>
+                        
                     )}
 
                     <div>
-
+ <button
+              type="submit"
+              className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
+            >
+              imprimir Receta
+            </button>
                     </div>
 
                     {vistaActiva === "examenes" && (

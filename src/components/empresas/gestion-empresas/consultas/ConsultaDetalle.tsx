@@ -40,19 +40,19 @@ const ConsultaDetalle = () => {
     }, [consultaId]);
     // 
     useEffect(() => {
-        const fetchTratamiento = async () => {
-            if (!consulta?.con_id) return;
+    fetchTratamientos(); // mueve esta función afuera
+}, [consulta]);
 
-            try {
-                const data = await tratamientoByConsultaId(consulta.con_id);
-                setTratamientos(data);
-            } catch (error) {
-                console.error("Error al obtener tratamiento:", error);
-            }
-        };
+const fetchTratamientos = async () => {
+    if (!consulta?.con_id) return;
 
-        fetchTratamiento();
-    }, [consulta]);
+    try {
+        const data = await tratamientoByConsultaId(consulta.con_id);
+        setTratamientos(data);
+    } catch (error) {
+        console.error("Error al obtener tratamiento:", error);
+    }
+};
 
     useEffect(() => {
         const fetchExamenes = async () => {
@@ -183,6 +183,7 @@ const ConsultaDetalle = () => {
                                 consultaId={consulta.con_id}
                                 mascotaId={consulta.mascota_id}
                                 empresaId={parseInt(id!)}
+                                onSuccess={fetchTratamientos}
                             />
                             {tratamientos.length === 0 ? (
                                 <p className="text-gray-500 mt-4">No hay tratamientos registrados.</p>

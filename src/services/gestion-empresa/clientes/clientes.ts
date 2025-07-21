@@ -2,7 +2,7 @@ import { Cliente } from "../../../types/clientes/cliente";
 import { apiFetch } from "../../api";
 
 //empieza obtener clientes
-export const getClientes = async (empresaId:number): Promise<{ data: Cliente[] }> => {
+export const getClientes = async (empresaId: number): Promise<{ data: Cliente[] }> => {
     try {
         const data = await apiFetch(`clientes?empresa_id=${empresaId}`);
         console.log("clientes obtenidos", data)
@@ -41,25 +41,30 @@ export const createCliente = async (clienteData: {
 //termina crear clientes
 //***************************************************************** */
 // ✅ Obtener todos los clientes por empresa
-export const getClientesPorEmpresa = async (empresaId: number): Promise<Cliente[]> => {
-  try {
-    const data = await apiFetch(`clientes/por-empresa/${empresaId}`, {
-      method: "GET",
-    });
-    console.log("Clientes obtenidos:", data);
-    return data;
-  } catch (error) {
-    console.error("Error al obtener clientes por empresa:", error);
-    return [];
-  }
+// 
+export const getClientesPorEmpresa = async (
+    empresaId: number,
+    search: string = ""
+): Promise<Cliente[]> => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (search.trim()) queryParams.append("search", search);
+        queryParams.append("empresa_id", empresaId.toString());
+
+        const data = await apiFetch(`clientes/por-empresa/${empresaId}?${queryParams.toString()}`);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener clientes por empresa:", error);
+        return [];
+    }
 };
 //finObtener todos los clientes por empresa
 //************************************************************************************* */
 //empieza obtener clientes por id
 export const getClienteById = async (clienteId: string): Promise<Cliente> => {
     try {
-        const data = await apiFetch(`clientes/${clienteId}`,{
-            method:"GET"
+        const data = await apiFetch(`clientes/${clienteId}`, {
+            method: "GET"
         });
         console.log("cliente obtenido", data)
         return data;
@@ -97,12 +102,12 @@ export const updateCliente = async (clienteId: string, clienteData: {
 //termina editar clientes por id
 //***************************************************************** */
 //empieza borrado logico clientes
-export const removeCliente = async(clienteId: string) =>{
+export const removeCliente = async (clienteId: string) => {
     try {
-        const data = await apiFetch(`clientes/${clienteId}`,{
+        const data = await apiFetch(`clientes/${clienteId}`, {
             method: "DELETE",
         });
-            console.log("Cliente desactivado:", data);
+        console.log("Cliente desactivado:", data);
         return data;
     } catch (error) {
         console.error("Error al desactivar Cliente:", error);

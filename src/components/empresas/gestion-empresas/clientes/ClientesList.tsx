@@ -4,33 +4,51 @@ import { getClientes, getClientesPorEmpresa, removeCliente } from "../../../../s
 import { div } from "framer-motion/client";
 import Swal from "sweetalert2";
 
+const useDebounce = (value: string, delay: number = 500): string => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
 const ClientesList = () => {
     const [clientes, setClientes] = useState<any[]>([]);
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
+     const debouncedSearch = useDebounce(search, 500);
     const navigate = useNavigate();
     const { id } = useParams();
 
     // 
-    useEffect(() => {
-        const fetchClientes = async () => {
-            setLoading(true);
-            try {
-                const empresaId = Number(id);
-                const data = await getClientesPorEmpresa(empresaId);
-                if (Array.isArray(data)) {
-                    setClientes(data);
-                } else {
-                    console.error("La respuesta no es un array:", data);
-                }
-            } catch (error) {
-                console.error("Error al obtener clientes:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchClientes = async () => {
+        setLoading(true);
+        try {
+            const empresaId = Number(id);
+            const data = await getClientesPorEmpresa(empresaId, debouncedSearch);
+            setClientes(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Error al obtener clientes:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchClientes();
-    }, [id]);
+    }, [id,debouncedSearch]);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    };
+
+    const handleSearch = () => {
+        fetchClientes();
+    };
 
     const crearCliente = () => {
         navigate(`/mis-empresas/${id}/clientes/crear-cliente`);
@@ -67,6 +85,16 @@ const ClientesList = () => {
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                 <h2 className="text-black text-2xl font-bold mb-4">NUESTROS CLIENTES</h2>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="text"
+                        placeholder="Buscar cliente..."
+                        value={search}
+                        onChange={handleSearchChange}
+                        className="mb-1 p-2 border rounded w-80  shadow-amber-50"
+                    />
+                    
+                </div>
                 <button className="bg-green-500 px-3 py-1 rounded-md hover:bg-green-600"
                     onClick={crearCliente}>
                     ➕ Crear Clientes

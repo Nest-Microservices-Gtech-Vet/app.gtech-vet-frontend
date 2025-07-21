@@ -8,6 +8,20 @@ import { Cliente } from "../../../../types/clientes/cliente";
 import { Raza } from "../../../../types/mascotas/raza";
 import { Especie } from "../../../../types/mascotas/especie";
 
+
+const useDebounce = (value: string, delay: number = 500): string => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
+
 const CreateMascotaForm = () => {
     const { empresaId } = useParams();
     const { mascotaId } = useParams();
@@ -52,7 +66,7 @@ const CreateMascotaForm = () => {
         const fetchData = async () => {
 
             const empresaId = Number(id);
-            const clientesRes = await getClientes(empresaId);
+            const clientesRes = await getClientes(empresaId,);
             setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
 
             const especiesGet = await getEspecies();

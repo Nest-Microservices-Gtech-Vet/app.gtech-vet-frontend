@@ -1,0 +1,27 @@
+@echo off
+REM =========================================================
+REM  START DEV - Flujo completo de desarrollo
+REM =========================================================
+
+echo Levantando NATS Server...
+cd /d "C:\nats\nats-server-v2.11.8-windows-amd64"
+start "NATS Server" cmd /k nats-server.exe
+
+REM Esperar 3 segundos a que NATS esté listo
+timeout /t 3
+
+REM =========================================================
+REM Verificar microservicios con PM2
+REM =========================================================
+echo Microservicios PM2:
+call pm2 list
+
+REM =========================================================
+REM Cambiar al directorio del frontend
+REM =========================================================
+cd /d "C:\Users\Administrator\Documents\amigovet123\frontend\app.gtech-vet-frontend"
+
+echo Levantando frontend con Vite...
+call npm run dev
+
+pause

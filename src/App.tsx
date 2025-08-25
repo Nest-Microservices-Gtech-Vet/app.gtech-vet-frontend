@@ -106,6 +106,19 @@ const App = () => {
               </PrivateRoute>
             }
           />
+
+
+          <Route
+  path="/dashboard"
+  element={
+    <PrivateRoute>
+      <MainLayout>
+        <DashboardLayout />
+      </MainLayout>
+    </PrivateRoute>
+  }
+/>
+
           {/* rutas de usuario "rol=SUPERADMIN" */}
           <Route
             path="/users"

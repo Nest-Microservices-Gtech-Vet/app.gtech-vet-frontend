@@ -28,7 +28,7 @@ const Login = () => {
 
     const user = JSON.parse(userData);
 
-    switch (user.rol) {
+    switch (user.usua_rol) {
       case "SUPERADMIN":
         navigate("/dashboard");
         break;
@@ -39,7 +39,7 @@ const Login = () => {
         break;
 
       default:
-        navigate("/");
+        navigate("/login");
         break;
     }
 

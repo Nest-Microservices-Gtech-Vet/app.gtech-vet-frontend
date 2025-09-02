@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getClienteById, updateCliente } from "../../../../services/gestion-empresa/clientes/clientes";
+import { getClienteById, updateCliente, validarIdentificacion } from "../../../../services/gestion-empresa/clientes/clientes";
 import Swal from "sweetalert2";
 
 const EditClienteForm = () => {
@@ -20,17 +20,19 @@ const EditClienteForm = () => {
         empresa_id: Number(empresaId),
     });
 
+    // Guardamos valores originales para comparaciones
+    const [originalIdentificacion, setOriginalIdentificacion] = useState("");
+    const [originalCelular, setOriginalCelular] = useState("");
+
     useEffect(() => {
         const fetchCliente = async () => {
             try {
-                const cliente = await getClienteById(clienteId!)
-                console.log("Usuario obtenido:", cliente);
+                const cliente = await getClienteById(clienteId!);
                 if (cliente) {
-                    // Elimina propiedades no permitidas antes de actualizar el estado
                     const { cli_id, createdBy, updatedBy, created_at, updated_at, ...clienteData } = cliente;
-                    setFormData(clienteData); // Llena el formulario con los datos permitidos
-                } else {
-                    console.error("cliente no encontrado");
+                    setFormData(clienteData);
+                    setOriginalIdentificacion(clienteData.cli_identificacion);
+                    setOriginalCelular(clienteData.cli_celular);
                 }
             } catch (error) {
                 console.error("Error al obtener el cliente:", error);
@@ -39,21 +41,34 @@ const EditClienteForm = () => {
         fetchCliente();
     }, [clienteId]);
 
+    // Validación de RUC/Cédula
+    const handleIdentificacionBlur = async () => {
+        if (formData.cli_identificacion === originalIdentificacion) return; // no cambió
+        if (!formData.cli_identificacion) return;
+
+        try {
+            const existe = await validarIdentificacion(formData.cli_identificacion);
+            if (existe) {
+                Swal.fire("Atención", "Esta cédula/RUC ya existe", "warning");
+                setFormData(prev => ({ ...prev, cli_identificacion: originalIdentificacion })); // opcional: revertir al original
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Validación de celular
+    const handleCelularBlur = () => {
+        if (formData.cli_celular === originalCelular) return; // no cambió
+        if (formData.cli_celular.length !== 10) {
+            Swal.fire("Atención", "El celular debe tener 10 dígitos", "warning");
+        }
+    };
+
     const updatedCliente = async (e: React.FormEvent) => {
         e.preventDefault();
-        const clienteDataToUpdate = {
-            cli_identificacion: formData.cli_identificacion,
-            cli_nombre: formData.cli_nombre,
-            cli_apellido: formData.cli_apellido,
-            cli_email: formData.cli_email,
-            cli_celular: formData.cli_celular,
-            cli_direccion: formData.cli_direccion,
-            cli_observaciones: formData.cli_observaciones,
-            activo: formData.activo,
-            empresa_id: formData.empresa_id,
-        };
         try {
-            const result = await updateCliente(clienteId!, clienteDataToUpdate);
+            const result = await updateCliente(clienteId!, formData);
             if (result) {
                 Swal.fire({
                     icon: 'success',
@@ -62,26 +77,16 @@ const EditClienteForm = () => {
                     timer: 5000,
                     timerProgressBar: true,
                     showConfirmButton: false,
-                    didClose: () => {
-                        navigate(`/mis-empresas/${empresaId}/clientes`); // Ruta a la lista de empresas
-                    }
+                    didClose: () => navigate(`/mis-empresas/${empresaId}/clientes`)
                 });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al modificar',
-                    text: 'Ocurrió un error al guardar los cambios.',
-                });
+                Swal.fire({ icon: 'error', title: 'Error al modificar', text: 'Ocurrió un error al guardar los cambios.' });
             }
         } catch (error) {
-            console.error(Swal.fire({
-                icon: 'error',
-                title: 'Error al modificar',
-                text: 'Ocurrió un error al guardar los cambios.',
-            }), error);
+            console.error(error);
+            Swal.fire({ icon: 'error', title: 'Error al modificar', text: 'Ocurrió un error al guardar los cambios.' });
         }
-    }
-
+    };
     return (
         <form onSubmit={updatedCliente} className="w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md">
 
@@ -93,6 +98,7 @@ const EditClienteForm = () => {
                             <input
                                 value={formData.cli_identificacion}
                                 onChange={(e) => setFormData({ ...formData, cli_identificacion: e.target.value })}
+                                onBlur={handleIdentificacionBlur}
                                 type="text"
                                 id="cli_identificacion"
                                 name="cli_identificacion"
@@ -110,6 +116,7 @@ const EditClienteForm = () => {
                             <input
                                 value={formData.cli_nombre}
                                 onChange={(e) => setFormData({ ...formData, cli_nombre: e.target.value })}
+                                onBlur={handleCelularBlur}
                                 type="text"
                                 id="cli_nombre"
                                 name="cli_nombre"

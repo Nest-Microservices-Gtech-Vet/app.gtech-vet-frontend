@@ -1,18 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { login as loginUser, logout as logoutUser, isAuthenticated } from "../services/auth";
-
-interface User {
-  usua_id: number;
-  usua_email: string;
-  usua_nombre: string;
-  usua_apellido: string;
-  usua_rol: string; // ADMIN o SUPERADMIN
-}
+import { login as loginUser, logout as logoutUser, isAuthenticated, User } from "../services/auth";
 
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -29,25 +21,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoggedIn(isAuthenticated());
   }, []);
 
-  const login = async (username: string, password: string) => {
-    const success = await loginUser(username, password);
-    if (success) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) setUser(JSON.parse(storedUser));
+  const login = async (email: string, password: string) => {
+    const result = await loginUser(email, password);
+
+    if (result.success && result.usuario) {
+      setUser(result.usuario); // ✅ ahora no hay error
       setIsLoggedIn(true);
       return true;
     }
+
     return false;
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("empresaSeleccionada");
     logoutUser();
     setIsLoggedIn(false);
     setUser(null);
-
   };
 
   return (
@@ -59,8 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
+  if (!context) throw new Error("useAuth debe usarse dentro de AuthProvider");
   return context;
 };

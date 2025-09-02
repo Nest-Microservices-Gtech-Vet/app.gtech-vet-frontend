@@ -41,17 +41,22 @@ export const createCliente = async (clienteData: {
 //termina crear clientes
 //***************************************************************** */
 // ✅ Obtener todos los clientes por empresa
-export const getClientesPorEmpresa = async (empresaId: number): Promise<Cliente[]> => {
-  try {
-    const data = await apiFetch(`clientes/por-empresa/${empresaId}`, {
-      method: "GET",
-    });
-    console.log("Clientes obtenidos:", data);
-    return data;
-  } catch (error) {
-    console.error("Error al obtener clientes por empresa:", error);
-    return [];
-  }
+// 
+export const getClientesPorEmpresa = async (
+    empresaId: number,
+    search: string = ""
+): Promise<Cliente[]> => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (search.trim()) queryParams.append("search", search);
+        queryParams.append("empresa_id", empresaId.toString());
+
+        const data = await apiFetch(`clientes/por-empresa/${empresaId}?${queryParams.toString()}`);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener clientes por empresa:", error);
+        return [];
+    }
 };
 //finObtener todos los clientes por empresa
 //************************************************************************************* */

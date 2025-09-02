@@ -1,0 +1,51 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from "react";
+import { createUser } from "../../services/users/users";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+const CreateUserForm = () => {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        usua_ruc: "",
+        usua_nombre: "",
+        usua_apellido: "",
+        usua_email: "",
+        usua_celular: "",
+        usua_direccion: "",
+        usua_contrasenia: "",
+        usua_rol: "ADMIN",
+        activo: true,
+    });
+    const sendUser = async (e) => {
+        e.preventDefault();
+        const result = await createUser(formData);
+        if (result) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario creado!',
+                text: 'El usuario fue registrado correctamente.',
+                timer: 5000,
+                timerProgressBar: true,
+                didClose: () => {
+                    navigate('/users');
+                }
+            });
+            setFormData({
+                usua_ruc: "",
+                usua_nombre: "",
+                usua_apellido: "",
+                usua_email: "",
+                usua_celular: "",
+                usua_direccion: "",
+                usua_contrasenia: "",
+                usua_rol: "ADMIN",
+                activo: true,
+            });
+        }
+        else {
+            alert("error al crear usuario");
+        }
+    };
+    return (_jsxs("form", { onSubmit: sendUser, className: "w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md", children: [_jsx("h1", { className: "text-2xl font-bold mb-4", children: "Agreger Usuarios" }), _jsxs("div", { className: "w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md", children: [_jsxs("div", { className: "grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg", children: [_jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_ruc, onChange: (e) => setFormData({ ...formData, usua_ruc: e.target.value }), type: "text", id: "usua_ruc", name: "usua_ruc", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_ruc", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar RUC o Cedula" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_nombre, onChange: (e) => setFormData({ ...formData, usua_nombre: e.target.value }), type: "text", id: "usua_nombre", name: "usua_nombre", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_nombre", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Nombre" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_apellido, onChange: (e) => setFormData({ ...formData, usua_apellido: e.target.value }), type: "text", id: "usua_apellido", name: "usua_apellido", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_apellido", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Apellido" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_email, onChange: (e) => setFormData({ ...formData, usua_email: e.target.value }), type: "email", id: "usua_email", name: "usua_email", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_email", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Email" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_celular, onChange: (e) => setFormData({ ...formData, usua_celular: e.target.value }), type: "text", id: "usua_celular", name: "usua_celular", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_celular", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Celular" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_contrasenia, onChange: (e) => setFormData({ ...formData, usua_contrasenia: e.target.value }), type: "password", id: "usua_contrasenia", name: "usua_contrasenia", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_contrasenia", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Contrase\u00F1a" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_rol, onChange: (e) => setFormData({ ...formData, usua_rol: e.target.value }), type: "text", id: "usua_rol", name: "usua_rol", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " " }), _jsx("label", { className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Rol" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.usua_direccion, onChange: (e) => setFormData({ ...formData, usua_direccion: e.target.value }), type: "text", id: "usua_direccion", name: "usua_direccion", className: "peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: " ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "usua_direccion", className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Ingresar Direccion" })] }) }), _jsx("div", { className: "bg-gray-800 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsxs("select", { value: formData.activo ? "true" : "false", onChange: (e) => setFormData({ ...formData, activo: e.target.value === "true" }), className: "peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", children: [_jsx("option", { value: "true", children: "Activo" }), _jsx("option", { value: "false", children: "Inactivo" })] }), _jsx("label", { className: "absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ", children: "Estado" })] }) })] }), _jsx("div", { className: "flex justify-center mt-4", children: _jsx("button", { className: "mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center", type: "submit", children: "Crear Usuario" }) })] })] }));
+};
+export default CreateUserForm;

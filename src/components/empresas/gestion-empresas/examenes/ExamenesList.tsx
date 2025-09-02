@@ -21,7 +21,7 @@ const ExamenList = ({ examenes }: Props) => {
             {exam.archivos.map((archivo) => (
               <div key={archivo.exa_id} className=" rounded p-2 bg-white shadow-sm">
                 <img
-                  src={`http://localhost:3010/uploads/${archivo.exa_url}`}
+                  src={`https://app.amigovet123.com:8443/uploads/${archivo.exa_url}`}
                   alt={archivo.exa_descripcion}
                   className="w-full h-32 object-cover mb-2"
                 />

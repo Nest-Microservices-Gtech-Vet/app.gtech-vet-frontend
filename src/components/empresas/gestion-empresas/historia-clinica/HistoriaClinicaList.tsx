@@ -92,7 +92,7 @@ const HistoriaClinicaList = () => {
           <div className="space-y-2 text-gray-800">
             <div className="mb-4">
               <img
-                src={`http://localhost:3010/uploads/perfil/${historiaClinica.mascota.mas_foto}`}
+                src={`https://app.amigovet123.com:8443/uploads/perfil/${historiaClinica.mascota.mas_foto}`}
                 alt="Foto mascota"
                 className="w-32 h-32 object-cover rounded "
               />

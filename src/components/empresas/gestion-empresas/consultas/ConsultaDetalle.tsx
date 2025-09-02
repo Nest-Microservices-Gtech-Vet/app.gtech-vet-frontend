@@ -40,19 +40,19 @@ const ConsultaDetalle = () => {
     }, [consultaId]);
     // 
     useEffect(() => {
-    fetchTratamientos(); // mueve esta función afuera
-}, [consulta]);
+        fetchTratamientos(); // mueve esta función afuera
+    }, [consulta]);
 
-const fetchTratamientos = async () => {
-    if (!consulta?.con_id) return;
+    const fetchTratamientos = async () => {
+        if (!consulta?.con_id) return;
 
-    try {
-        const data = await tratamientoByConsultaId(consulta.con_id);
-        setTratamientos(data);
-    } catch (error) {
-        console.error("Error al obtener tratamiento:", error);
-    }
-};
+        try {
+            const data = await tratamientoByConsultaId(consulta.con_id);
+            setTratamientos(data);
+        } catch (error) {
+            console.error("Error al obtener tratamiento:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchExamenes = async () => {
@@ -201,18 +201,20 @@ const fetchTratamientos = async () => {
                                     </div>
                                 ))
                             )}
+                               <div>
+                        <button
+                            type="submit"
+                            className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
+                        >
+                            imprimir Receta
+                        </button>
+                    </div>
                         </>
                         
+
                     )}
 
-                    <div>
- <button
-              type="submit"
-              className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
-            >
-              imprimir Receta
-            </button>
-                    </div>
+                 
 
                     {vistaActiva === "examenes" && (
                         <>

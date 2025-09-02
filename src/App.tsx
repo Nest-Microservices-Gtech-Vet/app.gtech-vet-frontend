@@ -69,7 +69,7 @@ const MainLayout = ({ children }: { children: JSX.Element }) => {
     <div className="flex h-screen bg-gray-900 text-gray-100 flex-initial overflow-auto relative z-10 ">
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="flex flex-col flex-grow">
-        <Header title="Mi Aplicación" />
+        <Header  />
         <main className="flex-grow min-w-0 p-4 overflow-auto  mx-auto ">
           <motion.div
             className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-1 mb-8'

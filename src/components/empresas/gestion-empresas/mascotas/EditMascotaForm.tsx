@@ -7,6 +7,7 @@ import { getClientes } from "../../../../services/gestion-empresa/clientes/clien
 import { getEspecies, getRazas } from "../../../../services/gestion-empresa/mascotas/catalogosMascota";
 import { getMascotaById, updateMascota } from "../../../../services/gestion-empresa/mascotas/mascotas";
 import Swal from "sweetalert2";
+import { BASE_URL } from "../../../../services/api";
 
 const EditMascotaForm = () => {
     const { empresaId } = useParams();
@@ -184,7 +185,7 @@ const EditMascotaForm = () => {
                                     <div className="mb-2">
                                         <label className="block text-sm font-medium text-gray-700">Foto actual</label>
                                         <img
-                                            src={`http://localhost:3010/uploads/perfil/${formData.mas_foto}`} // Ajusta si tu ruta base es otra
+                                           src={`https://app.amigovet123.com:8443/uploads/perfil/${formData.mas_foto}`} // Ajusta si tu ruta base es otra
                                             alt="Foto mascota"
                                             className="w-32 h-32 object-cover rounded border"
                                         />

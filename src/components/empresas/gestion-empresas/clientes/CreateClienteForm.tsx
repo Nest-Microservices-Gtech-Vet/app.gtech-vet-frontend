@@ -33,13 +33,27 @@ const CreateClienteForm = () => {
 
 
 
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const sendCliente = async (e: React.FormEvent) => {
         e.preventDefault();
-
         const empresa_id_final = extractEmpresaId();
 
         if (!empresa_id_final) {
             alert("No se pudo determinar el ID de la empresa.");
+            return;
+        }
+
+        // ✅ Validaciones básicas antes de enviar
+        let newErrors: { [key: string]: string } = {};
+        if (formData.cli_identificacion.length < 10 || formData.cli_identificacion.length > 13) {
+            newErrors.cli_identificacion = "El RUC/Cédula debe tener entre 10 y 13 dígitos.";
+        }
+        if (formData.cli_celular.length !== 10) {
+            newErrors.cli_celular = "El celular debe tener exactamente 10 dígitos.";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
 
@@ -100,7 +114,9 @@ const CreateClienteForm = () => {
                         <div className="relative bg-inherit">
                             <input
                                 value={formData.cli_identificacion}
-                                onChange={(e) => setFormData({ ...formData, cli_identificacion: e.target.value })}
+                                onChange={(e) => setFormData({
+                                    ...formData, cli_identificacion: e.target.value.replace(/\D/g, "")
+                                })}
                                 type="text"
                                 id="cli_identificacion"
                                 name="cli_identificacion"
@@ -116,6 +132,9 @@ const CreateClienteForm = () => {
         peer-focus:bg-gray-50
         -top-3 text-sm w-auto 
       `}>Ingresar RUC o Cedula</label>
+                            {errors.cli_identificacion && (
+                                <p className="text-red-500 text-sm mt-1">{errors.cli_identificacion}</p>
+                            )}
                         </div>
                     </div>
 
@@ -199,7 +218,7 @@ const CreateClienteForm = () => {
                         <div className="relative bg-inherit">
                             <input
                                 value={formData.cli_celular}
-                                onChange={(e) => setFormData({ ...formData, cli_celular: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, cli_celular: e.target.value.replace(/\D/g, ""), })}
                                 type="text"
                                 id="cli_celular"
                                 name="cli_celular"
@@ -215,6 +234,9 @@ const CreateClienteForm = () => {
         peer-focus:bg-gray-50
         -top-3 text-sm w-auto
       `}>Ingresar Celular</label>
+                            {errors.cli_celular && (
+                                <p className="text-red-500 text-sm mt-1">{errors.cli_celular}</p>
+                            )}
                         </div>
                     </div>
 

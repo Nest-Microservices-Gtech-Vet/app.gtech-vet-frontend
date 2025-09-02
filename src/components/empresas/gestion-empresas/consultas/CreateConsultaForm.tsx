@@ -11,6 +11,8 @@ const CreateConsultaForm = () => {
   const navigate = useNavigate();
 
   const [historiaClinicaId, setHistoriaClinicaId] = useState<number | null>(null);
+  const [identificacionExistente, setIdentificacionExistente] = useState<boolean>(false);
+
 
 
 

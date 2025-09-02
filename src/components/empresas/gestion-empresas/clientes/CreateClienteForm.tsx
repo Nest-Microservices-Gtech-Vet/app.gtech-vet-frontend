@@ -1,7 +1,7 @@
 import { h2 } from "framer-motion/client";
 import React, { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { createCliente } from "../../../../services/gestion-empresa/clientes/clientes";
+import { createCliente, validarIdentificacion } from "../../../../services/gestion-empresa/clientes/clientes";
 import Swal from "sweetalert2";
 
 const CreateClienteForm = () => {
@@ -18,6 +18,9 @@ const CreateClienteForm = () => {
         if (match) return Number(match[1]); // si encuentra un número
         return null;
     };
+    const [identificacionExistente, setIdentificacionExistente] = useState<boolean>(false);
+    const [telefonoValido, setTelefonoValido] = useState<boolean>(true);
+
 
     const [formData, setFormData] = useState({
         cli_identificacion: "",
@@ -31,9 +34,40 @@ const CreateClienteForm = () => {
         empresa_id: extractEmpresaId() || 0,
     });
 
-
-
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    // 🔎 Validar si la identificación ya existe
+    const handleIdentificacionBlur = async () => {
+        if (!formData.cli_identificacion) return;
+
+        try {
+            const existe = await validarIdentificacion(formData.cli_identificacion);
+            setIdentificacionExistente(existe);
+
+            if (existe) {
+                Swal.fire(
+                    "Atención",
+                    "La cédula o RUC ingresado ya está registrado",
+                    "warning"
+                );
+            }
+        } catch (error) {
+            console.error("Error validando identificación:", error);
+        }
+    };
+
+    const handleTelefonoBlur = () => {
+        const telefono = formData.cli_celular || "";
+        if (telefono.length !== 10) {
+            setTelefonoValido(false);
+            Swal.fire("Atención", "El teléfono debe tener 10 dígitos", "warning");
+        } else {
+            setTelefonoValido(true);
+        }
+    };
+
+
+
+
     const sendCliente = async (e: React.FormEvent) => {
         e.preventDefault();
         const empresa_id_final = extractEmpresaId();
@@ -117,6 +151,7 @@ const CreateClienteForm = () => {
                                 onChange={(e) => setFormData({
                                     ...formData, cli_identificacion: e.target.value.replace(/\D/g, "")
                                 })}
+                                onBlur={handleIdentificacionBlur}
                                 type="text"
                                 id="cli_identificacion"
                                 name="cli_identificacion"
@@ -219,6 +254,7 @@ const CreateClienteForm = () => {
                             <input
                                 value={formData.cli_celular}
                                 onChange={(e) => setFormData({ ...formData, cli_celular: e.target.value.replace(/\D/g, ""), })}
+                                onBlur={handleTelefonoBlur}
                                 type="text"
                                 id="cli_celular"
                                 name="cli_celular"

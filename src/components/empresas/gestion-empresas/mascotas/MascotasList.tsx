@@ -44,9 +44,13 @@ const MascotasList = () => {
         fetchMascotas();
     }, [id, debouncedSearch]);
 
-     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
     };
+
+    const crearCliente = () => {
+        navigate(`/mis-empresas/${id}/clientes/crear-cliente`);
+    }
 
     const crearMascota = () => {
         navigate(`/mis-empresas/${id}/mascotas/crear-mascota`);
@@ -85,7 +89,8 @@ const MascotasList = () => {
 
     return (
         <div className="max-w-full flex flex-col items-center bg-gray-50 text-black p-15">
-           <div className="w-full bg-white rounded-lg shadow-sm px-6 py-4 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="w-full bg-white rounded-lg shadow-sm px-6 py-4 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
   {/* Título */}
   <h2 className="text-2xl font-bold text-gray-800 w-full md:w-1/3 text-left">
     🐶 Nuestras Mascotas
@@ -105,15 +110,22 @@ const MascotasList = () => {
     />
   </div>
 
-  {/* Botón crear */}
-  <div className="w-full md:w-1/3 text-left md:text-right">
+  {/* Botones */}
+  <div className="w-full md:w-1/3 flex flex-col md:flex-row gap-2 md:justify-end">
     <button
-      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-md transition duration-300"
+      onClick={crearCliente}
+      className="bg-blue-400 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
+    >
+      ➕ Crear Cliente
+    </button>
+    <button
       onClick={crearMascota}
+      className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
     >
       ➕ Crear Mascota
     </button>
   </div>
+
 </div>
 
 

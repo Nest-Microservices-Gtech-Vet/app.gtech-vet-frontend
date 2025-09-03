@@ -51,6 +51,7 @@ const CreateMascotaForm = () => {
     const [especies, setEspecies] = useState<Especie[]>([]);
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
+    const [searchCliente, setSearchCliente] = useState(""); 
 
     useEffect(() => {
         const newClienteId = searchParams.get("newClienteId");
@@ -294,43 +295,76 @@ const CreateMascotaForm = () => {
                     </div>
                 </div>
 
-                {/* Sección derecha: Cliente */}
-                <div>
-                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
-                        <select
-                            value={formData.cliente_id}
-                            onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
-                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                        >
-                            <option value="0">-- Selecciona El Propietario --</option>
-                            {clientes.map((cli) => (
-                                <option key={cli.cli_id} value={cli.cli_id}>
-                                    {cli.cli_nombre} {cli.cli_apellido}
-                                </option>
-                            ))}
-                        </select>
+            {/* Sección derecha: Propietario */}
+{/* Sección derecha: Propietario */}
+<div className="relative">
+  <h2 className="text-2xl font-semibold mb-4 text-gray-800">👤 Propietario</h2>
 
-                        <button
-                            type="button"
-                            className="bg-blue-500 px-3 py-1 mt-2 rounded-md hover:bg-blue-600 text-white"
+  <div className="relative">
+    <input
+      type="text"
+      placeholder="Buscar cliente..."
+      value={searchCliente}
+      onChange={(e) => {
+        setSearchCliente(e.target.value);
+        setFormData({ ...formData, cliente_id: 0 }); // Reinicia selección si escribe
+      }}
+      className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+    />
 
-                            onClick={() => {
-                                const returnTo = mascotaId
-                                    ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
-                                    : `/mis-empresas/${id}/mascotas/crear-mascota`;
+    {/* Dropdown de coincidencias */}
+{searchCliente &&
+  clientes.some((cli) =>
+    `${cli.cli_nombre} ${cli.cli_apellido}`
+      .toLowerCase()
+      .includes(searchCliente.toLowerCase())
+  ) &&
+  formData.cliente_id === 0 && (   // 👈 solo mostrar si NO hay cliente ya seleccionado
+    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+      {clientes
+        .filter((cli) =>
+          `${cli.cli_nombre} ${cli.cli_apellido}`
+            .toLowerCase()
+            .includes(searchCliente.toLowerCase())
+        )
+        .map((cli) => (
+          <li
+            key={cli.cli_id}
+            className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+            onClick={() => {
+              setFormData({ ...formData, cliente_id: cli.cli_id });
+              setSearchCliente(`${cli.cli_nombre} ${cli.cli_apellido}`);
+              // 👇 al seleccionar, el dropdown desaparece
+            }}
+          >
+            {cli.cli_nombre} {cli.cli_apellido}
+          </li>
+        ))}
+    </ul>
+)}
 
-                                navigate(
-                                    `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
-                                );
-                            }}
-                        >
-                            ➕ Crear nuevo cliente
-                        </button>
+    
+  </div>
 
-                    </div>
-                </div>
+  {/* Botón para crear cliente */}
+  <button
+    type="button"
+    className="mt-2 bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600 text-white"
+    onClick={() => {
+      const returnTo = mascotaId
+        ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
+        : `/mis-empresas/${id}/mascotas/crear-mascota`;
+
+      navigate(
+        `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
+      );
+    }}
+  >
+    ➕ Crear nuevo cliente
+  </button>
+</div>
+
+
             </div>
 
             {/* Botón de acción */}

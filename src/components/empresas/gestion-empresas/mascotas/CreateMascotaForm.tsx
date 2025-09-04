@@ -51,7 +51,7 @@ const CreateMascotaForm = () => {
     const [especies, setEspecies] = useState<Especie[]>([]);
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
-    const [searchCliente, setSearchCliente] = useState(""); 
+    const [searchCliente, setSearchCliente] = useState("");
 
     useEffect(() => {
         const newClienteId = searchParams.get("newClienteId");
@@ -103,6 +103,20 @@ const CreateMascotaForm = () => {
 
     const sendMascota = async (e: React.FormEvent) => {
         e.preventDefault();
+        // Validar fecha de nacimiento
+        if (formData.mas_fechaNac) {
+            const fechaNac = new Date(formData.mas_fechaNac);
+            const hoy = new Date();
+
+            // Normalizamos la hora para comparar solo fechas (sin horas)
+            fechaNac.setHours(0, 0, 0, 0);
+            hoy.setHours(0, 0, 0, 0);
+
+            if (fechaNac > hoy) {
+                Swal.fire("Error", "La fecha de nacimiento no puede ser futura.", "error");
+                return;
+            }
+        }
 
         const data = new FormData();
         data.append("mas_nombre", formData.mas_nombre);
@@ -172,6 +186,7 @@ const CreateMascotaForm = () => {
                                 type="date"
                                 id="mas_fechaNac"
                                 value={formData.mas_fechaNac?.split("T")[0] || ""}
+                                max={new Date().toISOString().split("T")[0]}
                                 onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
                                 className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             />
@@ -295,74 +310,74 @@ const CreateMascotaForm = () => {
                     </div>
                 </div>
 
-            {/* Sección derecha: Propietario */}
-{/* Sección derecha: Propietario */}
-<div className="relative">
-  <h2 className="text-2xl font-semibold mb-4 text-gray-800">👤 Propietario</h2>
+                {/* Sección derecha: Propietario */}
+                {/* Sección derecha: Propietario */}
+                <div className="relative">
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">👤 Propietario</h2>
 
-  <div className="relative">
-    <input
-      type="text"
-      placeholder="Buscar cliente..."
-      value={searchCliente}
-      onChange={(e) => {
-        setSearchCliente(e.target.value);
-        setFormData({ ...formData, cliente_id: 0 }); // Reinicia selección si escribe
-      }}
-      className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-    />
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Buscar cliente..."
+                            value={searchCliente}
+                            onChange={(e) => {
+                                setSearchCliente(e.target.value);
+                                setFormData({ ...formData, cliente_id: 0 }); // Reinicia selección si escribe
+                            }}
+                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                        />
 
-    {/* Dropdown de coincidencias */}
-{searchCliente &&
-  clientes.some((cli) =>
-    `${cli.cli_nombre} ${cli.cli_apellido}`
-      .toLowerCase()
-      .includes(searchCliente.toLowerCase())
-  ) &&
-  formData.cliente_id === 0 && (   // 👈 solo mostrar si NO hay cliente ya seleccionado
-    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
-      {clientes
-        .filter((cli) =>
-          `${cli.cli_nombre} ${cli.cli_apellido}`
-            .toLowerCase()
-            .includes(searchCliente.toLowerCase())
-        )
-        .map((cli) => (
-          <li
-            key={cli.cli_id}
-            className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
-            onClick={() => {
-              setFormData({ ...formData, cliente_id: cli.cli_id });
-              setSearchCliente(`${cli.cli_nombre} ${cli.cli_apellido}`);
-              // 👇 al seleccionar, el dropdown desaparece
-            }}
-          >
-            {cli.cli_nombre} {cli.cli_apellido}
-          </li>
-        ))}
-    </ul>
-)}
+                        {/* Dropdown de coincidencias */}
+                        {searchCliente &&
+                            clientes.some((cli) =>
+                                `${cli.cli_nombre} ${cli.cli_apellido}`
+                                    .toLowerCase()
+                                    .includes(searchCliente.toLowerCase())
+                            ) &&
+                            formData.cliente_id === 0 && (   // 👈 solo mostrar si NO hay cliente ya seleccionado
+                                <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+                                    {clientes
+                                        .filter((cli) =>
+                                            `${cli.cli_nombre} ${cli.cli_apellido}`
+                                                .toLowerCase()
+                                                .includes(searchCliente.toLowerCase())
+                                        )
+                                        .map((cli) => (
+                                            <li
+                                                key={cli.cli_id}
+                                                className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+                                                onClick={() => {
+                                                    setFormData({ ...formData, cliente_id: cli.cli_id });
+                                                    setSearchCliente(`${cli.cli_nombre} ${cli.cli_apellido}`);
+                                                    // 👇 al seleccionar, el dropdown desaparece
+                                                }}
+                                            >
+                                                {cli.cli_nombre} {cli.cli_apellido}
+                                            </li>
+                                        ))}
+                                </ul>
+                            )}
 
-    
-  </div>
 
-  {/* Botón para crear cliente */}
-  <button
-    type="button"
-    className="mt-2 bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600 text-white"
-    onClick={() => {
-      const returnTo = mascotaId
-        ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
-        : `/mis-empresas/${id}/mascotas/crear-mascota`;
+                    </div>
 
-      navigate(
-        `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
-      );
-    }}
-  >
-    ➕ Crear nuevo cliente
-  </button>
-</div>
+                    {/* Botón para crear cliente */}
+                    <button
+                        type="button"
+                        className="mt-2 bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600 text-white"
+                        onClick={() => {
+                            const returnTo = mascotaId
+                                ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
+                                : `/mis-empresas/${id}/mascotas/crear-mascota`;
+
+                            navigate(
+                                `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
+                            );
+                        }}
+                    >
+                        ➕ Crear nuevo cliente
+                    </button>
+                </div>
 
 
             </div>

@@ -24,6 +24,8 @@ const CreateVacunasForm = () => {
   const [vacunas, setVacunas] = useState<any[]>([]);
   const [vacunaEditando, setVacunaEditando] = useState<any | null>(null); // 🔹 vacuna seleccionada para editar
   const navigate = useNavigate();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
 
   const [formData, setFormData] = useState({
     vac_fecha: "",
@@ -90,9 +92,9 @@ const CreateVacunasForm = () => {
   // Pasar vacuna al formulario para edición
   const handleEdit = (vacuna: any) => {
     setVacunaEditando({
-    ...vacuna,
-    id: vacuna.vac_id, // ✅ asegúrate de tener id numérico
-  });
+      ...vacuna,
+      id: vacuna.vac_id, // ✅ asegúrate de tener id numérico
+    });
     setFormData({
       vac_fecha: vacuna.vac_fecha
         ? vacuna.vac_fecha.split("T")[0]
@@ -124,62 +126,86 @@ const CreateVacunasForm = () => {
 
   // Guardar (crear o editar)
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!empresaId || !mascotaId || !historiaClinicaId) {
-    Swal.fire("Error", "Faltan datos obligatorios", "error");
-    return;
-  }
-
-  // Construir payload
-  const payload: any = {
-  vac_nombre: formData.vac_nombre || undefined,
-  vac_tipo: formData.vac_tipo || undefined,
-  vac_fecha: formData.vac_fecha || undefined,
-  vac_lote: formData.vac_lote || undefined,
-  vac_observacion: formData.vac_observacion || undefined,
-  empresa_id: empresaId ? String(empresaId) : undefined,
-  mascota_id: mascotaId ? String(mascotaId) : undefined,
-  historiaClinica_id: historiaClinicaId ? String(historiaClinicaId) : undefined,
-};
-
-if (formData.vac_proxima) {
-  payload.vac_proxima = formData.vac_proxima;
-}
-
-
-  try {
-    if (vacunaEditando) {
-      // ✅ Asegurarse de pasar un número como ID
-      const vacunaId = Number(vacunaEditando.id);
-      const actualizada = await updateVacuna(vacunaId, payload, selectedFiles);
-
-      setVacunas((prev) =>
-        prev.map((v) => (v.id === actualizada.id ? actualizada : v))
-      );
-
-      Swal.fire("Éxito", "Vacuna actualizada correctamente", "success");
-    } else {
-      const nuevaVacuna = await registrarVacuna(payload, selectedFiles);
-      setVacunas((prev) => [...prev, nuevaVacuna]);
-      Swal.fire("Éxito", "Vacuna registrada correctamente", "success");
+    if (!empresaId || !mascotaId || !historiaClinicaId) {
+      Swal.fire("Error", "Faltan datos obligatorios", "error");
+      return;
     }
 
-    cancelarEdicion();
-  } catch (error) {
-    Swal.fire("Error", "No se pudo procesar la vacuna", "error");
-    console.error(error);
+    // Construir payload
+    const payload: any = {
+      vac_nombre: formData.vac_nombre || undefined,
+      vac_tipo: formData.vac_tipo || undefined,
+      vac_fecha: formData.vac_fecha || undefined,
+      vac_lote: formData.vac_lote || undefined,
+      vac_observacion: formData.vac_observacion || undefined,
+      empresa_id: empresaId ? String(empresaId) : undefined,
+      mascota_id: mascotaId ? String(mascotaId) : undefined,
+      historiaClinica_id: historiaClinicaId ? String(historiaClinicaId) : undefined,
+    };
+
+    if (formData.vac_proxima) {
+      payload.vac_proxima = formData.vac_proxima;
+    }
+
+
+    try {
+      if (vacunaEditando) {
+        const vacunaId = Number(vacunaEditando.id);
+        const actualizada = await updateVacuna(vacunaId, payload, selectedFiles);
+
+        setVacunas((prev) =>
+          prev.map((v) => (v.vac_id === actualizada.vac_id ? actualizada : v))
+        );
+      } else {
+        const nuevaVacuna = await registrarVacuna(payload, selectedFiles);
+        setVacunas((prev) => [...prev, nuevaVacuna]);
+      }
+
+      // Limpiar siempre al final
+      setFormData({
+        vac_fecha: "",
+        vac_proxima: "",
+        vac_tipo: "",
+        vac_nombre: "",
+        vac_lote: "",
+        vac_observacion: "",
+      });
+      setVacunaEditando(null);
+      setSelectedFiles([]);   // ✅ limpiar imágenes siempre
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // limpia el input de archivos
+      }
+
+      Swal.fire(
+        "Éxito",
+        vacunaEditando ? "Vacuna actualizada correctamente" : "Vacuna registrada correctamente",
+        "success"
+      );
+    } catch (error) {
+      Swal.fire("Error", "No se pudo procesar la vacuna", "error");
+      console.error(error);
+    }
   }
-};
 
 
   return (
     <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start">
       {/* Listado de vacunas */}
-      <div>
+      <div >
         <h3 className="text-xl font-semibold text-sky-800 mb-4">
-          📋 Vacunas registradas
+          📋Vacunas registradas
+
+          <button
+      onClick={() => navigate(`/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`)}
+      className="bg-purple-500 hover:bg-purple-600 text-white py-1.5 px-1 rounded-md transition ml-1"
+    >
+      🔙 Regresar a historia clinica
+    </button>
         </h3>
+        
         {vacunas.length === 0 ? (
           <p className="text-gray-500">No hay vacunas registradas aún.</p>
         ) : (
@@ -338,6 +364,7 @@ if (formData.vac_proxima) {
               📎 Adjuntar archivos (opcional)
             </label>
             <input
+              ref={fileInputRef}
               type="file"
               multiple
               accept="image/*,application/pdf"

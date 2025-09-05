@@ -141,7 +141,7 @@ const EditMascotaForm = () => {
                         onClick={() => navigate(`/mis-empresas/${id}/mascotas`)}
                         className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-md transition"
                     >
-                        🔙 Volver a Mascota
+                        🔙 Volver a Listado Mascotas
                     </button>
 
                     <button

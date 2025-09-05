@@ -40,19 +40,19 @@ const ConsultaDetalle = () => {
     }, [consultaId]);
     // 
     useEffect(() => {
-    fetchTratamientos(); // mueve esta función afuera
-}, [consulta]);
+        fetchTratamientos(); // mueve esta función afuera
+    }, [consulta]);
 
-const fetchTratamientos = async () => {
-    if (!consulta?.con_id) return;
+    const fetchTratamientos = async () => {
+        if (!consulta?.con_id) return;
 
-    try {
-        const data = await tratamientoByConsultaId(consulta.con_id);
-        setTratamientos(data);
-    } catch (error) {
-        console.error("Error al obtener tratamiento:", error);
-    }
-};
+        try {
+            const data = await tratamientoByConsultaId(consulta.con_id);
+            setTratamientos(data);
+        } catch (error) {
+            console.error("Error al obtener tratamiento:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchExamenes = async () => {
@@ -191,9 +191,23 @@ const fetchTratamientos = async () => {
                                 tratamientos.map((tratamiento) => (
                                     <div key={tratamiento.tra_id} className="mt-6 border-t pt-4">
                                         <h4 className="text-md font-semibold mb-2 text-gray-700">🧾 Tratamiento #{tratamiento.tra_id}</h4>
+                                        <p>📆 Fecha:
+                                            {tratamiento.created_at
+                                                ? new Date(tratamiento.created_at).toLocaleDateString()
+                                                : "Sin fecha"}
+                                        </p>
                                         <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
                                             {tratamiento.medicamentos.map((m) => (
+
                                                 <li key={m.med_id}>
+                                                    {/*esto para fecha y hora <p>
+                                                        {tratamiento.created_at
+                                                            ? new Date(tratamiento.created_at).toLocaleString()
+                                                            : "Sin fecha"}
+                                                    </p> */}
+
+
+
                                                     <strong>{m.med_nombre}</strong> – {m.med_dosis}
                                                 </li>
                                             ))}
@@ -202,16 +216,16 @@ const fetchTratamientos = async () => {
                                 ))
                             )}
                         </>
-                        
+
                     )}
 
                     <div>
- <button
-              type="submit"
-              className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
-            >
-              imprimir Receta
-            </button>
+                        <button
+                            type="submit"
+                            className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
+                        >
+                            imprimir Receta
+                        </button>
                     </div>
 
                     {vistaActiva === "examenes" && (

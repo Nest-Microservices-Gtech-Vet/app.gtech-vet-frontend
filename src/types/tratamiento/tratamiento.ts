@@ -18,6 +18,7 @@ export interface TratamientoResponse {
     consulta_id: number;
     mascota_id: number;
     empresa_id: number;
+    created_at?: string;
     medicamentos: {
         med_id: number;
         med_nombre: string;

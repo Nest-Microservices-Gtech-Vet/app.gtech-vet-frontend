@@ -51,45 +51,75 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }: Props) => 
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      for (const categoria of CATEGORIAS) {
-        if (!categoriasActivas[categoria]) continue;
+  // Validar que haya al menos un archivo seleccionado
+  const hayArchivos = CATEGORIAS.some(
+    (cat) =>
+      categoriasActivas[cat] &&
+      TIPOS.some((tipo) => archivos[cat][tipo].length > 0)
+  );
 
-        for (const tipo of TIPOS) {
-          const files = archivos[categoria][tipo];
-          if (files.length === 0) continue;
+  if (!hayArchivos) {
+    Swal.fire({
+      icon: "warning",
+      title: "Ningún archivo seleccionado",
+      text: "Por favor, selecciona al menos un archivo para subir.",
+      confirmButtonColor: "#6366F1",
+    });
+    return;
+  }
 
-          const formData = new FormData();
-          formData.append("tipo", categoria);
-          formData.append("categoria", tipo);
-          formData.append("descripcion", descripcion || `${categoria} - ${tipo}`);
-          formData.append("consulta_id", String(consultaId));
-          formData.append("empresa_id", String(empresaId));
-          files.forEach((file) => formData.append("files", file));
+  try {
+    for (const categoria of CATEGORIAS) {
+      if (!categoriasActivas[categoria]) continue;
 
-          await subirExamen(formData);
-        }
+      for (const tipo of TIPOS) {
+        const files = archivos[categoria][tipo];
+        if (files.length === 0) continue;
+
+        const formData = new FormData();
+        formData.append("tipo", categoria);
+        formData.append("categoria", tipo);
+        formData.append("descripcion", descripcion || `${categoria} - ${tipo}`);
+        formData.append("consulta_id", String(consultaId));
+        formData.append("empresa_id", String(empresaId));
+        files.forEach((file) => formData.append("files", file));
+
+        await subirExamen(formData);
       }
-
-      Swal.fire("Éxito", "Exámenes subidos correctamente", "success");
-      setDescripcion("");
-      setArchivos({
-        patologia: { solicitud: [], resultado: [] },
-        rayosx: { solicitud: [], resultado: [] },
-      });
-      setCategoriasActivas({
-        patologia: false,
-        rayosx: false,
-      });
-      if (onUploadSuccess) onUploadSuccess();
-    } catch (error) {
-      console.error(error);
-      Swal.fire("Error", "No se pudo subir uno o más exámenes", "error");
     }
-  };
+
+    Swal.fire({
+      icon: "success",
+      title: "Éxito",
+      text: "Exámenes subidos correctamente",
+      confirmButtonColor: "#6366F1",
+    });
+
+    // Reset de formulario
+    setDescripcion("");
+    setArchivos({
+      patologia: { solicitud: [], resultado: [] },
+      rayosx: { solicitud: [], resultado: [] },
+    });
+    setCategoriasActivas({
+      patologia: false,
+      rayosx: false,
+    });
+    if (onUploadSuccess) onUploadSuccess();
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo subir uno o más exámenes",
+      confirmButtonColor: "#6366F1",
+    });
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

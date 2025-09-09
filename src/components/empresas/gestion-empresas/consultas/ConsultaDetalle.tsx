@@ -236,13 +236,11 @@ const ConsultaDetalle = () => {
                                         )}
 
                                     </div>
+                                    
                                 ))
+                                
                             )}
-                        </>
-
-                    )}
-
-                    <div>
+                              <div>
                         <button
                             type="submit"
                             className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded font-semibold"
@@ -250,6 +248,11 @@ const ConsultaDetalle = () => {
                             imprimir Receta
                         </button>
                     </div>
+                        </>
+
+                    )}
+
+                  
 
                     {vistaActiva === "examenes" && (
                         <>

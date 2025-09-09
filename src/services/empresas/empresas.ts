@@ -27,34 +27,43 @@ export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,
 };
 //Termina obtener empresasinactivas //
 //Empieza Crear empresas //
-export const createEmpresa = async (empresaData: {
-    emp_nombre: string;
-    emp_correo: string;
-    emp_direccion: string;
-    emp_telefono: string;
-    emp_ruc: string;
-    emp_tipo_empresa: string;
+// export const createEmpresa = async (empresaData: {
+//     emp_nombre: string;
+//     emp_correo: string;
+//     emp_direccion: string;
+//     emp_telefono: string;
+//     emp_ruc: string;
+//     emp_tipo_empresa: string;
 
-    provincia_id: number;
-    canton_id: number;
-    activo: boolean;
-    fecha_inicio: string;
-    fecha_fin: string;
+//     provincia_id: number;
+//     canton_id: number;
+//     activo: boolean;
+//     fecha_inicio: string;
+//     fecha_fin: string;
 
 
-}) => {
-    try {
-        const data = await apiFetch("empresas", {
-            method: "POST",
-            body: JSON.stringify(empresaData),
-        });
-        console.log("empresa creado", data);
-        return data;
-    } catch (error) {
-        console.error("error al crear empresa:", error)
-        return null;
+// }) => {
+//     try {
+//         const data = await apiFetch("empresas", {
+//             method: "POST",
+//             body: JSON.stringify(empresaData),
+//         });
+//         console.log("empresa creado", data);
+//         return data;
+//     } catch (error) {
+//         console.error("error al crear empresa:", error)
+//         return null;
 
-    }
+//     }
+// };
+export const createEmpresa = async (formData: FormData): Promise<any>=>{
+    return await apiFetch("empresas",{
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body:formData,
+    });
 };
 //Fin Crear empresas//
 //************************************************************************ */

@@ -20,6 +20,7 @@ const CreateEmpresaForm = () => {
         activo: true,
         fecha_inicio: "",
         fecha_fin: "",
+        fotoFile: null as File | null,
     });
 
     const [provincias, setProvincias] = useState([]);
@@ -72,41 +73,39 @@ const CreateEmpresaForm = () => {
 
 
 
-        const formDataFixed = {
-            ...formData,
-            provincia_id: Number(formData.provincia_id),
-            canton_id: Number(formData.canton_id),
-            fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
-            fecha_fin: new Date(formData.fecha_fin).toISOString(),
+        const data = new FormData();
+        data.append("emp_nombre", formData.emp_nombre);
+        data.append("emp_correo", formData.emp_correo);
+        data.append("emp_direccion", formData.emp_direccion);
+        data.append("emp_telefono", formData.emp_telefono);
+        data.append("emp_ruc", formData.emp_ruc);
+        data.append("emp_tipo_empresa", formData.emp_tipo_empresa);
+        data.append("provincia_id", String(formData.provincia_id));
+        data.append("canton_id", String(formData.canton_id));
+        data.append("fecha_inicio", formData.fecha_inicio);
+        data.append("fecha_fin", formData.fecha_fin);
+        data.append("activo", String(formData.activo));
+        if (formData.fotoFile) {
+            data.append("foto", formData.fotoFile);
+        }
 
-        };
 
-        console.log("Enviando empresa:", formDataFixed);
+        try {
+            console.log("Enviando empresa:", data);
 
-        const resultado = await createEmpresa(formDataFixed);
-        if (resultado) {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Empresa creada!',
-                text: 'La empresa fue registrada correctamente.',
-                confirmButtonColor: '#10B981' // verde
-            }).then(() => {
-                navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
-            });;
-            setFormData({
-                emp_nombre: "",
-                emp_correo: "",
-                emp_direccion: "",
-                emp_telefono: "",
-                emp_ruc: "",
-                emp_tipo_empresa: "",
-                provincia_id: 0,
-                canton_id: 0,
-                activo: true,
-                fecha_inicio: "",
-                fecha_fin: "",
-            })
-        } else {
+            const resultado = await createEmpresa(data);
+            if (resultado) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Empresa creada!',
+                    text: 'La empresa fue registrada correctamente.',
+                    confirmButtonColor: '#10B981' // verde
+                }).then(() => {
+                    navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
+                });
+            }
+        } catch (error) {
+            console.error(error);
             Swal.fire({
                 icon: 'error',
                 title: '¡Error!',
@@ -170,6 +169,20 @@ const CreateEmpresaForm = () => {
                                 htmlFor="emp_direccion"
                                 className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar direccion</label>
                         </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="fotoFile" className="block mb-1 text-sm font-medium text-gray-700">Foto de la mascota</label>
+                        <input
+                            type="file"
+                            id="fotoFile"
+                            accept="image/*"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0] || null;
+                                setFormData({ ...formData, fotoFile: file });
+                            }}
+                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                        />
                     </div>
                     {/* campos tipo select aquí */}
                     {/* Select de provincia */}
@@ -294,7 +307,7 @@ const CreateEmpresaForm = () => {
                         </div>
                     </div>
 
-                    
+
 
                     {/* Fecha Inicio */}
                     <div className="bg-gray-800 p-4 rounded-lg">

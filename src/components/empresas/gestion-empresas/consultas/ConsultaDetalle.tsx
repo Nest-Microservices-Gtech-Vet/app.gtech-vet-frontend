@@ -10,13 +10,17 @@ import ExamenUploadForm from "../examenes/ExamenUploadForm";
 import ExamenList from "../examenes/ExamenesList";
 import { Examen } from "../../../../types/examenes/examen";
 import { getExamenesPorConsulta } from "../../../../services/gestion-empresa/examenes/examen";
+import EditarMedicamentosModal from "../tratamiento/EditarMedicamentoModal";
 
 const ConsultaDetalle = () => {
     const { empresaId, mascotaId, consultaId, id, tratamientoId } = useParams();
     const [consulta, setConsulta] = useState<any>(null);
     const [vacunas, setVacunas] = useState<any[]>([]);
     const [tratamientos, setTratamientos] = useState<TratamientoResponse[]>([]);
+    const [tratamientoSeleccionado, setTratamientoSeleccionado] = useState<TratamientoResponse | null>(null);
     const [examenes, setExamenes] = useState<Examen[]>([]);
+
+    const [showModal, setShowModal] = useState(false);
 
 
     const [vistaActiva, setVistaActiva] = useState<"tratamiento" | "examenes">("tratamiento");
@@ -191,7 +195,7 @@ const ConsultaDetalle = () => {
                                 tratamientos.map((tratamiento) => (
                                     <div key={tratamiento.tra_id} className="mt-6 border-t pt-4">
                                         <h4 className="text-md font-semibold mb-2 text-gray-700">🧾 Tratamiento #{tratamiento.tra_id}</h4>
-                                        <p>📆 Fecha:
+                                        <p>📆 Fecha: &nbsp;
                                             {tratamiento.created_at
                                                 ? new Date(tratamiento.created_at).toLocaleDateString()
                                                 : "Sin fecha"}
@@ -212,6 +216,25 @@ const ConsultaDetalle = () => {
                                                 </li>
                                             ))}
                                         </ul>
+
+                                        <button
+                                            onClick={() => setTratamientoSeleccionado(tratamiento)} // 👈 abre el modal con ese tratamiento
+                                            className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                                        >
+                                            ✏️ Editar medicamentos
+                                        </button>
+
+                                        {tratamientoSeleccionado && (
+                                            <EditarMedicamentosModal
+                                                tratamiento={tratamientoSeleccionado}
+                                                onClose={() => setTratamientoSeleccionado(null)}
+                                                onUpdated={() => {
+                                                    fetchTratamientos(); // recarga lista
+                                                    setTratamientoSeleccionado(null);
+                                                }}
+                                            />
+                                        )}
+
                                     </div>
                                 ))
                             )}

@@ -176,15 +176,15 @@ const EditMascotaForm = () => {
                         <h2 className="text-2xl font-semibold mb-6 text-gray-800">🐾 Datos de la Mascota</h2>
 
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6 justify-center">
 
-                            <div className="col-span-full">
-                                {/* Mostrar imagen actual si es string (de base de datos) */}
+                            <div className="col-span-full just">
+                                {/* Mostrar imagen actual si es string */}
                                 {typeof formData.mas_foto === "string" && (
                                     <div className="mb-2">
                                         <label className="block text-sm font-medium text-gray-700">Foto actual</label>
                                         <img
-                                            src={`http://localhost:3010/uploads/perfil/${formData.mas_foto}`} // Ajusta si tu ruta base es otra
+                                            src={`http://localhost:3010/uploads/perfil/${formData.mas_foto}`}
                                             alt="Foto mascota"
                                             className="w-32 h-32 object-cover rounded border"
                                         />
@@ -204,23 +204,23 @@ const EditMascotaForm = () => {
                                 )}
 
                                 {/* Input para cambiar la foto */}
-                                <label htmlFor="mas_foto" className="block mb-1 text-sm font-medium text-gray-700">
+                               
+                                <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
                                     Cambiar foto
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                setFormData({ ...formData, mas_foto: file });
+                                            }
+                                        }}
+                                    />
                                 </label>
-                                <input
-                                    type="file"
-                                    id="mas_foto"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) {
-                                            setFormData({ ...formData, mas_foto: file });
-                                        }
-                                    }}
-
-                                    className="w-2xs h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                                />
                             </div>
+
                             {/* Repite este bloque para cada campo */}
                             <div>
                                 <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>

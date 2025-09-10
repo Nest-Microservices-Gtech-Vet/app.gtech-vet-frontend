@@ -143,44 +143,53 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
             {cat === "patologia" ? "🧬 Patología" : "🩻 Rayos X"}
           </label>
+{categoriasActivas[cat] && (
+  <div className="mt-4 space-y-4">
+    {TIPOS.map((tipo) => (
+      <div key={tipo}>
+        <label className="block font-semibold mb-1">
+          {tipo === "solicitud" ? "Solicitud" : "Resultado"}
+        </label>
 
-          {categoriasActivas[cat] && (
-            <div className="mt-4 space-y-4">
-              {TIPOS.map((tipo) => (
-                <div key={tipo}>
-                  <label className="block font-semibold">
-                    📁 {tipo === "solicitud" ? "Solicitud" : "Resultado"}
-                  </label>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={(e) => handleFileChange(cat, tipo, e.target.files)}
-                    className="w-full mt-1"
-                  />
+        {/* Botón escoger archivos más compacto */}
+        <label className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium">
+          📁 Escoger archivos
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => handleFileChange(cat, tipo, e.target.files)}
+            className="hidden"
+          />
+        </label>
 
-                  {archivos[cat][tipo].length > 0 && (
-                    <ul className="mt-2 space-y-1 text-sm">
-                      {archivos[cat][tipo].map((file, i) => (
-                        <li
-                          key={i}
-                          className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded"
-                        >
-                          <span className="truncate">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => quitarArchivo(cat, tipo, i)}
-                            className="text-red-600 hover:underline text-xs"
-                          >
-                            Quitar
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Vista previa de imágenes con botón de quitar más demostrativo */}
+        <div className="mt-2 flex flex-wrap gap-3">
+          {archivos[cat][tipo]
+            .filter((file) => file.type.startsWith("image/"))
+            .map((file, i) => (
+              <div key={i} className="relative w-20 h-20 border rounded overflow-hidden shadow-sm">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => quitarArchivo(cat, tipo, i)}
+                  className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+         
         </div>
       ))}
 

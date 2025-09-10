@@ -167,6 +167,32 @@ const CreateMascotaForm = () => {
 
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+                         <div>
+                            <label className="block text-sm font-medium text-blacl-300 mb-2">
+                                Escoger Logo
+                            </label>
+                            {formData.fotoFile && (
+                                <img
+                                    src={URL.createObjectURL(formData.fotoFile)}
+                                    alt="Preview"
+                                    className="w-32 h-32 object-cover rounded-lg ring-2 ring-gray-600 mb-2"
+                                />
+                            )}
+                            <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
+                                Seleccionar archivo
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0] || null;
+                                        setFormData({ ...formData, fotoFile: file });
+                                    }}
+                                    className="hidden"
+                                />
+                            </label>
+                        </div>
+
+                       
                         {/* Repite este bloque para cada campo */}
                         <div>
                             <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
@@ -228,20 +254,7 @@ const CreateMascotaForm = () => {
                             />
                         </div> */}
 
-                        <div>
-                            <label htmlFor="fotoFile" className="block mb-1 text-sm font-medium text-gray-700">Foto de la mascota</label>
-                            <input
-                                type="file"
-                                id="fotoFile"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0] || null;
-                                    setFormData({ ...formData, fotoFile: file });
-                                }}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            />
-                        </div>
-
+                      
 
 
                         <div>

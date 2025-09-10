@@ -87,7 +87,7 @@ const EditUserForm = () => {
 
 
         <form onSubmit={updatedUser} className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4">Editar Usuario</h1>
+            <h1 className="text-3xl font-bold mb-4">Editar Usuario</h1>
             {/* Campos del formulario similares a CreateUserForm */}
 
             {/* Repite los campos del formulario de creación aquí */}

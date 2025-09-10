@@ -171,191 +171,251 @@ const EditEmpresaForm: React.FC = () => {
     };
 
     return (
-        <form onSubmit={updatedEmpresa} className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4 text-white">Editar Empresa</h1>
+   <form onSubmit={updatedEmpresa} className="w-full max-w-6xl bg-gray-800 p-5 rounded-lg shadow-md">
+  <h1 className="text-3xl font-bold mb-6">Editar Empresa</h1>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
-                {/* RUC */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_ruc}
-                            onChange={(e) => setFormData({ ...formData, emp_ruc: e.target.value })}
-                            type="text"
-                            id="emp_ruc"
-                            name="emp_ruc"
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_ruc" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all">
-                            Ingresar RUC
-                        </label>
-                    </div>
-                </div>
+  <div className="grid grid-cols-4 gap-6">
 
-                {/* Nombre */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_nombre}
-                            onChange={(e) => setFormData({ ...formData, emp_nombre: e.target.value })}
-                            type="text"
-                            id="emp_nombre"
-                            name="emp_nombre"
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_nombre" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all">
-                            Ingresar Nombre
-                        </label>
-                    </div>
-                </div>
+    {/* Logo de la empresa */}
+   <div className="bg-gray-800 p-4 rounded-lg col-span-1 row-span-3 flex flex-col items-center justify-center">
+      <label className="block text-sm font-medium text-gray-300 mb-2">
+        {formData.fotoUrl ? "Cambiar Foto" : "Escoger Foto"}
+      </label>
+      {formData.fotoUrl && (
+        <img
+          src={formData.fotoUrl}
+          alt="Preview"
+          className="w-32 h-32 object-cover rounded-lg ring-2 ring-gray-600 mb-2"
+        />
+      )}
+      <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
+        Escoger archivo
+        <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+      </label>
+      {formData.fotoFile && <span className="text-gray-300 mt-2">{formData.fotoFile.name}</span>}
+    </div>
 
-                {/* Correo */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_correo}
-                            onChange={(e) => setFormData({ ...formData, emp_correo: e.target.value })}
-                            type="email"
-                            id="emp_correo"
-                            name="emp_correo"
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_correo" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all">
-                            Ingresar Email
-                        </label>
-                    </div>
-                </div>
+    {/* RUC */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_ruc}
+          onChange={(e) => setFormData({ ...formData, emp_ruc: e.target.value })}
+          type="text"
+          id="emp_ruc"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_ruc"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          RUC
+        </label>
+      </div>
+    </div>
 
-                {/* Dirección */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_direccion}
-                            onChange={(e) => setFormData({ ...formData, emp_direccion: e.target.value })}
-                            type="text"
-                            id="emp_direccion"
-                            name="emp_direccion"
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_direccion" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all">
-                            Ingresar Dirección
-                        </label>
-                    </div>
-                </div>
+    {/* Nombre */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_nombre}
+          onChange={(e) => setFormData({ ...formData, emp_nombre: e.target.value })}
+          type="text"
+          id="emp_nombre"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_nombre"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Nombre
+        </label>
+      </div>
+    </div>
 
-                {/* Teléfono */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_telefono}
-                            onChange={(e) => setFormData({ ...formData, emp_telefono: e.target.value })}
-                            type="text"
-                            id="emp_telefono"
-                            name="emp_telefono"
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_telefono" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all">
-                            Ingresar Celular
-                        </label>
-                    </div>
-                </div>
+    {/* Correo */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_correo}
+          onChange={(e) => setFormData({ ...formData, emp_correo: e.target.value })}
+          type="email"
+          id="emp_correo"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_correo"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Correo
+        </label>
+      </div>
+    </div>
 
-                {/* Fecha Inicio */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            type="date"
-                            value={formData.fecha_inicio?.split("T")[0] || ""}
-                            onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                        />
-                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all">
-                            Fecha de Inicio
-                        </label>
-                    </div>
-                </div>
+    {/* Teléfono */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_telefono}
+          onChange={(e) => setFormData({ ...formData, emp_telefono: e.target.value })}
+          type="text"
+          id="emp_telefono"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_telefono"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Teléfono
+        </label>
+      </div>
+    </div>
 
-                {/* Fecha Fin */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <div className="relative bg-inherit">
-                        <input
-                            type="date"
-                            value={formData.fecha_fin?.split("T")[0] || ""}
-                            onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
-                            className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                        />
-                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all">
-                            Fecha de Fin
-                        </label>
-                    </div>
-                </div>
+    {/* Dirección */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_direccion}
+          onChange={(e) => setFormData({ ...formData, emp_direccion: e.target.value })}
+          type="text"
+          id="emp_direccion"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_direccion"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Dirección
+        </label>
+      </div>
+    </div>
 
-                {/* Tipo Empresa */}
-                <div className="bg-gray-800 p-4 rounded-lg col-span-2">
-                    <div className="relative bg-inherit">
-                        <input
-                            value={formData.emp_tipo_empresa}
-                            onChange={(e) => setFormData({ ...formData, emp_tipo_empresa: e.target.value })}
-                            id="emp_tipo_empresa"
-                            name="emp_tipo_empresa"
-                            className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            placeholder=" "
-                        />
-                        <label htmlFor="emp_tipo_empresa" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all">
-                            Ingresar Tipo Empresa
-                        </label>
-                    </div>
-                </div>
+    {/* Tipo de Empresa */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          value={formData.emp_tipo_empresa}
+          onChange={(e) => setFormData({ ...formData, emp_tipo_empresa: e.target.value })}
+          id="emp_tipo_empresa"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_tipo_empresa"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Tipo de Empresa
+        </label>
+      </div>
+    </div>
 
-                {/* Imagen */}
-                <div className="bg-gray-800 p-4 rounded-lg col-span-2">
-                    <div className="flex flex-col items-start">
-                        {formData.fotoUrl && <img src={formData.fotoUrl} alt="Preview" className="w-32 h-32 object-cover mb-2 rounded-lg" />}
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="text-gray-200" />
-                    </div>
-                </div>
+    {/* Fecha Inicio */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          type="date"
+          value={formData.fecha_inicio?.split("T")[0] || ""}
+          onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+          Fecha de Inicio
+        </label>
+      </div>
+    </div>
 
-                {/* Provincia */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <select value={formData.provincia_id} onChange={handleProvinciaChange} className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600">
-                        <option value={0}>Seleccione una provincia</option>
-                        {provincias.map((p) => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-                    </select>
-                    <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1">Provincia</label>
-                </div>
+    {/* Fecha Fin */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <input
+          type="date"
+          value={formData.fecha_fin?.split("T")[0] || ""}
+          onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+          Fecha de Fin
+        </label>
+      </div>
+    </div>
 
-                {/* Cantón */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <select
-                        value={formData.canton_id}
-                        onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
-                        className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600"
-                    >
-                        <option value={0}>Seleccione un cantón</option>
-                        {cantones.map((c) => <option key={c.can_id} value={c.can_id}>{c.can_nombre}</option>)}
-                    </select>
-                    <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1">Cantón</label>
-                </div>
+    {/* Provincia */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <select
+          value={formData.provincia_id}
+          onChange={handleProvinciaChange}
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <option value={0}>Seleccione una provincia</option>
+          {provincias.map((p) => (
+            <option key={p.id} value={p.id}>{p.nombre}</option>
+          ))}
+        </select>
+        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+          Provincia
+        </label>
+      </div>
+    </div>
 
-                {/* Activo */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                    <select value={formData.activo ? "true" : "false"} onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })} className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600">
-                        <option value="true">Activo</option>
-                        <option value="false">Inactivo</option>
-                    </select>
-                    <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1">Estado</label>
-                </div>
-            </div>
+    {/* Cantón */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <select
+          value={formData.canton_id}
+          onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <option value={0}>Seleccione un cantón</option>
+          {cantones.map((c) => (
+            <option key={c.can_id} value={c.can_id}>{c.can_nombre}</option>
+          ))}
+        </select>
+        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+          Cantón
+        </label>
+      </div>
+    </div>
 
-            <div className="flex justify-center mt-4">
-                <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center text-white" type="submit">Guardar Cambios</button>
-            </div>
-        </form>
+    {/* Estado */}
+    <div className="bg-gray-800 p-4 rounded-lg">
+      <div className="relative">
+        <select
+          value={formData.activo ? "true" : "false"}
+          onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <option value="true">Activo</option>
+          <option value="false">Inactivo</option>
+        </select>
+        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+          Estado
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  {/* Botón */}
+  <div className="flex justify-center mt-8">
+    <button
+      className="bg-green-600 px-8 py-3 rounded-lg text-white font-semibold shadow-md hover:bg-green-700 transition"
+      type="submit"
+    >
+      Guardar Cambios
+    </button>
+  </div>
+</form>
+
+
+
     );
 };
 

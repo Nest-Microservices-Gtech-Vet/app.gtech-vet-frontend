@@ -15,7 +15,7 @@ export const getEmpresas = async (page: number = 1, limit: number = 50, searchQu
 //Termina obtener empresas //
 
 //Empieza obtener empresasinactivas //
-export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,searchQuery: string): Promise<{ data: Empresa[] }> => {
+export const getEmpresasInactivas = async (page: number = 1, limit: number = 50, searchQuery: string): Promise<{ data: Empresa[] }> => {
     try {
         const data = await apiFetch(`empresas/inactivas?search=${searchQuery}`);
         console.log("empresas obtenidos:", data);
@@ -56,13 +56,13 @@ export const getEmpresasInactivas = async (page: number = 1, limit: number = 50,
 
 //     }
 // };
-export const createEmpresa = async (formData: FormData): Promise<any>=>{
-    return await apiFetch("empresas",{
+export const createEmpresa = async (formData: FormData): Promise<any> => {
+    return await apiFetch("empresas", {
         method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
         },
-        body:formData,
+        body: formData,
     });
 };
 //Fin Crear empresas//
@@ -90,29 +90,12 @@ export const getEmpresaById = async (empresaId: string): Promise<Empresa> => {
 //Finaliza obtener empresas por id//
 
 //Empieza Editar empresa por id//
-export const updateEmpresa = async (empresaId: string, empresaData: {
-    emp_nombre: string;
-    emp_correo: string;
-    emp_direccion: string;
-    emp_telefono: string;
-    emp_ruc: string;
-    emp_tipo_empresa: string;
-
-    provincia_id: number;
-    canton_id: number;
-    activo: boolean;
-}) => {
-    try {
-        const data = await apiFetch(`empresas/${empresaId}`, {
-            method: "PATCH",
-            body: JSON.stringify(empresaData),
-        });
-        console.log("empresa actualizado:", data);
-        return data;
-    } catch (error) {
-        console.error("Error al actualizar empresa:", error);
-        return null;
-    }
+export const updateEmpresa = async (empresaId: string, formData: FormData) => {
+    const response = await apiFetch(`empresas/${empresaId}`, {
+        method: 'PATCH',
+        body: formData,
+    });
+    return response;
 };
 //Finaliza Editar empresa por id//
 
@@ -145,7 +128,7 @@ export const asignarUsuarios = async (empresaId: number, usuarioIds: number[]) =
         //     throw new Error(error.message || 'Error en la asignación');
         // }
 
-      
+
         console.log('✅ Asignación exitosa:', data);
         return data;
     } catch (error) {

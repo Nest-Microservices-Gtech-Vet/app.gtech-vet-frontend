@@ -171,13 +171,13 @@ const EditEmpresaForm: React.FC = () => {
     };
 
     return (
-   <form onSubmit={updatedEmpresa} className="w-full max-w-6xl bg-gray-800 p-5 rounded-lg shadow-md">
+ <form onSubmit={updatedEmpresa} className="w-full max-w-6xl bg-gray-800 p-5 rounded-lg shadow-md">
   <h1 className="text-3xl font-bold mb-6">Editar Empresa</h1>
 
   <div className="grid grid-cols-4 gap-6">
 
     {/* Logo de la empresa */}
-   <div className="bg-gray-800 p-4 rounded-lg col-span-1 row-span-3 flex flex-col items-center justify-center">
+    <div className="bg-gray-800 p-4 rounded-lg col-span-1 row-span-3 flex flex-col items-center justify-center">
       <label className="block text-sm font-medium text-gray-300 mb-2">
         {formData.fotoUrl ? "Cambiar Foto" : "Escoger Foto"}
       </label>
@@ -196,7 +196,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* RUC */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           value={formData.emp_ruc}
@@ -216,7 +216,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Nombre */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           value={formData.emp_nombre}
@@ -236,7 +236,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Correo */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           value={formData.emp_correo}
@@ -256,7 +256,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Teléfono */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           value={formData.emp_telefono}
@@ -275,8 +275,27 @@ const EditEmpresaForm: React.FC = () => {
       </div>
     </div>
 
+    {/* Tipo de Empresa (doble ancho) */}
+    <div className="bg-gray-800 p-4 rounded-lg col-span-2 min-w-[280px]">
+      <div className="relative">
+        <input
+          value={formData.emp_tipo_empresa}
+          onChange={(e) => setFormData({ ...formData, emp_tipo_empresa: e.target.value })}
+          id="emp_tipo_empresa"
+          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          placeholder=" "
+        />
+        <label
+          htmlFor="emp_tipo_empresa"
+          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+        >
+          Tipo de Empresa
+        </label>
+      </div>
+    </div>
+
     {/* Dirección */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           value={formData.emp_direccion}
@@ -295,27 +314,8 @@ const EditEmpresaForm: React.FC = () => {
       </div>
     </div>
 
-    {/* Tipo de Empresa */}
-    <div className="bg-gray-800 p-4 rounded-lg">
-      <div className="relative">
-        <input
-          value={formData.emp_tipo_empresa}
-          onChange={(e) => setFormData({ ...formData, emp_tipo_empresa: e.target.value })}
-          id="emp_tipo_empresa"
-          className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-          placeholder=" "
-        />
-        <label
-          htmlFor="emp_tipo_empresa"
-          className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
-        >
-          Tipo de Empresa
-        </label>
-      </div>
-    </div>
-
     {/* Fecha Inicio */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           type="date"
@@ -331,7 +331,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Fecha Fin */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <input
           type="date"
@@ -347,7 +347,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Provincia */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <select
           value={formData.provincia_id}
@@ -366,7 +366,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Cantón */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <select
           value={formData.canton_id}
@@ -385,7 +385,7 @@ const EditEmpresaForm: React.FC = () => {
     </div>
 
     {/* Estado */}
-    <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
       <div className="relative">
         <select
           value={formData.activo ? "true" : "false"}

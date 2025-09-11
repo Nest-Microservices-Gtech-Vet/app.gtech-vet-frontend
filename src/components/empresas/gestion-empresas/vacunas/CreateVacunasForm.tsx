@@ -25,6 +25,8 @@ const CreateVacunasForm = () => {
   const [vacunaEditando, setVacunaEditando] = useState<any | null>(null); // 🔹 vacuna seleccionada para editar
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [modalArchivo, setModalArchivo] = useState<string | null>(null);
+
 
 
   const [formData, setFormData] = useState({
@@ -199,54 +201,86 @@ const CreateVacunasForm = () => {
           📋Vacunas registradas
 
           <button
-      onClick={() => navigate(`/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`)}
-      className="bg-purple-500 hover:bg-purple-600 text-white py-1.5 px-1 rounded-md transition ml-1"
-    >
-      🔙 Regresar a historia clinica
-    </button>
+            onClick={() => navigate(`/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`)}
+            className="bg-purple-500 hover:bg-purple-600 text-white py-1.5 px-1 rounded-md transition ml-1"
+          >
+            🔙 Regresar a historia clinica
+          </button>
         </h3>
-        
+
         {vacunas.length === 0 ? (
           <p className="text-gray-500">No hay vacunas registradas aún.</p>
         ) : (
-          <ul className="space-y-3">
-            {vacunas.map((vacuna, index) => (
-              <li
-                key={index}
-                className="bg-gray-100 p-3 rounded shadow-sm flex justify-between items-start"
-              >
-                <div>
-                  <p>
-                    <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
-                  </p>
-                  <p>
-                    <strong>📅 Fecha:</strong>{" "}
-                    {new Date(vacuna.vac_fecha).toLocaleDateString()}
-                  </p>
-                  <p>
-                    <strong>🔢 Lote:</strong> {vacuna.vac_lote}
-                  </p>
-                  <p>
-                    <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
-                  </p>
-                  {vacuna.vac_proxima && (
-                    <p>
-                      <strong>📆 Próxima dosis:</strong>{" "}
-                      {new Date(vacuna.vac_proxima).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={() => handleEdit(vacuna)}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    Editar
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+         <ul className="space-y-3">
+  {vacunas.map((vacuna, index) => (
+    <li
+      key={index}
+      className="bg-gray-100 p-3 rounded shadow-sm flex flex-col gap-2"
+    >
+      <div>
+        <p>
+          <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
+        </p>
+        <p>
+          <strong>📅 Fecha:</strong>{" "}
+          {new Date(vacuna.vac_fecha).toLocaleDateString()}
+        </p>
+        <p>
+          <strong>🔢 Lote:</strong> {vacuna.vac_lote}
+        </p>
+        <p>
+          <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
+        </p>
+        {vacuna.vac_proxima && (
+          <p>
+            <strong>📆 Próxima dosis:</strong>{" "}
+            {new Date(vacuna.vac_proxima).toLocaleDateString()}
+          </p>
+        )}
+      </div>
+
+      {/* Botón de Editar */}
+      <div className="flex gap-2 items-center">
+        <button
+          onClick={() => handleEdit(vacuna)}
+          className="text-blue-600 hover:underline text-sm"
+        >
+          Editar
+        </button>
+      </div>
+
+      {/* Miniaturas de archivos */}
+      {vacuna.archivos && vacuna.archivos.length > 0 && (
+  <div className="flex gap-2 flex-wrap mt-2">
+    {vacuna.archivos.map((archivo: any, i: number) => (
+      <div
+        key={i}
+        className="relative w-16 h-16 border rounded overflow-hidden cursor-pointer"
+      >
+        {archivo.tipo === "imagen" ? (
+          <img
+            src={archivo.url}
+            alt="Archivo adjunto"
+            className="object-cover w-full h-full"
+            onClick={() => setModalArchivo(archivo.url)}
+          />
+        ) : (
+          <div
+            className="flex items-center justify-center bg-gray-300 w-full h-full text-xs text-center"
+            onClick={() => window.open(archivo.url, "_blank")}
+          >
+            PDF
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
+    </li>
+  ))}
+</ul>
+
         )}
       </div>
 
@@ -360,38 +394,53 @@ const CreateVacunasForm = () => {
           </div>
 
           <div>
-            <label className="block font-semibold mb-1">
-              📎 Adjuntar archivos (opcional)
-            </label>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*,application/pdf"
-              onChange={handleFileChange}
-              className="w-full shadow-sm rounded p-2"
-            />
+            <label className="block font-semibold mb-1">📎 Adjuntar archivos (opcional)</label>
 
+            {/* Botón estilizado para escoger archivos */}
+            <label className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium">
+              📁 Escoger archivos
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,application/pdf"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+
+            {/* Vista previa / lista de archivos */}
             {selectedFiles.length > 0 && (
-              <ul className="mt-2 space-y-1 text-sm">
+              <div className="mt-2 flex flex-wrap gap-3">
                 {selectedFiles.map((file, i) => (
-                  <li
-                    key={i}
-                    className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded"
-                  >
-                    <span className="truncate">{file.name}</span>
+                  <div key={i} className="relative w-24 h-24 border rounded overflow-hidden shadow-sm flex flex-col items-center justify-center">
+                    {/* Si es imagen, mostrar miniatura */}
+                    {file.type.startsWith("image/") ? (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gray-100 text-gray-700 text-xs px-1 text-center">
+                        {file.name}
+                      </div>
+                    )}
+
+                    {/* Botón de quitar */}
                     <button
                       type="button"
                       onClick={() => quitarArchivo(i)}
-                      className="text-red-600 hover:underline text-xs"
+                      className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow"
                     >
-                      Quitar
+                      ×
                     </button>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
+
 
           {/* Botones */}
           <div className="text-center pt-4 flex gap-4 justify-center">
@@ -414,6 +463,19 @@ const CreateVacunasForm = () => {
           </div>
         </form>
       </div>
+      {modalArchivo && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+    onClick={() => setModalArchivo(null)}
+  >
+    <img
+      src={modalArchivo}
+      alt="Archivo ampliado"
+      className="max-h-[80%] max-w-[80%] rounded shadow-lg"
+    />
+  </div>
+)}
+
     </div>
   );
 };

@@ -52,6 +52,8 @@ const CreateMascotaForm = () => {
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
     const [searchCliente, setSearchCliente] = useState("");
+    const [searchEspecie, setSearchEspecie] = useState("");
+
 
     useEffect(() => {
         const newClienteId = searchParams.get("newClienteId");
@@ -293,7 +295,7 @@ const CreateMascotaForm = () => {
                             </select>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
                             <select
                                 value={formData.especie_id}
@@ -305,7 +307,87 @@ const CreateMascotaForm = () => {
                                     <option key={esp.id} value={esp.id}>{esp.nombre}</option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
+{/* AUTOCOMPLETE de Especie */}
+<div className="relative">
+  <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
+  <div className="relative">
+    <input
+      type="text"
+      placeholder="Buscar especie..."
+      value={
+        especies.find((esp) => esp.esp_id === formData.especie_id)?.esp_nombre ||
+        searchEspecie
+      }
+      onChange={(e) => {
+        setFormData({ ...formData, especie_id: 0, raza_id: 0 });
+        setSearchEspecie(e.target.value);
+      }}
+      className="w-full h-10 px-3 pr-8 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+    />
+
+    {/* 🔽 Flechita */}
+    <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+      <svg
+        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+          searchEspecie && formData.especie_id === 0 ? "rotate-180" : ""
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </span>
+  </div>
+
+  {/* Dropdown */}
+{/* Dropdown */}
+{searchEspecie &&
+  Array.isArray(especies) &&
+  especies.some(
+    (esp) =>
+      esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
+  ) &&
+  formData.especie_id === 0 && (
+    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+      {especies
+        .filter(
+          (esp) =>
+            esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
+        )
+        .map((esp) => (
+          <li
+            key={esp.esp_id}
+            className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+            onClick={() => {
+              setFormData({
+                ...formData,
+                especie_id: esp.esp_id,
+                raza_id: 0,
+              });
+              setSearchEspecie(esp.esp_nombre || "");
+
+              // Filtras razas
+              const razasFiltradas = razastodas.filter(
+                (r) => r.especie_id === esp.esp_id
+              );
+              setRazas(razasFiltradas);
+            }}
+          >
+            {esp.esp_nombre || "Sin nombre"}
+          </li>
+        ))}
+    </ul>
+  )}
+
+</div>
+    
 
                         <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>

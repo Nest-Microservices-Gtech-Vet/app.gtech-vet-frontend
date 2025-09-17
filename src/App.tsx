@@ -107,7 +107,6 @@ const App = () => {
             }
           />
 
-
           <Route
   path="/dashboard"
   element={
@@ -118,6 +117,8 @@ const App = () => {
     </PrivateRoute>
   }
 />
+
+
 
           {/* rutas de usuario "rol=SUPERADMIN" */}
           <Route

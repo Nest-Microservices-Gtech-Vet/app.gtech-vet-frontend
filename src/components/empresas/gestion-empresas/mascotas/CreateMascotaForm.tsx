@@ -51,6 +51,9 @@ const CreateMascotaForm = () => {
     const [especies, setEspecies] = useState<Especie[]>([]);
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
+    const [searchCliente, setSearchCliente] = useState("");
+    const [searchEspecie, setSearchEspecie] = useState("");
+
 
     useEffect(() => {
         const newClienteId = searchParams.get("newClienteId");
@@ -102,6 +105,20 @@ const CreateMascotaForm = () => {
 
     const sendMascota = async (e: React.FormEvent) => {
         e.preventDefault();
+        // Validar fecha de nacimiento
+        if (formData.mas_fechaNac) {
+            const fechaNac = new Date(formData.mas_fechaNac);
+            const hoy = new Date();
+
+            // Normalizamos la hora para comparar solo fechas (sin horas)
+            fechaNac.setHours(0, 0, 0, 0);
+            hoy.setHours(0, 0, 0, 0);
+
+            if (fechaNac > hoy) {
+                Swal.fire("Error", "La fecha de nacimiento no puede ser futura.", "error");
+                return;
+            }
+        }
 
         const data = new FormData();
         data.append("mas_nombre", formData.mas_nombre);
@@ -152,6 +169,32 @@ const CreateMascotaForm = () => {
 
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
+                         <div>
+                            <label className="block text-sm font-medium text-blacl-300 mb-2">
+                                Escoger Logo
+                            </label>
+                            {formData.fotoFile && (
+                                <img
+                                    src={URL.createObjectURL(formData.fotoFile)}
+                                    alt="Preview"
+                                    className="w-32 h-32 object-cover rounded-lg ring-2 ring-gray-600 mb-2"
+                                />
+                            )}
+                            <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
+                                Seleccionar archivo
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0] || null;
+                                        setFormData({ ...formData, fotoFile: file });
+                                    }}
+                                    className="hidden"
+                                />
+                            </label>
+                        </div>
+
+                       
                         {/* Repite este bloque para cada campo */}
                         <div>
                             <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
@@ -171,6 +214,7 @@ const CreateMascotaForm = () => {
                                 type="date"
                                 id="mas_fechaNac"
                                 value={formData.mas_fechaNac?.split("T")[0] || ""}
+                                max={new Date().toISOString().split("T")[0]}
                                 onChange={(e) => setFormData({ ...formData, mas_fechaNac: e.target.value })}
                                 className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             />
@@ -212,20 +256,7 @@ const CreateMascotaForm = () => {
                             />
                         </div> */}
 
-                        <div>
-                            <label htmlFor="fotoFile" className="block mb-1 text-sm font-medium text-gray-700">Foto de la mascota</label>
-                            <input
-                                type="file"
-                                id="fotoFile"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0] || null;
-                                    setFormData({ ...formData, fotoFile: file });
-                                }}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            />
-                        </div>
-
+                      
 
 
                         <div>
@@ -264,7 +295,7 @@ const CreateMascotaForm = () => {
                             </select>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
                             <select
                                 value={formData.especie_id}
@@ -276,7 +307,87 @@ const CreateMascotaForm = () => {
                                     <option key={esp.id} value={esp.id}>{esp.nombre}</option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
+{/* AUTOCOMPLETE de Especie */}
+<div className="relative">
+  <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
+  <div className="relative">
+    <input
+      type="text"
+      placeholder="Buscar especie..."
+      value={
+        especies.find((esp) => esp.esp_id === formData.especie_id)?.esp_nombre ||
+        searchEspecie
+      }
+      onChange={(e) => {
+        setFormData({ ...formData, especie_id: 0, raza_id: 0 });
+        setSearchEspecie(e.target.value);
+      }}
+      className="w-full h-10 px-3 pr-8 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+    />
+
+    {/* 🔽 Flechita */}
+    <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+      <svg
+        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+          searchEspecie && formData.especie_id === 0 ? "rotate-180" : ""
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </span>
+  </div>
+
+  {/* Dropdown */}
+{/* Dropdown */}
+{searchEspecie &&
+  Array.isArray(especies) &&
+  especies.some(
+    (esp) =>
+      esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
+  ) &&
+  formData.especie_id === 0 && (
+    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+      {especies
+        .filter(
+          (esp) =>
+            esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
+        )
+        .map((esp) => (
+          <li
+            key={esp.esp_id}
+            className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+            onClick={() => {
+              setFormData({
+                ...formData,
+                especie_id: esp.esp_id,
+                raza_id: 0,
+              });
+              setSearchEspecie(esp.esp_nombre || "");
+
+              // Filtras razas
+              const razasFiltradas = razastodas.filter(
+                (r) => r.especie_id === esp.esp_id
+              );
+              setRazas(razasFiltradas);
+            }}
+          >
+            {esp.esp_nombre || "Sin nombre"}
+          </li>
+        ))}
+    </ul>
+  )}
+
+</div>
+    
 
                         <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>
@@ -294,43 +405,76 @@ const CreateMascotaForm = () => {
                     </div>
                 </div>
 
-                {/* Sección derecha: Cliente */}
-                <div>
-                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
-                        <select
-                            value={formData.cliente_id}
-                            onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
-                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                        >
-                            <option value="0">-- Selecciona El Propietario --</option>
-                            {clientes.map((cli) => (
-                                <option key={cli.cli_id} value={cli.cli_id}>
-                                    {cli.cli_nombre} {cli.cli_apellido}
-                                </option>
-                            ))}
-                        </select>
+                {/* Sección derecha: Propietario */}
+                {/* Sección derecha: Propietario */}
+                <div className="relative">
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">👤 Propietario</h2>
 
-                        <button
-                            type="button"
-                            className="bg-blue-500 px-3 py-1 mt-2 rounded-md hover:bg-blue-600 text-white"
-
-                            onClick={() => {
-                                const returnTo = mascotaId
-                                    ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
-                                    : `/mis-empresas/${id}/mascotas/crear-mascota`;
-
-                                navigate(
-                                    `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
-                                );
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Buscar cliente..."
+                            value={searchCliente}
+                            onChange={(e) => {
+                                setSearchCliente(e.target.value);
+                                setFormData({ ...formData, cliente_id: 0 }); // Reinicia selección si escribe
                             }}
-                        >
-                            ➕ Crear nuevo cliente
-                        </button>
+                            className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                        />
+
+                        {/* Dropdown de coincidencias */}
+                        {searchCliente &&
+                            clientes.some((cli) =>
+                                `${cli.cli_nombre} ${cli.cli_apellido}`
+                                    .toLowerCase()
+                                    .includes(searchCliente.toLowerCase())
+                            ) &&
+                            formData.cliente_id === 0 && (   // 👈 solo mostrar si NO hay cliente ya seleccionado
+                                <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+                                    {clientes
+                                        .filter((cli) =>
+                                            `${cli.cli_nombre} ${cli.cli_apellido}`
+                                                .toLowerCase()
+                                                .includes(searchCliente.toLowerCase())
+                                        )
+                                        .map((cli) => (
+                                            <li
+                                                key={cli.cli_id}
+                                                className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+                                                onClick={() => {
+                                                    setFormData({ ...formData, cliente_id: cli.cli_id });
+                                                    setSearchCliente(`${cli.cli_nombre} ${cli.cli_apellido}`);
+                                                    // 👇 al seleccionar, el dropdown desaparece
+                                                }}
+                                            >
+                                                {cli.cli_nombre} {cli.cli_apellido}
+                                            </li>
+                                        ))}
+                                </ul>
+                            )}
+
 
                     </div>
+
+                    {/* Botón para crear cliente */}
+                    <button
+                        type="button"
+                        className="mt-2 bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600 text-white"
+                        onClick={() => {
+                            const returnTo = mascotaId
+                                ? `/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`
+                                : `/mis-empresas/${id}/mascotas/crear-mascota`;
+
+                            navigate(
+                                `/mis-empresas/${id}/clientes/crear-cliente?returnTo=${encodeURIComponent(returnTo)}`
+                            );
+                        }}
+                    >
+                        ➕ Crear nuevo cliente
+                    </button>
                 </div>
+
+
             </div>
 
             {/* Botón de acción */}

@@ -20,6 +20,7 @@ const CreateEmpresaForm = () => {
         activo: true,
         fecha_inicio: "",
         fecha_fin: "",
+        fotoFile: null as File | null,
     });
 
     const [provincias, setProvincias] = useState([]);
@@ -72,41 +73,39 @@ const CreateEmpresaForm = () => {
 
 
 
-        const formDataFixed = {
-            ...formData,
-            provincia_id: Number(formData.provincia_id),
-            canton_id: Number(formData.canton_id),
-            fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
-            fecha_fin: new Date(formData.fecha_fin).toISOString(),
+        const data = new FormData();
+        data.append("emp_nombre", formData.emp_nombre);
+        data.append("emp_correo", formData.emp_correo);
+        data.append("emp_direccion", formData.emp_direccion);
+        data.append("emp_telefono", formData.emp_telefono);
+        data.append("emp_ruc", formData.emp_ruc);
+        data.append("emp_tipo_empresa", formData.emp_tipo_empresa);
+        data.append("provincia_id", String(formData.provincia_id));
+        data.append("canton_id", String(formData.canton_id));
+        data.append("fecha_inicio", formData.fecha_inicio);
+        data.append("fecha_fin", formData.fecha_fin);
+        data.append("activo", String(formData.activo));
+        if (formData.fotoFile) {
+            data.append("foto", formData.fotoFile);
+        }
 
-        };
 
-        console.log("Enviando empresa:", formDataFixed);
+        try {
+            console.log("Enviando empresa:", data);
 
-        const resultado = await createEmpresa(formDataFixed);
-        if (resultado) {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Empresa creada!',
-                text: 'La empresa fue registrada correctamente.',
-                confirmButtonColor: '#10B981' // verde
-            }).then(() => {
-                navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
-            });;
-            setFormData({
-                emp_nombre: "",
-                emp_correo: "",
-                emp_direccion: "",
-                emp_telefono: "",
-                emp_ruc: "",
-                emp_tipo_empresa: "",
-                provincia_id: 0,
-                canton_id: 0,
-                activo: true,
-                fecha_inicio: "",
-                fecha_fin: "",
-            })
-        } else {
+            const resultado = await createEmpresa(data);
+            if (resultado) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Empresa creada!',
+                    text: 'La empresa fue registrada correctamente.',
+                    confirmButtonColor: '#10B981' // verde
+                }).then(() => {
+                    navigate('/empresas'); // ⬅️ cambia esta ruta según tu app
+                });
+            }
+        } catch (error) {
+            console.error(error);
             Swal.fire({
                 icon: 'error',
                 title: '¡Error!',
@@ -116,226 +115,268 @@ const CreateEmpresaForm = () => {
         }
     }
     return (
-        <form onSubmit={sendEmpresa} className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4">Agreger Empresa</h1>
+        <form onSubmit={sendEmpresa} className="w-full max-w-6xl bg-gray-800 p-5 rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold mb-6">Agregar Empresa</h1>
 
-            <div className="w-full max-w-5xl bg-gray-800 p-5 rounded-lg shadow-md">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg">
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_nombre}
-                                onChange={(e) => setFormData({ ...formData, emp_nombre: e.target.value })}
-                                type="text"
-                                id="emp_nombre"
-                                name="emp_nombre"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_nombre"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar Nombre</label>
-                        </div>
-                    </div>
+            <div className="grid grid-cols-4 gap-6">
 
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_correo}
-                                onChange={(e) => setFormData({ ...formData, emp_correo: e.target.value })}
-                                type="email"
-                                id="emp_correo"
-                                name="emp_correo"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_correo"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar Correo</label>
-                        </div>
-                    </div>
+                {/* Logo de la empresa */}
+                <div className="bg-gray-800 p-4 rounded-lg col-span-1 row-span-3 flex flex-col items-center justify-center">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Escoger Logo
+                    </label>
 
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_direccion}
-                                onChange={(e) => setFormData({ ...formData, emp_direccion: e.target.value })}
-                                type="text"
-                                id="emp_direccion"
-                                name="emp_direccion"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_direccion"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar direccion</label>
-                        </div>
-                    </div>
-                    {/* campos tipo select aquí */}
-                    {/* Select de provincia */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.provincia_id}
-                                onChange={handleProvinciaChange}
-                                className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value={0}>Seleccione una provincia</option>
-                                {provincias.map((provincia: any) => (
-                                    <option key={provincia.id} value={provincia.id}>
-                                        {provincia.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Provincia
-                            </label>
-                        </div>
-                    </div>
+                    {/* Vista previa de la imagen seleccionada */}
+                    {formData.fotoFile && (
+                        <img
+                            src={URL.createObjectURL(formData.fotoFile)}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-lg ring-2 ring-gray-600 mb-2"
+                        />
+                    )}
 
-                    {/* Select de cantón */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.canton_id}
-                                onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
-                                className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="">Seleccione un cantón</option>
-                                {cantones.map((canton: any) => (
-                                    <option key={canton.id} value={canton.id}>
-                                        {canton.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Cantón
-                            </label>
-                        </div>
-                    </div>
+                    {/* Botón para escoger archivo */}
+                    <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
+                        Seleccionar archivo
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0] || null;
+                                setFormData({ ...formData, fotoFile: file });
+                            }}
+                            className="hidden"
+                        />
+                    </label>
 
-                    {/* fin campos tipo select aquí */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_telefono}
-                                onChange={(e) => setFormData({ ...formData, emp_telefono: e.target.value })}
-                                type="text"
-                                id="emp_telefono"
-                                name="emp_telefono"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_telefono"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar Telefono</label>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_ruc}
-                                onChange={(e) => setFormData({ ...formData, emp_ruc: e.target.value })}
-                                type="text"
-                                id="emp_ruc"
-                                name="emp_ruc"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                                placeholder=" "
-                                autoComplete="new-password" />
-                            <label
-                                htmlFor="emp_ruc"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 ">Ingresar RUC</label>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-800 p-4 rounded-lg col-span-2">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.emp_tipo_empresa}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, emp_tipo_empresa: e.target.value })
-                                }
-                                id="emp_tipo_empresa"
-                                name="emp_tipo_empresa"
-
-                                className="peer bg-transparent w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
-                                placeholder=" "
-                                autoComplete="off"
-                            ></input>
-                            <label
-                                htmlFor="emp_tipo_empresa"
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
-                            >
-                                Ingresar Tipo Empresa
-                            </label>
-                        </div>
-                    </div>
-
-
-
-
-
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <select
-                                value={formData.activo ? "true" : "false"}
-                                onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
-                                className="peer bg-gray-800 h-10 w-72 rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
-                            >
-                                <option value="true">Activo</option>
-                                <option value="false">Inactivo</option>
-                            </select>
-                            <label
-                                className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px- transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800 "
-                            >
-                                Estado
-                            </label>
-                        </div>
-                    </div>
-
-                    
-
-                    {/* Fecha Inicio */}
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.fecha_inicio}
-                                onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
-                                type="date"
-                                id="fecha_inicio"
-                                name="fecha_inicio"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            />
-                            <label htmlFor="fecha_inicio" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Fecha de Inicio
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-800 p-4 rounded-lg">
-                        <div className="relative bg-inherit">
-                            <input
-                                value={formData.fecha_fin}
-                                onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
-                                type="date"
-                                id="fecha_fin"
-                                name="fecha_fin"
-                                className="peer bg-transparent h-10 w-72 rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                            />
-                            <label htmlFor="fecha_fin" className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
-                                Fecha de Fin
-                            </label>
-                        </div>
-                    </div>
-
+                    {/* Mostrar nombre del archivo */}
 
                 </div>
-                <div className="flex justify-center mt-4">
-                    <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Crear Empresa</button>
+
+
+                {/* Campos normales */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_nombre}
+                            onChange={(e) => setFormData({ ...formData, emp_nombre: e.target.value })}
+                            type="text"
+                            id="emp_nombre"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_nombre"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            Nombre
+                        </label>
+                    </div>
                 </div>
+
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_correo}
+                            onChange={(e) => setFormData({ ...formData, emp_correo: e.target.value })}
+                            type="email"
+                            id="emp_correo"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_correo"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            Correo
+                        </label>
+                    </div>
+                </div>
+
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_direccion}
+                            onChange={(e) => setFormData({ ...formData, emp_direccion: e.target.value })}
+                            type="text"
+                            id="emp_direccion"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_direccion"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            Dirección
+                        </label>
+                    </div>
+                </div>
+
+                {/* Teléfono */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_telefono}
+                            onChange={(e) => setFormData({ ...formData, emp_telefono: e.target.value })}
+                            type="text"
+                            id="emp_telefono"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_telefono"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            Teléfono
+                        </label>
+                    </div>
+                </div>
+
+                {/* Tipo de empresa (doble ancho) */}
+                <div className="bg-gray-800 p-4 rounded-lg col-span-2 min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_tipo_empresa}
+                            onChange={(e) => setFormData({ ...formData, emp_tipo_empresa: e.target.value })}
+                            id="emp_tipo_empresa"
+                            className="peer bg-transparent w-full rounded-lg text-gray-200 ring-2 px-2 py-2 ring-gray-500 focus:ring-sky-600 focus:outline-none resize-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_tipo_empresa"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            Tipo Empresa
+                        </label>
+                    </div>
+                </div>
+
+                {/* RUC */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.emp_ruc}
+                            onChange={(e) => setFormData({ ...formData, emp_ruc: e.target.value })}
+                            type="text"
+                            id="emp_ruc"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                            placeholder=" "
+                             autoComplete="new-password"
+                        />
+                        <label
+                            htmlFor="emp_ruc"
+                            className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800"
+                        >
+                            RUC
+                        </label>
+                    </div>
+                </div>
+
+
+
+                {/* Provincia */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <select
+                            value={formData.provincia_id}
+                            onChange={handleProvinciaChange}
+                            className="peer bg-gray-800 h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        >
+                            <option value={0}>Seleccione Provincia</option>
+                            {provincias.map((p: any) => (
+                                <option key={p.id} value={p.id}>{p.nombre}</option>
+                            ))}
+                        </select>
+                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                            Provincia
+                        </label>
+                    </div>
+                </div>
+
+                {/* Cantón */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <select
+                            value={formData.canton_id}
+                            onChange={(e) => setFormData({ ...formData, canton_id: Number(e.target.value) })}
+                            className="peer bg-gray-800 h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        >
+                            <option value={0}>Seleccione Cantón</option>
+                            {cantones.map((c: any) => (
+                                <option key={c.id} value={c.id}>{c.nombre}</option>
+                            ))}
+                        </select>
+                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                            Cantón
+                        </label>
+                    </div>
+                </div>
+
+                {/* Estado */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <select
+                            value={formData.activo ? "true" : "false"}
+                            onChange={(e) => setFormData({ ...formData, activo: e.target.value === "true" })}
+                            className="peer bg-gray-800 h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        >
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                            Estado
+                        </label>
+                    </div>
+                </div>
+
+                {/* Fecha inicio */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.fecha_inicio}
+                            onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+                            type="date"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        />
+                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                            Fecha Inicio
+                        </label>
+                    </div>
+                </div>
+
+                {/* Fecha fin */}
+                <div className="bg-gray-800 p-4 rounded-lg min-w-[280px]">
+                    <div className="relative">
+                        <input
+                            value={formData.fecha_fin}
+                            onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
+                            type="date"
+                            className="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        />
+                        <label className="absolute left-2 -top-3 text-gray-500 bg-gray-800 px-1 transition-all peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-800">
+                            Fecha Fin
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* Botón */}
+            <div className="flex justify-center mt-8">
+                <button
+                    type="submit"
+                    className="bg-green-600 px-8 py-3 rounded-lg text-white font-semibold shadow-md hover:bg-green-700 transition"
+                >
+                    Crear Empresa
+                </button>
             </div>
         </form>
+
     )
 }
 export default CreateEmpresaForm;

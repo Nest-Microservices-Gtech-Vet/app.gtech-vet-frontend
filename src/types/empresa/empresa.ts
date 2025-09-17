@@ -8,7 +8,7 @@ export interface Empresa {
     emp_telefono: string;
     emp_ruc: string;
     emp_tipo_empresa: string;
- 
+    emp_foto?: string;
     provincia_id: number
     canton_id: number;
     activo: boolean;

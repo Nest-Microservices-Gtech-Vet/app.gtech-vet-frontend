@@ -38,14 +38,74 @@ export const getVacunasPorConsulta = async (consultaId: string) => {
 
 
 export const getVacunaPorMascota = async (mascotaId: string) => {
-    try {
-        const data = await apiFetch(`vacuna/mascota/${mascotaId}`, {
-            method: "GET"
-        });
-        console.log("mascota obtenida- desde vacunas", data);
-        return data;
-    } catch (error) {
-        console.error("error al obtener mascota - desde vacunas ", error);
-        throw error;
-    }
+  try {
+    const data = await apiFetch(`vacuna/mascota/${mascotaId}`, {
+      method: "GET"
+    });
+    console.log("mascota obtenida- desde vacunas", data);
+    return data;
+  } catch (error) {
+    console.error("error al obtener mascota - desde vacunas ", error);
+    throw error;
+  }
 }
+
+//********************************************************************************* */
+
+
+export interface UpdateVacunaDto {
+  vac_nombre?: string;
+  vac_tipo?: string;
+  vac_fecha?: string;
+  vac_proxima?: string | null;
+  vac_lote?: string;
+  vac_observacion?: string;
+  empresa_id?: string;
+  mascota_id?: string;
+  historiaClinica_id?: string;
+}
+
+export const updateVacuna = async (
+  vacunaId: number,
+  updateData: UpdateVacunaDto & { empresa_id?: string; mascota_id?: string; historiaClinica_id?: string },
+  nuevasFotos?: File[]
+) => {
+  const formData = new FormData();
+
+  // ✅ Campos posibles
+  const campos = [
+    "vac_nombre",
+    "vac_tipo",
+    "vac_fecha",
+    "vac_proxima",
+    "vac_lote",
+    "vac_observacion",
+    "empresa_id",
+    "mascota_id",
+    "historiaClinica_id",
+  ] as const;
+
+  campos.forEach((key) => {
+    const value = updateData[key];
+    if (value !== undefined && value !== null && value !== "") {
+      // Solo si hay valor
+      formData.append(key, String(value));
+    }
+  });
+
+  // ✅ Adjuntar archivos
+  if (nuevasFotos && nuevasFotos.length > 0) {
+    nuevasFotos.forEach((foto) => formData.append("fotos", foto));
+  }
+
+  const response = await apiFetch(`vacuna/${vacunaId}`, {
+    method: "PATCH",
+    body: formData,
+  });
+  return response;
+};
+
+
+
+
+//********************************************************************************* */

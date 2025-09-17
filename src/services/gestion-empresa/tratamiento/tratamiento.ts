@@ -27,3 +27,11 @@ export const tratamientoByConsultaId = async (consultaId: number): Promise<Trata
         throw error;
     }
 };
+
+
+export const updateTratamiento = async (id:number, data:Partial<CrearTratamientoDto>): Promise<TratamientoResponse> => {
+    return apiFetch(`tratamiento/${id}`,{
+        method:"PATCH",
+        body: JSON.stringify(data),
+    });
+};

@@ -51,45 +51,75 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }: Props) => 
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      for (const categoria of CATEGORIAS) {
-        if (!categoriasActivas[categoria]) continue;
+  // Validar que haya al menos un archivo seleccionado
+  const hayArchivos = CATEGORIAS.some(
+    (cat) =>
+      categoriasActivas[cat] &&
+      TIPOS.some((tipo) => archivos[cat][tipo].length > 0)
+  );
 
-        for (const tipo of TIPOS) {
-          const files = archivos[categoria][tipo];
-          if (files.length === 0) continue;
+  if (!hayArchivos) {
+    Swal.fire({
+      icon: "warning",
+      title: "Ningún archivo seleccionado",
+      text: "Por favor, selecciona al menos un archivo para subir.",
+      confirmButtonColor: "#6366F1",
+    });
+    return;
+  }
 
-          const formData = new FormData();
-          formData.append("tipo", categoria);
-          formData.append("categoria", tipo);
-          formData.append("descripcion", descripcion || `${categoria} - ${tipo}`);
-          formData.append("consulta_id", String(consultaId));
-          formData.append("empresa_id", String(empresaId));
-          files.forEach((file) => formData.append("files", file));
+  try {
+    for (const categoria of CATEGORIAS) {
+      if (!categoriasActivas[categoria]) continue;
 
-          await subirExamen(formData);
-        }
+      for (const tipo of TIPOS) {
+        const files = archivos[categoria][tipo];
+        if (files.length === 0) continue;
+
+        const formData = new FormData();
+        formData.append("tipo", categoria);
+        formData.append("categoria", tipo);
+        formData.append("descripcion", descripcion || `${categoria} - ${tipo}`);
+        formData.append("consulta_id", String(consultaId));
+        formData.append("empresa_id", String(empresaId));
+        files.forEach((file) => formData.append("files", file));
+
+        await subirExamen(formData);
       }
-
-      Swal.fire("Éxito", "Exámenes subidos correctamente", "success");
-      setDescripcion("");
-      setArchivos({
-        patologia: { solicitud: [], resultado: [] },
-        rayosx: { solicitud: [], resultado: [] },
-      });
-      setCategoriasActivas({
-        patologia: false,
-        rayosx: false,
-      });
-      if (onUploadSuccess) onUploadSuccess();
-    } catch (error) {
-      console.error(error);
-      Swal.fire("Error", "No se pudo subir uno o más exámenes", "error");
     }
-  };
+
+    Swal.fire({
+      icon: "success",
+      title: "Éxito",
+      text: "Exámenes subidos correctamente",
+      confirmButtonColor: "#6366F1",
+    });
+
+    // Reset de formulario
+    setDescripcion("");
+    setArchivos({
+      patologia: { solicitud: [], resultado: [] },
+      rayosx: { solicitud: [], resultado: [] },
+    });
+    setCategoriasActivas({
+      patologia: false,
+      rayosx: false,
+    });
+    if (onUploadSuccess) onUploadSuccess();
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo subir uno o más exámenes",
+      confirmButtonColor: "#6366F1",
+    });
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -113,44 +143,53 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }: Props) => 
             />
             {cat === "patologia" ? "🧬 Patología" : "🩻 Rayos X"}
           </label>
+{categoriasActivas[cat] && (
+  <div className="mt-4 space-y-4">
+    {TIPOS.map((tipo) => (
+      <div key={tipo}>
+        <label className="block font-semibold mb-1">
+          {tipo === "solicitud" ? "Solicitud" : "Resultado"}
+        </label>
 
-          {categoriasActivas[cat] && (
-            <div className="mt-4 space-y-4">
-              {TIPOS.map((tipo) => (
-                <div key={tipo}>
-                  <label className="block font-semibold">
-                    📁 {tipo === "solicitud" ? "Solicitud" : "Resultado"}
-                  </label>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={(e) => handleFileChange(cat, tipo, e.target.files)}
-                    className="w-full mt-1"
-                  />
+        {/* Botón escoger archivos más compacto */}
+        <label className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium">
+          📁 Escoger archivos
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => handleFileChange(cat, tipo, e.target.files)}
+            className="hidden"
+          />
+        </label>
 
-                  {archivos[cat][tipo].length > 0 && (
-                    <ul className="mt-2 space-y-1 text-sm">
-                      {archivos[cat][tipo].map((file, i) => (
-                        <li
-                          key={i}
-                          className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded"
-                        >
-                          <span className="truncate">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => quitarArchivo(cat, tipo, i)}
-                            className="text-red-600 hover:underline text-xs"
-                          >
-                            Quitar
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Vista previa de imágenes con botón de quitar más demostrativo */}
+        <div className="mt-2 flex flex-wrap gap-3">
+          {archivos[cat][tipo]
+            .filter((file) => file.type.startsWith("image/"))
+            .map((file, i) => (
+              <div key={i} className="relative w-20 h-20 border rounded overflow-hidden shadow-sm">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => quitarArchivo(cat, tipo, i)}
+                  className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+         
         </div>
       ))}
 

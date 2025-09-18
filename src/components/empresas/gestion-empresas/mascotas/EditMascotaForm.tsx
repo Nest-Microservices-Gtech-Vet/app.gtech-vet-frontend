@@ -33,6 +33,15 @@ const EditMascotaForm = () => {
     const [razas, setRazas] = useState<Raza[]>([]);
     const [razastodas, setRazasTodas] = useState<Raza[]>([]);
 
+    const [searchCliente, setSearchCliente] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    const filteredClientes = clientes.filter(cli =>
+        `${cli.cli_nombre} ${cli.cli_apellido}`.toLowerCase().includes(searchCliente.toLowerCase())
+    );
+
+
+
     useEffect(() => {
         const fetchMascota = async () => {
             try {
@@ -65,6 +74,12 @@ const EditMascotaForm = () => {
                         (r: { especie_id: number; }) => r.especie_id === mascotaData.especie_id
                     );
                     setRazas(razasFiltradas);
+
+                    const clienteActual = clientesRes.data.find((cli: Cliente) => cli.cli_id === mascotaData.cliente_id);
+                    if (clienteActual) {
+                        setSearchCliente(`${clienteActual.cli_nombre} ${clienteActual.cli_apellido}`);
+                    }
+
                 } else {
                     console.error("mascota no encontrada");
                 }
@@ -204,7 +219,7 @@ const EditMascotaForm = () => {
                                 )}
 
                                 {/* Input para cambiar la foto */}
-                               
+
                                 <label className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md cursor-pointer">
                                     Cambiar foto
                                     <input
@@ -338,43 +353,57 @@ const EditMascotaForm = () => {
                         </div>
                     </div>
 
-                    {/* Sección derecha: Cliente */}
-                    <div>
-                        <h2 className="text-2xl font-semibold mb-6 text-gray-800">👤 Propietario</h2>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Seleccionar Propietario</label>
-                            <select
-                                value={formData.cliente_id}
-                                onChange={(e) => setFormData({ ...formData, cliente_id: Number(e.target.value) })}
-                                className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-                            >
-                                <option value="0">-- Selecciona Cliente --</option>
-                                {clientes.map((cli) => (
-                                    <option key={cli.cli_id} value={cli.cli_id}>
-                                        {cli.cli_nombre} {cli.cli_apellido}
-                                    </option>
-                                ))}
-                            </select>
+ <div>
+    <label className="block mb-1 text-sm font-medium text-gray-700">Propietario</label>
+    <input
+        type="text"
+        value={searchCliente}
+        onChange={(e) => {
+            setSearchCliente(e.target.value);
+            setFormData({ ...formData, cliente_id: 0 }); // Reinicia cliente_id si escribe algo
+            setShowDropdown(true); // Siempre mostrar dropdown al escribir
+        }}
+        onFocus={() => setShowDropdown(true)}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // Pequeño delay para click
+        placeholder="Busca un cliente"
+        className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+    />
 
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    navigate(`/mis-empresas/${id}/clientes/crear-cliente?returnTo=/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
-                                }
-                                className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
-                            >
-                                + Crear Propietario
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    {showDropdown && searchCliente && (
+        <ul className="border border-gray-300 rounded bg-white max-h-40 overflow-y-auto mt-1">
+            {clientes
+                .filter(cli =>
+                    `${cli.cli_nombre} ${cli.cli_apellido}`.toLowerCase().includes(searchCliente.toLowerCase())
+                )
+                .map(cli => (
+                    <li
+                        key={cli.cli_id}
+                        onClick={() => {
+                            setFormData({ ...formData, cliente_id: cli.cli_id });
+                            setSearchCliente(`${cli.cli_nombre} ${cli.cli_apellido}`);
+                            setShowDropdown(false);
+                        }}
+                        className="px-3 py-2 hover:bg-sky-200 cursor-pointer"
+                    >
+                        {cli.cli_nombre} {cli.cli_apellido}
+                    </li>
+                ))}
+        </ul>
+    )}
+     {/* Botón para crear nuevo cliente */}
+    <button
+        type="button"
+        onClick={() =>
+            navigate(`/mis-empresas/${id}/clientes/crear-cliente?returnTo=/mis-empresas/${id}/mascotas/editar-mascota/${mascotaId}`)
+        }
+        className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
+    >
+        + Crear Propietario
+    </button>
+</div>
 
-                {/* Botón de acción */}
-                <div className="mt-10 flex justify-center">
-                    <div className="flex justify-center mt-4">
-                        <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button>
-                    </div>
                 </div>
+                {/* Botón de acción */} <div className="mt-10 flex justify-center"> <div className="flex justify-center mt-4"> <button className="mt-4 min-w-2xl bg-green-500 py-2 rounded-md hover:bg-green-600 items-center" type="submit">Guardar Cambios</button> </div> </div>
             </form>
         </div>
     );

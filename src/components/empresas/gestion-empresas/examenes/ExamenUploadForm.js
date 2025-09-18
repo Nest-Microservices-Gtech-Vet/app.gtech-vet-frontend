@@ -39,6 +39,18 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }) => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Validar que haya al menos un archivo seleccionado
+        const hayArchivos = CATEGORIAS.some((cat) => categoriasActivas[cat] &&
+            TIPOS.some((tipo) => archivos[cat][tipo].length > 0));
+        if (!hayArchivos) {
+            Swal.fire({
+                icon: "warning",
+                title: "Ningún archivo seleccionado",
+                text: "Por favor, selecciona al menos un archivo para subir.",
+                confirmButtonColor: "#6366F1",
+            });
+            return;
+        }
         try {
             for (const categoria of CATEGORIAS) {
                 if (!categoriasActivas[categoria])
@@ -57,7 +69,13 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }) => {
                     await subirExamen(formData);
                 }
             }
-            Swal.fire("Éxito", "Exámenes subidos correctamente", "success");
+            Swal.fire({
+                icon: "success",
+                title: "Éxito",
+                text: "Exámenes subidos correctamente",
+                confirmButtonColor: "#6366F1",
+            });
+            // Reset de formulario
             setDescripcion("");
             setArchivos({
                 patologia: { solicitud: [], resultado: [] },
@@ -72,9 +90,16 @@ const ExamenUploadForm = ({ empresaId, consultaId, onUploadSuccess }) => {
         }
         catch (error) {
             console.error(error);
-            Swal.fire("Error", "No se pudo subir uno o más exámenes", "error");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo subir uno o más exámenes",
+                confirmButtonColor: "#6366F1",
+            });
         }
     };
-    return (_jsxs("form", { onSubmit: handleSubmit, className: "space-y-6", children: [CATEGORIAS.map((cat) => (_jsxs("div", { className: " p-4 rounded shadow-sm bg-white", children: [_jsxs("label", { className: "flex items-center gap-2 font-semibold text-lg", children: [_jsx("input", { type: "checkbox", checked: categoriasActivas[cat], onChange: () => handleCheckboxChange(cat) }), cat === "patologia" ? "🧬 Patología" : "🩻 Rayos X"] }), categoriasActivas[cat] && (_jsx("div", { className: "mt-4 space-y-4", children: TIPOS.map((tipo) => (_jsxs("div", { children: [_jsxs("label", { className: "block font-semibold", children: ["\uD83D\uDCC1 ", tipo === "solicitud" ? "Solicitud" : "Resultado"] }), _jsx("input", { type: "file", multiple: true, onChange: (e) => handleFileChange(cat, tipo, e.target.files), className: "w-full mt-1" }), archivos[cat][tipo].length > 0 && (_jsx("ul", { className: "mt-2 space-y-1 text-sm", children: archivos[cat][tipo].map((file, i) => (_jsxs("li", { className: "flex justify-between items-center bg-gray-100 px-2 py-1 rounded", children: [_jsx("span", { className: "truncate", children: file.name }), _jsx("button", { type: "button", onClick: () => quitarArchivo(cat, tipo, i), className: "text-red-600 hover:underline text-xs", children: "Quitar" })] }, i))) }))] }, tipo))) }))] }, cat))), _jsx("button", { type: "submit", className: "bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded shadow", children: "\uD83D\uDCE4 Subir Ex\u00E1menes" })] }));
+    return (_jsxs("form", { onSubmit: handleSubmit, className: "space-y-6", children: [CATEGORIAS.map((cat) => (_jsxs("div", { className: " p-4 rounded shadow-sm bg-white", children: [_jsxs("label", { className: "flex items-center gap-2 font-semibold text-lg", children: [_jsx("input", { type: "checkbox", checked: categoriasActivas[cat], onChange: () => handleCheckboxChange(cat) }), cat === "patologia" ? "🧬 Patología" : "🩻 Rayos X"] }), categoriasActivas[cat] && (_jsx("div", { className: "mt-4 space-y-4", children: TIPOS.map((tipo) => (_jsxs("div", { children: [_jsx("label", { className: "block font-semibold mb-1", children: tipo === "solicitud" ? "Solicitud" : "Resultado" }), _jsxs("label", { className: "inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium", children: ["\uD83D\uDCC1 Escoger archivos", _jsx("input", { type: "file", multiple: true, accept: "image/*", onChange: (e) => handleFileChange(cat, tipo, e.target.files), className: "hidden" })] }), _jsx("div", { className: "mt-2 flex flex-wrap gap-3", children: archivos[cat][tipo]
+                                        .filter((file) => file.type.startsWith("image/"))
+                                        .map((file, i) => (_jsxs("div", { className: "relative w-20 h-20 border rounded overflow-hidden shadow-sm", children: [_jsx("img", { src: URL.createObjectURL(file), alt: file.name, className: "w-full h-full object-cover" }), _jsx("button", { type: "button", onClick: () => quitarArchivo(cat, tipo, i), className: "absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow", children: "\u00D7" })] }, i))) })] }, tipo))) }))] }, cat))), _jsx("button", { type: "submit", className: "bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded shadow", children: "\uD83D\uDCE4 Subir Ex\u00E1menes" })] }));
 };
 export default ExamenUploadForm;

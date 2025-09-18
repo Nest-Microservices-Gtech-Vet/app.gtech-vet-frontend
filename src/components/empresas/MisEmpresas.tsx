@@ -72,7 +72,7 @@ const MisEmpresas = () => {
               {/* Logo con efecto hover */}
               <div className="flex-shrink-0 transform transition duration-300 group-hover:scale-105">
                 <img
-                  src={`http://localhost:3010/uploads/logos/${empresa.emp_foto}`}
+                  src={`https://app.amigovet123.com:8443/uploads/logos/${empresa.emp_foto}`}
                   alt={empresa.emp_nombre}
                   className="w-24 h-24 object-cover rounded-lg border"
                 />

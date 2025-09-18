@@ -26,3 +26,9 @@ export const tratamientoByConsultaId = async (consultaId) => {
         throw error;
     }
 };
+export const updateTratamiento = async (id, data) => {
+    return apiFetch(`tratamiento/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+    });
+};

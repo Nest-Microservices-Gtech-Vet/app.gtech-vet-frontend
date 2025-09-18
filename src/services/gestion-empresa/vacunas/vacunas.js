@@ -39,3 +39,35 @@ export const getVacunaPorMascota = async (mascotaId) => {
         throw error;
     }
 };
+export const updateVacuna = async (vacunaId, updateData, nuevasFotos) => {
+    const formData = new FormData();
+    // ✅ Campos posibles
+    const campos = [
+        "vac_nombre",
+        "vac_tipo",
+        "vac_fecha",
+        "vac_proxima",
+        "vac_lote",
+        "vac_observacion",
+        "empresa_id",
+        "mascota_id",
+        "historiaClinica_id",
+    ];
+    campos.forEach((key) => {
+        const value = updateData[key];
+        if (value !== undefined && value !== null && value !== "") {
+            // Solo si hay valor
+            formData.append(key, String(value));
+        }
+    });
+    // ✅ Adjuntar archivos
+    if (nuevasFotos && nuevasFotos.length > 0) {
+        nuevasFotos.forEach((foto) => formData.append("fotos", foto));
+    }
+    const response = await apiFetch(`vacuna/${vacunaId}`, {
+        method: "PATCH",
+        body: formData,
+    });
+    return response;
+};
+//********************************************************************************* */

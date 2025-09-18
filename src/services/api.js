@@ -21,5 +21,12 @@ export const apiFetch = async (endpoint, options = {}) => {
         const errorText = await response.text();
         throw new Error(`Error ${response.status}: ${errorText}`);
     }
-    return response.json();
+    const responseText = await response.text();
+    try {
+        return JSON.parse(responseText);
+    }
+    catch {
+        return responseText; // si no es JSON, devuelve texto plano
+    }
+    // return response.json();
 };

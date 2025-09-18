@@ -97,8 +97,20 @@ export const removeCliente = async (clienteId) => {
 };
 //termina borrado logico clientes
 //***************************************************************** */
-//empieza obtener clientes
-//termina obtener clientes
+//validar obtener clientes
+export const validarIdentificacion = async (identificacion) => {
+    try {
+        const data = await apiFetch(`clientes/validar-identificacion/${identificacion}`, {
+            method: "GET",
+        });
+        return data.exists; // backend devuelve { exists: true/false }
+    }
+    catch (error) {
+        console.error("Error validando identificación:", error);
+        return false;
+    }
+};
+//validar obtener clientes
 //***************************************************************** */
 //empieza obtener clientes
 //termina obtener clientes

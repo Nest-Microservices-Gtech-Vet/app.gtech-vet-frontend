@@ -87,7 +87,7 @@ const EditEmpresaForm: React.FC = () => {
                     provincia_id: Number(empresaData.provincia_id) || 0,
                     canton_id: Number(empresaData.canton_id) || 0,
                     emp_foto: empresaData.emp_foto ?? null,
-                    fotoUrl: empresaData.emp_foto ? `http://localhost:3010/uploads/logos/${empresaData.emp_foto}` : null,
+                    fotoUrl: empresaData.emp_foto ? `https://app.amigovet123.com:8443/uploads/logos/${empresaData.emp_foto}` : null,
                 };
 
                 setFormData(prev => ({ ...prev, ...normalized }));

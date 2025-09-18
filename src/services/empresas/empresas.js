@@ -26,19 +26,39 @@ export const getEmpresasInactivas = async (page = 1, limit = 50, searchQuery) =>
 };
 //Termina obtener empresasinactivas //
 //Empieza Crear empresas //
-export const createEmpresa = async (empresaData) => {
-    try {
-        const data = await apiFetch("empresas", {
-            method: "POST",
-            body: JSON.stringify(empresaData),
-        });
-        console.log("empresa creado", data);
-        return data;
-    }
-    catch (error) {
-        console.error("error al crear empresa:", error);
-        return null;
-    }
+// export const createEmpresa = async (empresaData: {
+//     emp_nombre: string;
+//     emp_correo: string;
+//     emp_direccion: string;
+//     emp_telefono: string;
+//     emp_ruc: string;
+//     emp_tipo_empresa: string;
+//     provincia_id: number;
+//     canton_id: number;
+//     activo: boolean;
+//     fecha_inicio: string;
+//     fecha_fin: string;
+// }) => {
+//     try {
+//         const data = await apiFetch("empresas", {
+//             method: "POST",
+//             body: JSON.stringify(empresaData),
+//         });
+//         console.log("empresa creado", data);
+//         return data;
+//     } catch (error) {
+//         console.error("error al crear empresa:", error)
+//         return null;
+//     }
+// };
+export const createEmpresa = async (formData) => {
+    return await apiFetch("empresas", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: formData,
+    });
 };
 //Fin Crear empresas//
 //************************************************************************ */
@@ -63,19 +83,12 @@ export const getEmpresaById = async (empresaId) => {
 };
 //Finaliza obtener empresas por id//
 //Empieza Editar empresa por id//
-export const updateEmpresa = async (empresaId, empresaData) => {
-    try {
-        const data = await apiFetch(`empresas/${empresaId}`, {
-            method: "PATCH",
-            body: JSON.stringify(empresaData),
-        });
-        console.log("empresa actualizado:", data);
-        return data;
-    }
-    catch (error) {
-        console.error("Error al actualizar empresa:", error);
-        return null;
-    }
+export const updateEmpresa = async (empresaId, formData) => {
+    const response = await apiFetch(`empresas/${empresaId}`, {
+        method: 'PATCH',
+        body: formData,
+    });
+    return response;
 };
 //Finaliza Editar empresa por id//
 //Empieza borrrado logico por id//

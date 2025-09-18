@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { createCliente } from "../../../../services/gestion-empresa/clientes/clientes";
+import { createCliente, validarIdentificacion } from "../../../../services/gestion-empresa/clientes/clientes";
 import Swal from "sweetalert2";
 const CreateClienteForm = () => {
     const { id: empresaId, mascotaId } = useParams();
@@ -18,6 +18,8 @@ const CreateClienteForm = () => {
             return Number(match[1]); // si encuentra un número
         return null;
     };
+    const [identificacionExistente, setIdentificacionExistente] = useState(false);
+    const [telefonoValido, setTelefonoValido] = useState(true);
     const [formData, setFormData] = useState({
         cli_identificacion: "",
         cli_nombre: "",
@@ -29,11 +31,49 @@ const CreateClienteForm = () => {
         activo: true,
         empresa_id: extractEmpresaId() || 0,
     });
+    const [errors, setErrors] = useState({});
+    // 🔎 Validar si la identificación ya existe
+    const handleIdentificacionBlur = async () => {
+        if (!formData.cli_identificacion)
+            return;
+        try {
+            const existe = await validarIdentificacion(formData.cli_identificacion);
+            setIdentificacionExistente(existe);
+            if (existe) {
+                Swal.fire("Atención", "La cédula o RUC ingresado ya está registrado", "warning");
+            }
+        }
+        catch (error) {
+            console.error("Error validando identificación:", error);
+        }
+    };
+    const handleTelefonoBlur = () => {
+        const telefono = formData.cli_celular || "";
+        if (telefono.length !== 10) {
+            setTelefonoValido(false);
+            Swal.fire("Atención", "El teléfono debe tener 10 dígitos", "warning");
+        }
+        else {
+            setTelefonoValido(true);
+        }
+    };
     const sendCliente = async (e) => {
         e.preventDefault();
         const empresa_id_final = extractEmpresaId();
         if (!empresa_id_final) {
             alert("No se pudo determinar el ID de la empresa.");
+            return;
+        }
+        // ✅ Validaciones básicas antes de enviar
+        let newErrors = {};
+        if (formData.cli_identificacion.length < 10 || formData.cli_identificacion.length > 13) {
+            newErrors.cli_identificacion = "El RUC/Cédula debe tener entre 10 y 13 dígitos.";
+        }
+        if (formData.cli_celular.length !== 10) {
+            newErrors.cli_celular = "El celular debe tener exactamente 10 dígitos.";
+        }
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
         const clienteFinal = {
@@ -75,13 +115,15 @@ const CreateClienteForm = () => {
             alert("error al crear cliente");
         }
     };
-    return (_jsx("form", { onSubmit: sendCliente, className: "w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md", children: _jsxs("div", { className: "w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md", children: [_jsx("h2", { className: "text-2xl font-bold mb-4", children: "Ingrese los datos del cliente" }), _jsxs("div", { className: "grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg", children: [_jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_identificacion, onChange: (e) => setFormData({ ...formData, cli_identificacion: e.target.value }), type: "text", id: "cli_identificacion", name: "cli_identificacion", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo:1753696804001", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_identificacion", className: `
+    return (_jsx("form", { onSubmit: sendCliente, className: "w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md", children: _jsxs("div", { className: "w-full max-w-5xl bg-gray-50 p-5 rounded-lg shadow-md", children: [_jsx("h2", { className: "text-2xl font-bold mb-4", children: "Ingrese los datos del cliente" }), _jsxs("div", { className: "grid grid-cols-2 md:grid-cols-3 gap-10 p-4 rounded-lg", children: [_jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_identificacion, onChange: (e) => setFormData({
+                                            ...formData, cli_identificacion: e.target.value.replace(/\D/g, "")
+                                        }), onBlur: handleIdentificacionBlur, type: "text", id: "cli_identificacion", name: "cli_identificacion", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo:1753696804001", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_identificacion", className: `
         absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
         peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
         peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
         peer-focus:bg-gray-50
         -top-3 text-sm w-auto 
-      `, children: "Ingresar RUC o Cedula" })] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_nombre, onChange: (e) => setFormData({ ...formData, cli_nombre: e.target.value }), type: "text", id: "cli_nombre", name: "cli_nombre", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: Santiago ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_nombre", className: `
+      `, children: "Ingresar RUC o Cedula" }), errors.cli_identificacion && (_jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.cli_identificacion }))] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_nombre, onChange: (e) => setFormData({ ...formData, cli_nombre: e.target.value }), type: "text", id: "cli_nombre", name: "cli_nombre", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200 ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: Santiago ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_nombre", className: `
         absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
         peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
         peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
@@ -99,13 +141,13 @@ const CreateClienteForm = () => {
         peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
         peer-focus:bg-gray-50
         -top-3 text-sm w-auto
-      `, children: "Ingresar Email" })] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_celular, onChange: (e) => setFormData({ ...formData, cli_celular: e.target.value }), type: "text", id: "cli_celular", name: "cli_celular", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: 0987654321 ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_celular", className: `
+      `, children: "Ingresar Email" })] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_celular, onChange: (e) => setFormData({ ...formData, cli_celular: e.target.value.replace(/\D/g, ""), }), onBlur: handleTelefonoBlur, type: "text", id: "cli_celular", name: "cli_celular", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: 0987654321 ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_celular", className: `
         absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
         peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
         peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto
         peer-focus:bg-gray-50
         -top-3 text-sm w-auto
-      `, children: "Ingresar Celular" })] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_direccion, onChange: (e) => setFormData({ ...formData, cli_direccion: e.target.value }), type: "text", id: "cli_direccion", name: "cli_direccion", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: Quito-ecuador ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_direccion", className: `
+      `, children: "Ingresar Celular" }), errors.cli_celular && (_jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.cli_celular }))] }) }), _jsx("div", { className: "bg-gray-50 p-4 rounded-lg", children: _jsxs("div", { className: "relative bg-inherit", children: [_jsx("input", { value: formData.cli_direccion, onChange: (e) => setFormData({ ...formData, cli_direccion: e.target.value }), type: "text", id: "cli_direccion", name: "cli_direccion", className: "peer bg-transparent h-10 w-72 rounded-lg text-black-200  ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600", placeholder: "Ejemplo: Quito-ecuador ", autoComplete: "new-password" }), _jsx("label", { htmlFor: "cli_direccion", className: `
         absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all
         peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full
         peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto

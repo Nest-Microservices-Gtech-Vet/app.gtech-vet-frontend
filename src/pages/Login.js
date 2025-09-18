@@ -1,7 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { loginSuperAdmin } from "../services/auth";
 import { useAuth } from "../context/AuthContext";
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -15,18 +14,19 @@ const Login = () => {
             alert("Credenciales incorrectas");
             return;
         }
-        const userData = localStorage.getItem("user");
-        if (!userData) {
+        const storedUser = localStorage.getItem("user");
+        if (!storedUser) {
             alert("No se pudo obtener la información del usuario.");
             return;
         }
-        const user = JSON.parse(userData);
+        const user = JSON.parse(storedUser);
+        console.log("ROL DEL USUARIO:", user.usua_rol);
+        // Redireccionamiento por rol
         switch (user.usua_rol) {
             case "SUPERADMIN":
                 navigate("/dashboard");
                 break;
             case "ADMIN":
-            case "USUARIO":
                 navigate("/mis-empresas");
                 break;
             default:

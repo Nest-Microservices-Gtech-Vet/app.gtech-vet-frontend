@@ -8,6 +8,7 @@ const CreateConsultaForm = () => {
     const { empresaId, mascotaId, id } = useParams();
     const navigate = useNavigate();
     const [historiaClinicaId, setHistoriaClinicaId] = useState(null);
+    const [identificacionExistente, setIdentificacionExistente] = useState(false);
     const [formData, setFormData] = useState({
         con_fecha: new Date().toISOString(),
         con_motivo: "",

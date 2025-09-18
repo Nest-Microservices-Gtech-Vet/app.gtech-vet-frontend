@@ -80,24 +80,30 @@ const CreateMascotaForm = () => {
 
             const razasGet = await getRazas();
             const razasMapped = razasGet.map((r: any) => ({
-                id: r.raz_id,
-                nombre: r.raz_nombre,
+                raz_id: r.raz_id,
+                raz_nombre: r.raz_nombre,
                 especie_id: r.especie_id,
             }));
             setRazas(razasMapped);
             setRazasTodas(razasMapped);
+
         };
         fetchData();
     }, []);
-    const handleEspecieCHange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const especieId = Number(e.target.value);
-        setFormData({ ...formData, especie_id: especieId, raza_id: 0 });
+    const handleEspecieChange = (esp: any) => {
+        const razasFiltradas = razas.filter((r) => r.especie_id === esp.esp_id);
 
-        const razasFiltradas = razastodas.filter(r => r.especie_id === especieId);
+        setFormData({
+            ...formData,
+            especie_id: esp.esp_id,
+            raza_id: razasFiltradas.length > 0 ? razasFiltradas[0].raz_id : 0,
+        });
+
         setRazas(razasFiltradas);
-    }
+    };
 
-    
+
+
 
 
     const sendMascota = async (e: React.FormEvent) => {
@@ -115,6 +121,14 @@ const CreateMascotaForm = () => {
                 Swal.fire("Error", "La fecha de nacimiento no puede ser futura.", "error");
                 return;
             }
+
+            if (formData.especie_id === 0) { Swal.fire("Error", "Debe seleccionar una especie válida", "error"); return; }
+            // 🔹 Validación de raza
+            if (formData.raza_id === 0) {
+                Swal.fire("Error", "Debe seleccionar una raza válida", "error");
+                return;
+            }
+
         }
 
         const data = new FormData();
@@ -305,13 +319,13 @@ const CreateMascotaForm = () => {
                                 ))}
                             </select>
                         </div> */}
-                        {/* AUTOCOMPLETE DE ESPECIE */}
+                        {/* AUTOCOMPLETE de Especie */}
                         <div className="relative">
                             <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
                             <div className="relative">
                                 <input
                                     type="text"
-                                    placeholder="Buscar especie..."
+                                    placeholder="🐾 Buscar especie..."
                                     value={
                                         especies.find((esp) => esp.esp_id === formData.especie_id)?.esp_nombre ||
                                         searchEspecie
@@ -323,7 +337,6 @@ const CreateMascotaForm = () => {
                                     className="w-full h-10 px-3 pr-8 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                                 />
 
-                                {/* Flechita */}
                                 <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
                                     <svg
                                         className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${searchEspecie && formData.especie_id === 0 ? "rotate-180" : ""
@@ -342,33 +355,35 @@ const CreateMascotaForm = () => {
                                 </span>
                             </div>
 
-                            {/* Dropdown */}
+                            {/* Dropdown de especies */}
                             {searchEspecie &&
-                                especies.some((esp) =>
-                                    esp.esp_nombre?.toLowerCase().includes(searchEspecie.toLowerCase())
+                                especies.some(
+                                    (esp) =>
+                                        esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
                                 ) &&
                                 formData.especie_id === 0 && (
                                     <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
                                         {especies
                                             .filter((esp) =>
-                                                esp.esp_nombre?.toLowerCase().includes(searchEspecie.toLowerCase())
+                                                esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
                                             )
                                             .map((esp) => (
                                                 <li
                                                     key={esp.esp_id}
                                                     className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
                                                     onClick={() => {
-                                                        setFormData({
-                                                            ...formData,
-                                                            especie_id: esp.esp_id,
-                                                            raza_id: 0,
-                                                        });
-                                                        setSearchEspecie(esp.esp_nombre || "");
-
-                                                        // Filtra razas
+                                                        // Al seleccionar especie, preseleccionamos la primera raza
                                                         const razasFiltradas = razastodas.filter(
                                                             (r) => r.especie_id === esp.esp_id
                                                         );
+
+                                                        setFormData({
+                                                            ...formData,
+                                                            especie_id: esp.esp_id,
+                                                            raza_id: razasFiltradas.length > 0 ? razasFiltradas[0].raz_id : 0,
+                                                        });
+
+                                                        setSearchEspecie(esp.esp_nombre || "");
                                                         setRazas(razasFiltradas);
                                                     }}
                                                 >
@@ -379,20 +394,38 @@ const CreateMascotaForm = () => {
                                 )}
                         </div>
 
-
+                        {/* Dropdown de Raza */}
                         <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>
                             <select
-                                value={formData.raza_id}
-                                onChange={(e) => setFormData({ ...formData, raza_id: Number(e.target.value) })}
+                                value={formData.raza_id || ""}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, raza_id: Number(e.target.value) })
+                                }
                                 className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
                             >
-                                <option value="">-- Selecciona Raza --</option>
-                                {razas.map((raza: any) => (
-                                    <option key={raza.id} value={raza.id}>{raza.nombre}</option>
-                                ))}
+                                {/* Si no hay especie seleccionada */}
+                                {!formData.especie_id && (
+                                    <option value="">🐕 Selecciona una raza</option>
+                                )}
+
+                                {/* Si hay especie pero no tiene razas */}
+                                {formData.especie_id && razas.length === 0 && (
+                                    <option value="">🐕 Selecciona una raza</option>
+                                )}
+
+                                {/* Si hay especie y sí tiene razas */}
+                                {formData.especie_id &&
+                                    razas.map((raza) => (
+                                        <option key={raza.raz_id} value={raza.raz_id}>
+                                            {raza.raz_nombre}
+                                        </option>
+                                    ))}
                             </select>
+
+
                         </div>
+
                     </div>
                 </div>
 
@@ -404,7 +437,7 @@ const CreateMascotaForm = () => {
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="Buscar cliente..."
+                            placeholder="🔎 Busca un cliente..."
                             value={searchCliente}
                             onChange={(e) => {
                                 setSearchCliente(e.target.value);

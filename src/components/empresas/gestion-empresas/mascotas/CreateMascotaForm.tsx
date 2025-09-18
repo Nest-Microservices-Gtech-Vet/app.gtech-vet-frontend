@@ -67,15 +67,14 @@ const CreateMascotaForm = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-
             const empresaId = Number(id);
-            const clientesRes = await getClientes(empresaId,);
-            setClientes(clientesRes.data || []); // ← clientes sí devuelve { data }
+            const clientesRes = await getClientes(empresaId);
+            setClientes(clientesRes.data || []);
 
             const especiesGet = await getEspecies();
             const especiasMapped = especiesGet.map((es: any) => ({
-                id: es.esp_id,
-                nombre: es.esp_nombre,
+                esp_id: es.esp_id,       // ⚠️ usa estos nombres
+                esp_nombre: es.esp_nombre,
             }));
             setEspecies(especiasMapped);
 
@@ -87,12 +86,9 @@ const CreateMascotaForm = () => {
             }));
             setRazas(razasMapped);
             setRazasTodas(razasMapped);
-
-
         };
         fetchData();
     }, []);
-
     const handleEspecieCHange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const especieId = Number(e.target.value);
         setFormData({ ...formData, especie_id: especieId, raza_id: 0 });
@@ -101,6 +97,7 @@ const CreateMascotaForm = () => {
         setRazas(razasFiltradas);
     }
 
+    
 
 
     const sendMascota = async (e: React.FormEvent) => {
@@ -169,7 +166,7 @@ const CreateMascotaForm = () => {
 
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-6">
-                         <div>
+                        <div>
                             <label className="block text-sm font-medium text-blacl-300 mb-2">
                                 Escoger Logo
                             </label>
@@ -194,7 +191,7 @@ const CreateMascotaForm = () => {
                             </label>
                         </div>
 
-                       
+
                         {/* Repite este bloque para cada campo */}
                         <div>
                             <label htmlFor="mas_nombre" className="block mb-1 text-sm font-medium text-gray-700">Nombre</label>
@@ -256,7 +253,7 @@ const CreateMascotaForm = () => {
                             />
                         </div> */}
 
-                      
+
 
 
                         <div>
@@ -308,86 +305,80 @@ const CreateMascotaForm = () => {
                                 ))}
                             </select>
                         </div> */}
-{/* AUTOCOMPLETE de Especie */}
-<div className="relative">
-  <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
-  <div className="relative">
-    <input
-      type="text"
-      placeholder="Buscar especie..."
-      value={
-        especies.find((esp) => esp.esp_id === formData.especie_id)?.esp_nombre ||
-        searchEspecie
-      }
-      onChange={(e) => {
-        setFormData({ ...formData, especie_id: 0, raza_id: 0 });
-        setSearchEspecie(e.target.value);
-      }}
-      className="w-full h-10 px-3 pr-8 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
-    />
+                        {/* AUTOCOMPLETE DE ESPECIE */}
+                        <div className="relative">
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Especie</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Buscar especie..."
+                                    value={
+                                        especies.find((esp) => esp.esp_id === formData.especie_id)?.esp_nombre ||
+                                        searchEspecie
+                                    }
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, especie_id: 0, raza_id: 0 });
+                                        setSearchEspecie(e.target.value);
+                                    }}
+                                    className="w-full h-10 px-3 pr-8 border border-gray-300 rounded-lg focus:ring-sky-600 focus:outline-none"
+                                />
 
-    {/* 🔽 Flechita */}
-    <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-      <svg
-        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-          searchEspecie && formData.especie_id === 0 ? "rotate-180" : ""
-        }`}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M19 9l-7 7-7-7"
-        />
-      </svg>
-    </span>
-  </div>
+                                {/* Flechita */}
+                                <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                                    <svg
+                                        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${searchEspecie && formData.especie_id === 0 ? "rotate-180" : ""
+                                            }`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </span>
+                            </div>
 
-  {/* Dropdown */}
-{/* Dropdown */}
-{searchEspecie &&
-  Array.isArray(especies) &&
-  especies.some(
-    (esp) =>
-      esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
-  ) &&
-  formData.especie_id === 0 && (
-    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
-      {especies
-        .filter(
-          (esp) =>
-            esp.esp_nombre?.toLowerCase().includes((searchEspecie || "").toLowerCase())
-        )
-        .map((esp) => (
-          <li
-            key={esp.esp_id}
-            className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
-            onClick={() => {
-              setFormData({
-                ...formData,
-                especie_id: esp.esp_id,
-                raza_id: 0,
-              });
-              setSearchEspecie(esp.esp_nombre || "");
+                            {/* Dropdown */}
+                            {searchEspecie &&
+                                especies.some((esp) =>
+                                    esp.esp_nombre?.toLowerCase().includes(searchEspecie.toLowerCase())
+                                ) &&
+                                formData.especie_id === 0 && (
+                                    <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg">
+                                        {especies
+                                            .filter((esp) =>
+                                                esp.esp_nombre?.toLowerCase().includes(searchEspecie.toLowerCase())
+                                            )
+                                            .map((esp) => (
+                                                <li
+                                                    key={esp.esp_id}
+                                                    className="px-3 py-2 hover:bg-sky-100 cursor-pointer"
+                                                    onClick={() => {
+                                                        setFormData({
+                                                            ...formData,
+                                                            especie_id: esp.esp_id,
+                                                            raza_id: 0,
+                                                        });
+                                                        setSearchEspecie(esp.esp_nombre || "");
 
-              // Filtras razas
-              const razasFiltradas = razastodas.filter(
-                (r) => r.especie_id === esp.esp_id
-              );
-              setRazas(razasFiltradas);
-            }}
-          >
-            {esp.esp_nombre || "Sin nombre"}
-          </li>
-        ))}
-    </ul>
-  )}
+                                                        // Filtra razas
+                                                        const razasFiltradas = razastodas.filter(
+                                                            (r) => r.especie_id === esp.esp_id
+                                                        );
+                                                        setRazas(razasFiltradas);
+                                                    }}
+                                                >
+                                                    {esp.esp_nombre || "Sin nombre"}
+                                                </li>
+                                            ))}
+                                    </ul>
+                                )}
+                        </div>
 
-</div>
-    
 
                         <div>
                             <label className="block mb-1 text-sm font-medium text-gray-700">Raza</label>

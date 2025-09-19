@@ -187,6 +187,7 @@ const handlePrint = useReactToPrint({
           direccion: consulta.empresa?.emp_direccion ?? "No registrada",
           telefono: consulta.empresa?.emp_telefono ?? "No registrado",
           email: consulta.empresa?.emp_correo ?? "No registrado",
+          foto: consulta.empresa?.emp_foto ?? "No registrado",
         }}
         paciente={{
           nombre: consulta.mascota?.mas_nombre ?? "Sin nombre",

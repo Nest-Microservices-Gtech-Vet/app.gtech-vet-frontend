@@ -5,7 +5,8 @@ type RecetaPrintProps = {
         nombre: string;
         direccion: string;
         telefono: string;
-        email:string;
+        email: string;
+        foto: string;
     };
     paciente: {
         nombre: string;
@@ -52,12 +53,14 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                     <p className="text-gray-600">MÉDICO VETERINARIO</p>
                     <p className="text-sm">Cédula Profesional: {medico.cedula}</p>
                     <hr className="mb-4 mt-6" />
-{/* DATOS PACIENTE */}
+                    {/* DATOS PACIENTE */}
                     <p><strong>Nombre (paciente):</strong> {paciente.nombre}</p>
                     <p><strong>Propietario:</strong> {propietario.nombre}</p>
                     <p><strong>Cédula:</strong> {propietario.cedula}</p>
                     <p><strong>Teléfono:</strong> {propietario.telefono}</p>
                     <p><strong>Dirección:</strong> {propietario.direccion}</p>
+                    <p><strong>Fecha:</strong> {consulta.created_at ? new Date(consulta.created_at).toLocaleDateString() : "Sin fecha"}</p>
+
 
                 </div>
 
@@ -70,26 +73,21 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                         <p className="text-sm">Universidad Nacional Autónoma</p>
                     </div>
                     <div className="flex items-center">
-                       
-                        <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>
 
-                        {/* Aquí puedes usar una imagen real del logo o un SVG */}
-                        <div className="w-16 h-16 text-[#3c6ca6] rounded-full flex items-center justify-center">
-                            {/* Ejemplo de un logo SVG */}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 017.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0122 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
+                      
+
+                        {/* Logo con efecto hover */}
+                        <div className="flex-shrink-0 transform transition duration-300 group-hover:scale-105">
+                              <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>                            <img
+                                src={`http://localhost:3010/uploads/logos/${empresa.foto}`}
+                                alt={empresa.nombre}
+                                className="w-24 h-24 object-cover rounded-lg border"
+                            />
                         </div>
                     </div>
-                    <div className="text-right mt-2">
-                        <p className="text-sm">FECHA: {consulta.created_at ? new Date(consulta.created_at).toLocaleDateString() : "Sin fecha"}</p>
-                        
-                    </div>
+                 
                 </div>
             </div>
-
-            <hr className="mb-4 mt-6" />
-
             {/* CUERPO DE LA RECETA - Vacío para escritura manual */}
             <div className="min-h-[25rem] border border-gray-300 mb-6 p-4">
 

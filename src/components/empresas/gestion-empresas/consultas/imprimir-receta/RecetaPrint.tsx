@@ -54,8 +54,7 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                     <p className="text-sm">Cédula Profesional: {medico.cedula}</p>
                     <hr className="mb-4 mt-6" />
                     {/* DATOS PACIENTE */}
-                    <p><strong>Nombre (paciente):</strong> {paciente.nombre}</p>
-                    <p><strong>Propietario:</strong> {propietario.nombre}</p>
+                    <p><strong>Nombre (paciente):</strong> {paciente.nombre} <strong>Propietario:</strong> {propietario.nombre}</p>
                     <p><strong>Cédula:</strong> {propietario.cedula}</p>
                     <p><strong>Teléfono:</strong> {propietario.telefono}</p>
                     <p><strong>Dirección:</strong> {propietario.direccion}</p>

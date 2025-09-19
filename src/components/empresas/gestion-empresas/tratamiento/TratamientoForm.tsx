@@ -75,57 +75,58 @@ const TratamientoForm = ({ consultaId, mascotaId, empresaId, onSuccess }: Tratam
         <div className="bg-white rounded p-6 shadow">
             <h3 className="text-xl font-semibold mb-4 text-gray-700">💊 Tratamiento Prescrito</h3>
             <p className="mb-4 text-sm text-gray-600">Registra los medicamentos para esta consulta.</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                {/* Nombre del medicamento */}
-                <div className="bg-gray-white p-4 rounded-lg sm:col-span-1">
-                    <div className="relative w-full">
-                        <input
-                            type="text"
-                            id="nombre"
-                            name="nombre"
-                            value={medicamento.nombre}
-                            onChange={(e) => handleChange("nombre", e.target.value)}
-                            placeholder=" "
-                            className="peer bg-transparent h-10 w-full rounded-lg text-black ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                        />
-                        <label
-                            htmlFor="nombre"
-                            className="absolute left-2 top-2 bg-gray-50 px-1 text-gray-500 text-sm transition-all
-          peer-placeholder-shown:top-2
-          peer-placeholder-shown:text-base
-          peer-placeholder-shown:text-gray-400
-          peer-focus:-top-3
-          peer-focus:text-sm
-          peer-focus:text-sky-600"
-                        >
-                            Nombre del medicamento
-                        </label>
+            {/* Inputs de Medicamento y Dosis */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Nombre del medicamento */}
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <input
+                                type="text"
+                                id="medicamento_nombre"
+                                name="medicamento_nombre"
+                                value={medicamento.nombre}
+                                onChange={(e) =>
+                                    setMedicamento({ ...medicamento, nombre: e.target.value })
+                                }
+                                className="block w-80 rounded-lg border-2 border-gray-400 bg-transparent px-3 py-3 text-base text-gray-800 focus:border-sky-600 focus:ring-1 focus:ring-sky-600 outline-none"
+                                placeholder="Ejemplo: Meloxiam "
+                            />
+                            <label
+                                htmlFor="medicamento_nombre"
+                                className="absolute left-3 -top-3 text-gray-600 bg-gray-50 px-1 transition-all 
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
+                 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:bg-gray-50"
+                            >
+                                Nombre del medicamento
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                {/* Dosis */}
-                <div className="bg-gray-white p-4 rounded-lg sm:col-span-1">
-                    <div className="relative w-full">
-                        <input
-                            type="text"
-                            id="dosis"
-                            name="dosis"
-                            value={medicamento.dosis}
-                            onChange={(e) => handleChange("dosis", e.target.value)}
-                            placeholder="Dosis (Ej: 1 tab cada 12h por 5 días)"
-                            className="peer bg-transparent h-10 w-full rounded-lg text-black ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-                        />
-                        <label
-                            htmlFor="dosis"
-                            className={`absolute left-2 bg-gray-50 px-1 text-gray-500 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:w-full peer-focus:-top-3 peer-focus:text-sm peer-focus:text-sky-600 peer-focus:w-auto peer-focus:bg-gray-50 -top-3 text-sm w-auto `}
-                        >
-                            Dosis
-                        </label>
+
+                    {/* Dosis */}
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="relative bg-inherit">
+                            <label
+                                htmlFor="dosis"
+                                className="absolute left-3 -top-3 text-gray-700 bg-gray-50 px-1 text-sm font-medium"
+                            >
+                                Dosis
+                            </label>
+                            <input
+                                type="text"
+                                id="dosis"
+                                name="dosis"
+                                value={medicamento.dosis}
+                                onChange={(e) => setMedicamento({ ...medicamento, dosis: e.target.value })}
+                                className="block w-80 rounded-lg border-2 border-gray-400 bg-transparent px-3 py-3 text-base text-gray-800 focus:border-sky-600 focus:ring-1 focus:ring-sky-600 outline-none"
+                                placeholder="Dosis (Ej: 1 tab cada 12h por 5 días)"
+                            />
+                        </div>
                     </div>
+
                 </div>
             </div>
-
 
             <div className="flex gap-2 mb-6">
                 <button

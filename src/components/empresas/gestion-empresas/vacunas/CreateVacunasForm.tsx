@@ -57,32 +57,32 @@ const CreateVacunasForm = () => {
     }
   }, [empresaId, mascotaId]);
 
-   const cargarVacunas = async () => {
-      try {
-        const data = await getVacunaPorMascota(mascotaId!);
+  const cargarVacunas = async () => {
+    try {
+      const data = await getVacunaPorMascota(mascotaId!);
 
-        const vacunasConArchivos = data.map((v: any) => ({
-          ...v,
-          archivos: v.VacunaFoto
-            ? v.VacunaFoto.map((f: any) => ({
-              url: `${API_URL}${f.url}`,
-              tipo: f.url.endsWith(".pdf") ? "pdf" : "imagen",
-              id: f.vf_id,
-            }))
-            : [],
-        }));
+      const vacunasConArchivos = data.map((v: any) => ({
+        ...v,
+        archivos: v.VacunaFoto
+          ? v.VacunaFoto.map((f: any) => ({
+            url: `${API_URL}${f.url}`,
+            tipo: f.url.endsWith(".pdf") ? "pdf" : "imagen",
+            id: f.vf_id,
+          }))
+          : [],
+      }));
 
-        setVacunas(vacunasConArchivos);
-      } catch (error) {
-        console.error("Error al obtener vacunas:", error);
-      }
-    };
+      setVacunas(vacunasConArchivos);
+    } catch (error) {
+      console.error("Error al obtener vacunas:", error);
+    }
+  };
 
   // Obtener vacunas de la mascota
   useEffect(() => {
-   
-      cargarVacunas();
-    
+
+    cargarVacunas();
+
   }, [mascotaId]);
 
   // Manejo de archivos nuevos
@@ -223,7 +223,7 @@ const CreateVacunasForm = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start">
+    <div className="max-w-8xl mx-auto p-6 grid grid-cols-1 md:grid-cols-[2fr_2fr] gap-6 items-start">
       {/* Listado de vacunas */}
       <div>
         <h3 className="text-xl font-semibold text-sky-800 mb-4">
@@ -317,7 +317,7 @@ const CreateVacunasForm = () => {
       <div>
         <form
           onSubmit={handleSubmit}
-          className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-4"
+          className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-4"
         >
           <h2 className="text-2xl font-semibold text-sky-700">
             {vacunaEditando

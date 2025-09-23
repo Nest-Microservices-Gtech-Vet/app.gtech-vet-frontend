@@ -23,13 +23,13 @@ const ConsultaDetalle = () => {
     const [examenes, setExamenes] = useState<Examen[]>([]);
     const [vistaActiva, setVistaActiva] = useState<"tratamiento" | "examenes">("tratamiento");
 
-   const recetaRef = useRef<HTMLDivElement>(null);
+    const recetaRef = useRef<HTMLDivElement>(null);
 
-const handlePrint = useReactToPrint({
-  contentRef: recetaRef, // 👈 ya no se usa content()
-  documentTitle: `Receta_${consulta?.mas_nombre ?? "consulta"}`,
+    const handlePrint = useReactToPrint({
+        contentRef: recetaRef, // 👈 ya no se usa content()
+        documentTitle: `Receta_${consulta?.mas_nombre ?? "consulta"}`,
 
-});
+    });
 
 
 
@@ -178,36 +178,36 @@ const handlePrint = useReactToPrint({
                                 ))
                             )}
 
-{consulta && (
-  <div style={{ display: "none" }}>
-    <div ref={recetaRef}>
-      <RecetaPrint
-        empresa={{
-          nombre: consulta.empresa?.emp_nombre ?? "Sin empresa",
-          direccion: consulta.empresa?.emp_direccion ?? "No registrada",
-          telefono: consulta.empresa?.emp_telefono ?? "No registrado",
-          email: consulta.empresa?.emp_correo ?? "No registrado",
-          foto: consulta.empresa?.emp_foto ?? "No registrado",
-        }}
-        paciente={{
-          nombre: consulta.mascota?.mas_nombre ?? "Sin nombre",
-        }}
-        propietario={{
-          nombre: `${consulta.mascota?.propietario?.cli_nombre ?? ""} ${consulta.mascota?.propietario?.cli_apellido ?? ""}`.trim() || "No registrado",
-          cedula: consulta.mascota?.propietario?.cli_identificacion ?? "No registrada",
-          telefono: consulta.mascota?.propietario?.cli_celular ?? "No registrado",
-          direccion: consulta.mascota?.propietario?.cli_direccion ?? "No registrada",
-        }}
-        medico={{
-          nombre: `${consulta.medico?.usua_nombre ?? ""} ${consulta.medico?.usua_apellido ?? ""}`, // porque tu API no manda el usuario aún
-          cedula: consulta.medico?.usua_ruc,             // idem
-        }}
-        consulta={{...consulta, created_at: consulta?.created_at}}
-        tratamientos={tratamientos}
-      />
-    </div>
-  </div>
-)}
+                            {consulta && (
+                                <div style={{ display: "none" }}>
+                                    <div ref={recetaRef}>
+                                        <RecetaPrint
+                                            empresa={{
+                                                nombre: consulta.empresa?.emp_nombre ?? "Sin empresa",
+                                                direccion: consulta.empresa?.emp_direccion ?? "No registrada",
+                                                telefono: consulta.empresa?.emp_telefono ?? "No registrado",
+                                                email: consulta.empresa?.emp_correo ?? "No registrado",
+                                                foto: consulta.empresa?.emp_foto ?? "No registrado",
+                                            }}
+                                            paciente={{
+                                                nombre: consulta.mascota?.mas_nombre ?? "Sin nombre",
+                                            }}
+                                            propietario={{
+                                                nombre: `${consulta.mascota?.propietario?.cli_nombre ?? ""} ${consulta.mascota?.propietario?.cli_apellido ?? ""}`.trim() || "No registrado",
+                                                cedula: consulta.mascota?.propietario?.cli_identificacion ?? "No registrada",
+                                                telefono: consulta.mascota?.propietario?.cli_celular ?? "No registrado",
+                                                direccion: consulta.mascota?.propietario?.cli_direccion ?? "No registrada",
+                                            }}
+                                            medico={{
+                                                nombre: `${consulta.medico?.usua_nombre ?? ""} ${consulta.medico?.usua_apellido ?? ""}`, // porque tu API no manda el usuario aún
+                                                cedula: consulta.medico?.usua_ruc,             // idem
+                                            }}
+                                            consulta={{ ...consulta, created_at: consulta?.created_at }}
+                                            tratamientos={tratamientos}
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
 
                             <button

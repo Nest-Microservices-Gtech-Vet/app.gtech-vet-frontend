@@ -67,7 +67,7 @@ export interface UpdateVacunaDto {
 
 export const updateVacuna = async (
   vacunaId: number,
-  updateData: UpdateVacunaDto & { empresa_id?: string; mascota_id?: string; historiaClinica_id?: string },
+  updateData: UpdateVacunaDto & { archivosAEliminar?: number[] },
   nuevasFotos?: File[]
 ) => {
   const formData = new FormData();
@@ -88,15 +88,23 @@ export const updateVacuna = async (
   campos.forEach((key) => {
     const value = updateData[key];
     if (value !== undefined && value !== null && value !== "") {
-      // Solo si hay valor
       formData.append(key, String(value));
     }
   });
 
-  // ✅ Adjuntar archivos
+  // ✅ Adjuntar archivos nuevos
   if (nuevasFotos && nuevasFotos.length > 0) {
     nuevasFotos.forEach((foto) => formData.append("fotos", foto));
   }
+
+  // ✅ Adjuntar IDs de archivos a eliminar
+  // Archivos a eliminar (solo si existen)
+  if (updateData.archivosAEliminar && updateData.archivosAEliminar.length > 0) {
+    updateData.archivosAEliminar.forEach((id) =>
+      formData.append("archivosAEliminar[]", id.toString()) // siempre como array
+    );
+  }
+
 
   const response = await apiFetch(`vacuna/${vacunaId}`, {
     method: "PATCH",
@@ -104,7 +112,6 @@ export const updateVacuna = async (
   });
   return response;
 };
-
 
 
 

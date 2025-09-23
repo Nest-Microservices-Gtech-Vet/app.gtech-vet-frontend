@@ -94,7 +94,7 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
 
                 <div className="mb-6">
 
-                    <h2 className="font-semibold mb-2">Receta:</h2>
+                    <h2 className="font-semibold mb-2 text-2xl">Receta:</h2>
 
                     {tratamientos.length === 0 ? (
 
@@ -105,7 +105,7 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                         tratamientos.map((t, i) => (
 
                             <div key={i} className="mb-3">
-                                <ul className="list-disc list-inside">
+                                <ul className="list-disc list-inside text-2xl">
                                     {t.medicamentos.map((m: any) => (
                                         <li key={m.med_id}>
                                             {m.med_nombre} – {m.med_dosis}

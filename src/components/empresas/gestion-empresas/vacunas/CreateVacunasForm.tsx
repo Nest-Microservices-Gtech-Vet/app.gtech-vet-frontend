@@ -27,6 +27,8 @@ const CreateVacunasForm = () => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [modalArchivo, setModalArchivo] = useState<string | null>(null);
 
+  const API_URL = "http://localhost:3010";
+
 
 
   const [formData, setFormData] = useState({
@@ -61,7 +63,20 @@ const CreateVacunasForm = () => {
     const cargarVacunas = async () => {
       try {
         const data = await getVacunaPorMascota(mascotaId!);
-        setVacunas(data);
+
+        // Mapear respuesta para que siempre tenga .archivos
+        const vacunasConArchivos = data.map((v: any) => ({
+          ...v,
+          archivos: v.VacunaFoto
+            ? v.VacunaFoto.map((f: any) => ({
+              url: `${API_URL}${f.url}`,
+              tipo: f.url.endsWith(".pdf") ? "pdf" : "imagen",
+              id: f.vf_id, // importante para eliminar después
+            }))
+            : [],
+        }));
+
+        setVacunas(vacunasConArchivos);
       } catch (error) {
         console.error("Error al obtener vacunas:", error);
       }
@@ -71,6 +86,7 @@ const CreateVacunasForm = () => {
       cargarVacunas();
     }
   }, [mascotaId]);
+
 
   // Manejo de archivos
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +111,7 @@ const CreateVacunasForm = () => {
   const handleEdit = (vacuna: any) => {
     setVacunaEditando({
       ...vacuna,
-      id: vacuna.vac_id, // ✅ asegúrate de tener id numérico
+      id: vacuna.vac_id,
     });
     setFormData({
       vac_fecha: vacuna.vac_fecha
@@ -211,75 +227,75 @@ const CreateVacunasForm = () => {
         {vacunas.length === 0 ? (
           <p className="text-gray-500">No hay vacunas registradas aún.</p>
         ) : (
-         <ul className="space-y-3">
-  {vacunas.map((vacuna, index) => (
-    <li
-      key={index}
-      className="bg-gray-100 p-3 rounded shadow-sm flex flex-col gap-2"
-    >
-      <div>
-        <p>
-          <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
-        </p>
-        <p>
-          <strong>📅 Fecha:</strong>{" "}
-          {new Date(vacuna.vac_fecha).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>🔢 Lote:</strong> {vacuna.vac_lote}
-        </p>
-        <p>
-          <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
-        </p>
-        {vacuna.vac_proxima && (
-          <p>
-            <strong>📆 Próxima dosis:</strong>{" "}
-            {new Date(vacuna.vac_proxima).toLocaleDateString()}
-          </p>
-        )}
-      </div>
+          <ul className="space-y-3">
+            {vacunas.map((vacuna, index) => (
+              <li
+                key={index}
+                className="bg-gray-100 p-3 rounded shadow-sm flex flex-col gap-2"
+              >
+                <div>
+                  <p>
+                    <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
+                  </p>
+                  <p>
+                    <strong>📅 Fecha:</strong>{" "}
+                    {new Date(vacuna.vac_fecha).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>🔢 Lote:</strong> {vacuna.vac_lote}
+                  </p>
+                  <p>
+                    <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
+                  </p>
+                  {vacuna.vac_proxima && (
+                    <p>
+                      <strong>📆 Próxima dosis:</strong>{" "}
+                      {new Date(vacuna.vac_proxima).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
 
-      {/* Botón de Editar */}
-      <div className="flex gap-2 items-center">
-        <button
-          onClick={() => handleEdit(vacuna)}
-          className="text-blue-600 hover:underline text-sm"
-        >
-          Editar
-        </button>
-      </div>
+                {/* Botón de Editar */}
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => handleEdit(vacuna)}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Editar
+                  </button>
+                </div>
 
-      {/* Miniaturas de archivos */}
-      {vacuna.archivos && vacuna.archivos.length > 0 && (
-  <div className="flex gap-2 flex-wrap mt-2">
-    {vacuna.archivos.map((archivo: any, i: number) => (
-      <div
-        key={i}
-        className="relative w-16 h-16 border rounded overflow-hidden cursor-pointer"
-      >
-        {archivo.tipo === "imagen" ? (
-          <img
-            src={archivo.url}
-            alt="Archivo adjunto"
-            className="object-cover w-full h-full"
-            onClick={() => setModalArchivo(archivo.url)}
-          />
-        ) : (
-          <div
-            className="flex items-center justify-center bg-gray-300 w-full h-full text-xs text-center"
-            onClick={() => window.open(archivo.url, "_blank")}
-          >
-            PDF
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)}
+                {/* Miniaturas de archivos */}
+                {vacuna.archivos && vacuna.archivos.length > 0 && (
+                  <div className="flex gap-2 flex-wrap mt-2">
+                    {vacuna.archivos.map((archivo: any, i: number) => (
+                      <div
+                        key={i}
+                        className="relative w-16 h-16 border rounded overflow-hidden cursor-pointer"
+                      >
+                        {archivo.tipo === "imagen" ? (
+                          <img
+                            src={archivo.url}
+                            alt="Archivo adjunto"
+                            className="object-cover w-full h-full"
+                            onClick={() => setModalArchivo(archivo.url)}
+                          />
+                        ) : (
+                          <div
+                            className="flex items-center justify-center bg-gray-300 w-full h-full text-xs text-center"
+                            onClick={() => window.open(archivo.url, "_blank")}
+                          >
+                            PDF
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-    </li>
-  ))}
-</ul>
+              </li>
+            ))}
+          </ul>
 
         )}
       </div>
@@ -408,6 +424,31 @@ const CreateVacunasForm = () => {
                 className="hidden"
               />
             </label>
+             {vacunaEditando && vacunaEditando.archivos?.length > 0 && (
+    <div className="mt-3">
+      <p className="font-semibold mb-1">📂 Archivos guardados:</p>
+      <div className="flex flex-wrap gap-2">
+        {vacunaEditando.archivos.map((archivo: any, i: number) => (
+          <div key={i} className="relative w-20 h-20 border rounded overflow-hidden">
+            {archivo.tipo === "imagen" ? (
+              <img
+                src={archivo.url}
+                alt="Archivo"
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center w-full h-full bg-gray-200 text-xs"
+                onClick={() => window.open(archivo.url, "_blank")}
+              >
+                PDF
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
 
             {/* Vista previa / lista de archivos */}
             {selectedFiles.length > 0 && (
@@ -464,17 +505,17 @@ const CreateVacunasForm = () => {
         </form>
       </div>
       {modalArchivo && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-    onClick={() => setModalArchivo(null)}
-  >
-    <img
-      src={modalArchivo}
-      alt="Archivo ampliado"
-      className="max-h-[80%] max-w-[80%] rounded shadow-lg"
-    />
-  </div>
-)}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={() => setModalArchivo(null)}
+        >
+          <img
+            src={modalArchivo}
+            alt="Archivo ampliado"
+            className="max-h-[80%] max-w-[80%] rounded shadow-lg"
+          />
+        </div>
+      )}
 
     </div>
   );

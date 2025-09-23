@@ -73,18 +73,18 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                     </div>
                     <div className="flex items-center">
 
-                      
+
 
                         {/* Logo con efecto hover */}
                         <div className="flex-shrink-0 transform transition duration-300 group-hover:scale-105">
-                              <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>                            <img
+                            <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>                            <img
                                 src={`http://localhost:3010/uploads/logos/${empresa.foto}`}
                                 alt={empresa.nombre}
                                 className="w-24 h-24 object-cover rounded-lg border"
                             />
                         </div>
                     </div>
-                 
+
                 </div>
             </div>
             {/* CUERPO DE LA RECETA - Vacío para escritura manual */}

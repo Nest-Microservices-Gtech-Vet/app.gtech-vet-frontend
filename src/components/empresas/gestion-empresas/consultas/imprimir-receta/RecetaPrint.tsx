@@ -61,7 +61,15 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                     <p>
                         <strong>Fecha:</strong>{" "}
                         {consulta.created_at
-                            ? new Date(consulta.created_at).toLocaleString()
+                            ? new Date(consulta.created_at).toLocaleString("es-EC", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: false, // para formato 24h
+                            })
                             : "Sin fecha"}
                     </p>
 

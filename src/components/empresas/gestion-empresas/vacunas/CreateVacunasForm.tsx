@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -7,6 +7,8 @@ import {
   getVacunaPorMascota,
   updateVacuna,
 } from "../../../../services/gestion-empresa/vacunas/vacunas";
+import { useReactToPrint } from "react-to-print";
+import CartillaVacunasPrint from "./imprimirVacuna/VacunaPrint";
 
 const tiposVacuna = [
   "Vacunación",
@@ -33,6 +35,12 @@ const CreateVacunasForm = () => {
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [modalArchivo, setModalArchivo] = useState<string | null>(null);
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: "Cartilla_Vacunas",
+  });
 
   const API_URL = "http://localhost:3010";
 
@@ -40,6 +48,10 @@ const CreateVacunasForm = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   // IDs de archivos que se deben eliminar al actualizar
   const [archivosAEliminar, setArchivosAEliminar] = useState<number[]>([]);
+  const [mascota, setMascota] = useState<any | null>(null);
+  const [propietario, setPropietario] = useState<any | null>(null);
+  const [empresa, setEmpresa] = useState<any | null>(null);
+
 
   // Obtener consulta activa
   useEffect(() => {
@@ -61,7 +73,10 @@ const CreateVacunasForm = () => {
     try {
       const data = await getVacunaPorMascota(mascotaId!);
 
-      const vacunasConArchivos = data.map((v: any) => ({
+      // validar que vacunas exista y sea un array
+      const vacunasArray = Array.isArray(data.vacunas) ? data.vacunas : [];
+
+      const vacunasConArchivos = vacunasArray.map((v: any) => ({
         ...v,
         archivos: v.VacunaFoto
           ? v.VacunaFoto.map((f: any) => ({
@@ -73,10 +88,18 @@ const CreateVacunasForm = () => {
       }));
 
       setVacunas(vacunasConArchivos);
+
+      // si quieres guardar info de la mascota, propietario y empresa
+      // en estados separados:
+      setMascota(data.mascota);
+      setPropietario(data.propietario);
+      setEmpresa(data.empresa);
+
     } catch (error) {
       console.error("Error al obtener vacunas:", error);
     }
   };
+
 
   // Obtener vacunas de la mascota
   useEffect(() => {
@@ -238,6 +261,46 @@ const CreateVacunasForm = () => {
           >
             🔙 Regresar a historia clinica
           </button>
+
+          <button
+            onClick={handlePrint}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow m-4"
+          >
+            🖨️ Imprimir Cartilla
+          </button>
+          {mascota && propietario && empresa && (
+            <div style={{ display: "none" }}>
+              <div ref={printRef}>
+                <CartillaVacunasPrint
+                  empresa={{
+                    nombre: empresa.emp_nombre,
+                    direccion: empresa.emp_direccion,
+                    telefono: empresa.emp_telefono,
+                    email: empresa.emp_correo,
+                    foto: empresa.emp_foto,
+                  }}
+                  mascota={{
+                    nombre: mascota.mas_nombre,
+                    fechaNacimiento: mascota.mas_fechaNac,
+                    color: mascota.mas_color,
+                  }}
+                  propietario={{
+                    nombre: `${propietario.cli_nombre} ${propietario.cli_apellido}`,
+                    cedula: propietario.cli_identificacion,
+                    telefono: propietario.cli_celular,
+                    direccion: propietario.cli_direccion,
+                  }}
+                  medico={{
+                    nombre: `${vacunas[0].medico?.usua_nombre ?? ""} ${vacunas[0].medico?.usua_apellido ?? ""}`, // porque tu API no manda el usuario aún
+                    cedula: vacunas[0].medico?.usua_ruc,             // idem
+                  }}
+                  vacunas={vacunas}
+                />
+              </div>
+            </div>
+          )}
+
+
         </h3>
 
         {vacunas.length === 0 ? (

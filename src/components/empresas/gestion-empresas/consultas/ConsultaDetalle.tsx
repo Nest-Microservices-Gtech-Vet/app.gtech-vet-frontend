@@ -27,7 +27,7 @@ const ConsultaDetalle = () => {
 
     const handlePrint = useReactToPrint({
         contentRef: recetaRef, // 👈 ya no se usa content()
-        documentTitle: `Receta_${consulta?.mas_nombre ?? "consulta"}`,
+        documentTitle: `Receta_${consulta?.mascota.mas_nombre  ?? "consulta"} - ${consulta?.created_at}`,
 
     });
 

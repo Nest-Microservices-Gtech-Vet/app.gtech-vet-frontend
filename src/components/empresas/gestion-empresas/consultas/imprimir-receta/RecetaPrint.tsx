@@ -51,33 +51,34 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                 <div className="ml-16 pr-8">
                     <p className="font-bold text-lg">Dr(a). {medico.nombre}</p>
                     <p className="text-gray-600">MÉDICO VETERINARIO</p>
-                    <p className="text-sm">Cédula Profesional: {medico.cedula}</p>
+                    <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>
                     <hr className="mb-4 mt-6" />
                     {/* DATOS PACIENTE */}
                     <p><strong>Nombre (paciente):</strong> {paciente.nombre} <strong>Propietario:</strong> {propietario.nombre}</p>
                     <p><strong>Cédula:</strong> {propietario.cedula}</p>
                     <p><strong>Teléfono:</strong> {propietario.telefono}</p>
                     <p><strong>Dirección:</strong> {propietario.direccion}</p>
-                    <p><strong>Fecha:</strong> {consulta.created_at ? new Date(consulta.created_at).toLocaleDateString() : "Sin fecha"}</p>
+                    <p>
+                        <strong>Fecha:</strong>{" "}
+                        {consulta.created_at
+                            ? new Date(consulta.created_at).toLocaleString()
+                            : "Sin fecha"}
+                    </p>
+
 
 
                 </div>
 
                 {/* Datos y Logo de la Clínica */}
                 <div className="flex flex-col items-end">
-                    <div className="text-right mb-4">
-                        <p className="text-sm">D.C.P 436678</p>
-                        <p className="text-sm">S.S.A. 34728</p>
-                        <p className="text-sm">Medicina Interna, 676520</p>
-                        <p className="text-sm">Universidad Nacional Autónoma</p>
-                    </div>
+
                     <div className="flex items-center">
 
 
 
                         {/* Logo con efecto hover */}
                         <div className="flex-shrink-0 transform transition duration-300 group-hover:scale-105">
-                            <p className="font-bold text-lg text-gray-700 mr-2">{empresa.nombre}</p>                            <img
+                            <img
                                 src={`http://localhost:3010/uploads/logos/${empresa.foto}`}
                                 alt={empresa.nombre}
                                 className="w-24 h-24 object-cover rounded-lg border"
@@ -124,6 +125,14 @@ const RecetaPrint: React.FC<RecetaPrintProps> = ({
                     <span className="mr-4">📧 {empresa.email}</span>
                     <span>📍 {empresa.direccion}</span>
                 </div>
+
+            </div>
+            <hr className="mb-4 mt-6" />
+
+            <div className="items-center justify-center ">
+                <p className="font-bold text-lg text-gray-700 mr-2">Generado por AmigoVet www.amigovet123.com - Sistema Clinico Veterinario</p>
+                <p className="font-bold text-lg text-gray-700 mr-2">By Guardiao-Tech www.guardiaotech.com</p>
+
             </div>
         </div>
     );

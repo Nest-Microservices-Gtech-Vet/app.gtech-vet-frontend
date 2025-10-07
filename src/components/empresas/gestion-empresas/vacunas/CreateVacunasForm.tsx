@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   registrarVacuna,
-  // 🔹 asegúrate de tener este servicio
   obtenerConsultaActiva,
   getVacunaPorMascota,
   updateVacuna,
-  UpdateVacunaDto,
 } from "../../../../services/gestion-empresa/vacunas/vacunas";
+import { useReactToPrint } from "react-to-print";
+import CartillaVacunasPrint from "./imprimirVacuna/VacunaPrint";
 
 const tiposVacuna = [
   "Vacunación",
@@ -22,13 +22,7 @@ const CreateVacunasForm = () => {
     null
   );
   const [vacunas, setVacunas] = useState<any[]>([]);
-  const [vacunaEditando, setVacunaEditando] = useState<any | null>(null); // 🔹 vacuna seleccionada para editar
-  const navigate = useNavigate();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [modalArchivo, setModalArchivo] = useState<string | null>(null);
-
-
-
+  const [vacunaEditando, setVacunaEditando] = useState<any | null>(null);
   const [formData, setFormData] = useState({
     vac_fecha: "",
     vac_proxima: "",
@@ -38,7 +32,26 @@ const CreateVacunasForm = () => {
     vac_observacion: "",
   });
 
+  const navigate = useNavigate();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [modalArchivo, setModalArchivo] = useState<string | null>(null);
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: "Cartilla_Vacunas",
+  });
+
+  const API_URL = "http://localhost:3010";
+
+  // nuevos archivos seleccionados
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  // IDs de archivos que se deben eliminar al actualizar
+  const [archivosAEliminar, setArchivosAEliminar] = useState<number[]>([]);
+  const [mascota, setMascota] = useState<any | null>(null);
+  const [propietario, setPropietario] = useState<any | null>(null);
+  const [empresa, setEmpresa] = useState<any | null>(null);
+
 
   // Obtener consulta activa
   useEffect(() => {
@@ -56,23 +69,46 @@ const CreateVacunasForm = () => {
     }
   }, [empresaId, mascotaId]);
 
+  const cargarVacunas = async () => {
+    try {
+      const data = await getVacunaPorMascota(mascotaId!);
+
+      // validar que vacunas exista y sea un array
+      const vacunasArray = Array.isArray(data.vacunas) ? data.vacunas : [];
+
+      const vacunasConArchivos = vacunasArray.map((v: any) => ({
+        ...v,
+        archivos: v.VacunaFoto
+          ? v.VacunaFoto.map((f: any) => ({
+            url: `${API_URL}${f.url}`,
+            tipo: f.url.endsWith(".pdf") ? "pdf" : "imagen",
+            id: f.vf_id,
+          }))
+          : [],
+      }));
+
+      setVacunas(vacunasConArchivos);
+
+      // si quieres guardar info de la mascota, propietario y empresa
+      // en estados separados:
+      setMascota(data.mascota);
+      setPropietario(data.propietario);
+      setEmpresa(data.empresa);
+
+    } catch (error) {
+      console.error("Error al obtener vacunas:", error);
+    }
+  };
+
+
   // Obtener vacunas de la mascota
   useEffect(() => {
-    const cargarVacunas = async () => {
-      try {
-        const data = await getVacunaPorMascota(mascotaId!);
-        setVacunas(data);
-      } catch (error) {
-        console.error("Error al obtener vacunas:", error);
-      }
-    };
 
-    if (mascotaId) {
-      cargarVacunas();
-    }
+    cargarVacunas();
+
   }, [mascotaId]);
 
-  // Manejo de archivos
+  // Manejo de archivos nuevos
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const nuevos = Array.from(e.target.files);
@@ -87,20 +123,30 @@ const CreateVacunasForm = () => {
     setSelectedFiles((prev) => [...prev, ...noDuplicados]);
   };
 
-  const quitarArchivo = (index: number) => {
+  const quitarArchivoNuevo = (index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Quitar archivo guardado (lo pasamos a lista de eliminados)
+  const quitarArchivoGuardado = (archivoId: number) => {
+    if (!vacunaEditando) return;
+
+    setVacunaEditando((prev: any) => ({
+      ...prev,
+      archivos: prev.archivos.filter((a: any) => a.id !== archivoId),
+    }));
+
+    setArchivosAEliminar((prev) => [...prev, archivoId]);
   };
 
   // Pasar vacuna al formulario para edición
   const handleEdit = (vacuna: any) => {
     setVacunaEditando({
       ...vacuna,
-      id: vacuna.vac_id, // ✅ asegúrate de tener id numérico
+      id: vacuna.vac_id,
     });
     setFormData({
-      vac_fecha: vacuna.vac_fecha
-        ? vacuna.vac_fecha.split("T")[0]
-        : "",
+      vac_fecha: vacuna.vac_fecha ? vacuna.vac_fecha.split("T")[0] : "",
       vac_proxima: vacuna.vac_proxima
         ? vacuna.vac_proxima.split("T")[0]
         : "",
@@ -110,6 +156,7 @@ const CreateVacunasForm = () => {
       vac_observacion: vacuna.vac_observacion || "",
     });
     setSelectedFiles([]);
+    setArchivosAEliminar([]);
   };
 
   // Cancelar edición
@@ -124,6 +171,7 @@ const CreateVacunasForm = () => {
       vac_observacion: "",
     });
     setSelectedFiles([]);
+    setArchivosAEliminar([]);
   };
 
   // Guardar (crear o editar)
@@ -135,27 +183,30 @@ const CreateVacunasForm = () => {
       return;
     }
 
-    // Construir payload
     const payload: any = {
       vac_nombre: formData.vac_nombre || undefined,
       vac_tipo: formData.vac_tipo || undefined,
       vac_fecha: formData.vac_fecha || undefined,
       vac_lote: formData.vac_lote || undefined,
       vac_observacion: formData.vac_observacion || undefined,
-      empresa_id: empresaId ? String(empresaId) : undefined,
-      mascota_id: mascotaId ? String(mascotaId) : undefined,
-      historiaClinica_id: historiaClinicaId ? String(historiaClinicaId) : undefined,
+      empresa_id: String(empresaId),
+      mascota_id: String(mascotaId),
+      historiaClinica_id: String(historiaClinicaId),
+      vac_proxima: formData.vac_proxima || undefined,
+
     };
-
-    if (formData.vac_proxima) {
-      payload.vac_proxima = formData.vac_proxima;
+    if (vacunaEditando) {
+      payload.archivosAEliminar = archivosAEliminar;
     }
-
 
     try {
       if (vacunaEditando) {
         const vacunaId = Number(vacunaEditando.id);
-        const actualizada = await updateVacuna(vacunaId, payload, selectedFiles);
+        const actualizada = await updateVacuna(
+          vacunaId,
+          payload,
+          selectedFiles
+        );
 
         setVacunas((prev) =>
           prev.map((v) => (v.vac_id === actualizada.vac_id ? actualizada : v))
@@ -164,8 +215,9 @@ const CreateVacunasForm = () => {
         const nuevaVacuna = await registrarVacuna(payload, selectedFiles);
         setVacunas((prev) => [...prev, nuevaVacuna]);
       }
+      await cargarVacunas();
 
-      // Limpiar siempre al final
+      // Resetear
       setFormData({
         vac_fecha: "",
         vac_proxima: "",
@@ -175,112 +227,152 @@ const CreateVacunasForm = () => {
         vac_observacion: "",
       });
       setVacunaEditando(null);
-      setSelectedFiles([]);   // ✅ limpiar imágenes siempre
+      setSelectedFiles([]);
+      setArchivosAEliminar([]);
 
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // limpia el input de archivos
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
 
       Swal.fire(
         "Éxito",
-        vacunaEditando ? "Vacuna actualizada correctamente" : "Vacuna registrada correctamente",
+        vacunaEditando
+          ? "Vacuna actualizada correctamente"
+          : "Vacuna registrada correctamente",
         "success"
       );
     } catch (error) {
       Swal.fire("Error", "No se pudo procesar la vacuna", "error");
       console.error(error);
     }
-  }
-
+  };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start">
+    <div className="max-w-8xl mx-auto p-6 grid grid-cols-1 md:grid-cols-[2fr_2fr] gap-6 items-start">
       {/* Listado de vacunas */}
-      <div >
+      <div>
         <h3 className="text-xl font-semibold text-sky-800 mb-4">
           📋Vacunas registradas
-
           <button
-            onClick={() => navigate(`/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`)}
+            onClick={() =>
+              navigate(
+                `/mis-empresas/${empresaId}/mascotas/${mascotaId}/historia-clinica`
+              )
+            }
             className="bg-purple-500 hover:bg-purple-600 text-white py-1.5 px-1 rounded-md transition ml-1"
           >
             🔙 Regresar a historia clinica
           </button>
+
+          <button
+            onClick={handlePrint}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg shadow m-4"
+          >
+            🖨️ Imprimir Cartilla
+          </button>
+          {mascota && propietario && empresa && (
+            <div style={{ display: "none" }}>
+              <div ref={printRef}>
+                <CartillaVacunasPrint
+                  empresa={{
+                    nombre: empresa.emp_nombre,
+                    direccion: empresa.emp_direccion,
+                    telefono: empresa.emp_telefono,
+                    email: empresa.emp_correo,
+                    foto: empresa.emp_foto,
+                  }}
+                  mascota={{
+                    nombre: mascota.mas_nombre,
+                    fechaNacimiento: mascota.mas_fechaNac,
+                    color: mascota.mas_color,
+                  }}
+                  propietario={{
+                    nombre: `${propietario.cli_nombre} ${propietario.cli_apellido}`,
+                    cedula: propietario.cli_identificacion,
+                    telefono: propietario.cli_celular,
+                    direccion: propietario.cli_direccion,
+                  }}
+                  medico={{
+                    nombre: `${vacunas[0].medico?.usua_nombre ?? ""} ${vacunas[0].medico?.usua_apellido ?? ""}`, // porque tu API no manda el usuario aún
+                    cedula: vacunas[0].medico?.usua_ruc,             // idem
+                  }}
+                  vacunas={vacunas}
+                />
+              </div>
+            </div>
+          )}
+
+
         </h3>
 
         {vacunas.length === 0 ? (
           <p className="text-gray-500">No hay vacunas registradas aún.</p>
         ) : (
-         <ul className="space-y-3">
-  {vacunas.map((vacuna, index) => (
-    <li
-      key={index}
-      className="bg-gray-100 p-3 rounded shadow-sm flex flex-col gap-2"
-    >
-      <div>
-        <p>
-          <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
-        </p>
-        <p>
-          <strong>📅 Fecha:</strong>{" "}
-          {new Date(vacuna.vac_fecha).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>🔢 Lote:</strong> {vacuna.vac_lote}
-        </p>
-        <p>
-          <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
-        </p>
-        {vacuna.vac_proxima && (
-          <p>
-            <strong>📆 Próxima dosis:</strong>{" "}
-            {new Date(vacuna.vac_proxima).toLocaleDateString()}
-          </p>
-        )}
-      </div>
+          <ul className="space-y-3">
+            {vacunas.map((vacuna, index) => (
+              <li
+                key={index}
+                className="bg-gray-100 p-3 rounded shadow-sm flex flex-col gap-2"
+              >
+                <div>
+                  <p>
+                    <strong>💉 Nombre producto:</strong> {vacuna.vac_nombre}
+                  </p>
+                  <p>
+                    <strong>📅 Fecha:</strong>{" "}
+                    {new Date(vacuna.vac_fecha).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>🔢 Lote:</strong> {vacuna.vac_lote}
+                  </p>
+                  <p>
+                    <strong>🧪 Tipo:</strong> {vacuna.vac_tipo}
+                  </p>
+                  {vacuna.vac_proxima && (
+                    <p>
+                      <strong>📆 Próxima dosis:</strong>{" "}
+                      {new Date(vacuna.vac_proxima).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
 
-      {/* Botón de Editar */}
-      <div className="flex gap-2 items-center">
-        <button
-          onClick={() => handleEdit(vacuna)}
-          className="text-blue-600 hover:underline text-sm"
-        >
-          Editar
-        </button>
-      </div>
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => handleEdit(vacuna)}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Editar
+                  </button>
+                </div>
 
-      {/* Miniaturas de archivos */}
-      {vacuna.archivos && vacuna.archivos.length > 0 && (
-  <div className="flex gap-2 flex-wrap mt-2">
-    {vacuna.archivos.map((archivo: any, i: number) => (
-      <div
-        key={i}
-        className="relative w-16 h-16 border rounded overflow-hidden cursor-pointer"
-      >
-        {archivo.tipo === "imagen" ? (
-          <img
-            src={archivo.url}
-            alt="Archivo adjunto"
-            className="object-cover w-full h-full"
-            onClick={() => setModalArchivo(archivo.url)}
-          />
-        ) : (
-          <div
-            className="flex items-center justify-center bg-gray-300 w-full h-full text-xs text-center"
-            onClick={() => window.open(archivo.url, "_blank")}
-          >
-            PDF
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)}
-
-    </li>
-  ))}
-</ul>
-
+                {/* Miniaturas de archivos */}
+                {vacuna.archivos && vacuna.archivos.length > 0 && (
+                  <div className="flex gap-2 flex-wrap mt-2">
+                    {vacuna.archivos.map((archivo: any, i: number) => (
+                      <div
+                        key={i}
+                        className="relative w-16 h-16 border rounded overflow-hidden cursor-pointer"
+                      >
+                        {archivo.tipo === "imagen" ? (
+                          <img
+                            src={archivo.url}
+                            alt="Archivo adjunto"
+                            className="object-cover w-full h-full"
+                            onClick={() => setModalArchivo(archivo.url)}
+                          />
+                        ) : (
+                          <div
+                            className="flex items-center justify-center bg-gray-300 w-full h-full text-xs text-center"
+                            onClick={() => window.open(archivo.url, "_blank")}
+                          >
+                            PDF
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
@@ -288,10 +380,12 @@ const CreateVacunasForm = () => {
       <div>
         <form
           onSubmit={handleSubmit}
-          className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-4"
+          className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-4"
         >
           <h2 className="text-2xl font-semibold text-sky-700">
-            {vacunaEditando ? "✏️ Editar Vacuna" : "💉 Registrar Vacuna o Desparasitación"}
+            {vacunaEditando
+              ? "✏️ Editar Vacuna"
+              : "💉 Registrar Vacuna o Desparasitación"}
           </h2>
 
           {/* Campos */}
@@ -394,9 +488,10 @@ const CreateVacunasForm = () => {
           </div>
 
           <div>
-            <label className="block font-semibold mb-1">📎 Adjuntar archivos (opcional)</label>
+            <label className="block font-semibold mb-1">
+              📎 Adjuntar archivos (opcional)
+            </label>
 
-            {/* Botón estilizado para escoger archivos */}
             <label className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium">
               📁 Escoger archivos
               <input
@@ -409,12 +504,51 @@ const CreateVacunasForm = () => {
               />
             </label>
 
-            {/* Vista previa / lista de archivos */}
+            {/* Archivos guardados con botón eliminar */}
+            {vacunaEditando && vacunaEditando.archivos?.length > 0 && (
+              <div className="mt-3">
+                <p className="font-semibold mb-1">📂 Archivos guardados:</p>
+                <div className="flex flex-wrap gap-2">
+                  {vacunaEditando.archivos.map((archivo: any, i: number) => (
+                    <div
+                      key={i}
+                      className="relative w-20 h-20 border rounded overflow-hidden"
+                    >
+                      {archivo.tipo === "imagen" ? (
+                        <img
+                          src={archivo.url}
+                          alt="Archivo"
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div
+                          className="flex items-center justify-center w-full h-full bg-gray-200 text-xs"
+                          onClick={() => window.open(archivo.url, "_blank")}
+                        >
+                          PDF
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => quitarArchivoGuardado(archivo.id)}
+                        className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Vista previa archivos nuevos */}
             {selectedFiles.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-3">
                 {selectedFiles.map((file, i) => (
-                  <div key={i} className="relative w-24 h-24 border rounded overflow-hidden shadow-sm flex flex-col items-center justify-center">
-                    {/* Si es imagen, mostrar miniatura */}
+                  <div
+                    key={i}
+                    className="relative w-24 h-24 border rounded overflow-hidden shadow-sm flex flex-col items-center justify-center"
+                  >
                     {file.type.startsWith("image/") ? (
                       <img
                         src={URL.createObjectURL(file)}
@@ -426,11 +560,9 @@ const CreateVacunasForm = () => {
                         {file.name}
                       </div>
                     )}
-
-                    {/* Botón de quitar */}
                     <button
                       type="button"
-                      onClick={() => quitarArchivo(i)}
+                      onClick={() => quitarArchivoNuevo(i)}
                       className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow"
                     >
                       ×
@@ -441,7 +573,6 @@ const CreateVacunasForm = () => {
             )}
           </div>
 
-
           {/* Botones */}
           <div className="text-center pt-4 flex gap-4 justify-center">
             <button
@@ -450,7 +581,6 @@ const CreateVacunasForm = () => {
             >
               {vacunaEditando ? "Actualizar Vacuna" : "Registrar Vacuna"}
             </button>
-
             {vacunaEditando && (
               <button
                 type="button"
@@ -463,19 +593,20 @@ const CreateVacunasForm = () => {
           </div>
         </form>
       </div>
-      {modalArchivo && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-    onClick={() => setModalArchivo(null)}
-  >
-    <img
-      src={modalArchivo}
-      alt="Archivo ampliado"
-      className="max-h-[80%] max-w-[80%] rounded shadow-lg"
-    />
-  </div>
-)}
 
+      {/* Modal */}
+      {modalArchivo && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={() => setModalArchivo(null)}
+        >
+          <img
+            src={modalArchivo}
+            alt="Archivo ampliado"
+            className="max-h-[80%] max-w-[80%] rounded shadow-lg"
+          />
+        </div>
+      )}
     </div>
   );
 };

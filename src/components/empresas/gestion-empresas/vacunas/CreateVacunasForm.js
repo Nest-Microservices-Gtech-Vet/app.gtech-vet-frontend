@@ -31,7 +31,7 @@ const CreateVacunasForm = () => {
         contentRef: printRef,
         documentTitle: "Cartilla_Vacunas",
     });
-    const API_URL = "http://localhost:3010";
+    const API_URL = "https://app.amigovet123.com:8443/";
     // nuevos archivos seleccionados
     const [selectedFiles, setSelectedFiles] = useState([]);
     // IDs de archivos que se deben eliminar al actualizar

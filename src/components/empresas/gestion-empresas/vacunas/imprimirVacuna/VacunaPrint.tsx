@@ -70,7 +70,7 @@ const CartillaVacunasPrint: React.FC<CartillaVacunasPrintProps> = ({
                     <div className="flex items-center">
                         <div className="flex-shrink-0 transform transition duration-300 group-hover:scale-105">
                             <img
-                                src={`http://localhost:3010/uploads/logos/${empresa.foto}`}
+                                src={`https://app.amigovet123.com:8443/uploads/logos/${empresa.foto}`}
                                 alt={empresa.nombre}
                                 className="w-24 h-24 object-cover rounded-lg border"
                             />
